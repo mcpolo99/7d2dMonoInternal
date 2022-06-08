@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using O = ExampleAssembly.Objects;
+using O = SevenDTD_mono.Objects;
 
-namespace ExampleAssembly
+namespace SevenDTD_mono
 {
     public class Cheat : MonoBehaviour {
         [DllImport("user32.dll")]
         private static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
+        public static bool cmDm;
+        public static bool drpbp,onht;
+        public static float _dmg;
 
-        private void Start() {
+        private void Start() 
+        {
             lastChamTime = Time.time + 10f;
 
             chamsMaterial = new Material(Shader.Find("Hidden/Internal-Colored")) {
@@ -28,6 +32,7 @@ namespace ExampleAssembly
             chamsMaterial.SetInt("_ZTest", 8); // 8 = see through walls.
             chamsMaterial.SetInt("_ZWrite", 0);
             chamsMaterial.SetColor(_Color, Color.magenta);
+
         }
 
         private void Aimbot() {
@@ -179,6 +184,29 @@ namespace ExampleAssembly
 
                 Time.timeScale = speed ? 6f : 1f;
             }
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                if (O.localPlayer)
+                {
+                    int _v = 999999;
+                    O.localPlayer.Health += 9999999;
+                    O.localPlayer.AddHealth(_v);
+                    O._entityplayer.classMaxHealth += _v;
+                }
+            }
+
+            //if (speed)
+            //{
+            //    speed = false;
+            //}
+            //if (speed)
+            //{
+            //    speed = !speed;
+
+            //    Time.timeScale = speed ? 6f : 1f;
+            //}
+
+
 
             if (Time.time >= lastChamTime && chams) {
                 foreach (Entity entity in FindObjectsOfType<Entity>()) {
@@ -204,6 +232,11 @@ namespace ExampleAssembly
 
                 lastChamTime = Time.time + 10f;
             }
+
+        }
+
+        void OnGUI()
+        {
         }
 
         private void ApplyChams(Entity entity, Color color) {
@@ -213,12 +246,58 @@ namespace ExampleAssembly
             }
         }
 
+        public static void ToggleCmDm()
+        {
+            cmDm = !cmDm;
+            GameStats.Set(EnumGameStats.ShowSpawnWindow, cmDm);
+            GameStats.Set(EnumGameStats.IsCreativeMenuEnabled, cmDm);
+            GamePrefs.Set(EnumGamePrefs.DebugMenuEnabled, cmDm);
+            GameStats.Set(EnumGameStats.ShowAllPlayersOnMap, cmDm);
+            GameStats.Set(EnumGameStats.CraftTimer,!cmDm);
+        }
+        public static void levelup()
+        {
+            if (O.localPlayer)
+            {
+                Progression prog = O.localPlayer.Progression;
+                prog.AddLevelExp(prog.ExpToNextLevel);
+            }
+        }
+        public static void skillpoints()
+        {
+            if (O.localPlayer)
+            {
+                Progression prog = O.localPlayer.Progression;
+                prog.SkillPoints += 10;
+            }
+        }
+        public static void tp()
+        {
+            //O.local
+        }
+        public static void dropbkp()
+        {
+            drpbp = !drpbp;
+            GamePrefs.Set(EnumGamePrefs.DropOnDeath, drpbp);
+        }
+        public static void onehit()
+        {
+            onht = !onht;
+            _dmg = 999f;
+
+                //EnumGameStats.BlockDamagePlayer += 0x000000ff;
+                GameStats.Set(EnumGameStats.BlockDamagePlayer, _dmg);
+
+        }
+
+
+
         private int _Color;
 
         private float lastChamTime;
 
         private Material chamsMaterial;
-
-        public static bool speed, aimbot, infiniteAmmo, noWeaponBob, magicBullet, chams = false;
+        public static bool  speed, aimbot, infiniteAmmo, noWeaponBob, magicBullet, chams = false;
+        //public static bool onehitkill = false;
     }
 }
