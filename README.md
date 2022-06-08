@@ -15,12 +15,6 @@ Basic mono internal for 7 days to die. Pretty well optimised, with the menu open
 11. Add 10 skill points
 
 # Planned
-1. No recoil
-2. No spread
-3. Force PVP
-4. Blame others for killing people
-5. Bypass ServerTools anti-cheat on github (it's awful and commonly used, an example of a bypass would be pretending to be dead to bypass fly hack detection)
-6. Steam name spoofer
-
+alot ...
 # Video
 https://streamable.com/yct7tr (streamable fucked up my video quality, sorry)
