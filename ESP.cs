@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using UnityEngine;
-using O = ExampleAssembly.Objects;
-using System.Runtime.InteropServices;
+using O = SevenDTD_mono.Objects;
 
-namespace ExampleAssembly {
+namespace SevenDTD_mono {
     public class ESP : MonoBehaviour {
         private void Start() {
             // Camera.main is a very expensive getter, so we want to do it once and cache the result.
@@ -163,8 +158,8 @@ namespace ExampleAssembly {
         private readonly float crosshairScale = 14f;
         private readonly float lineThickness = 1.75f;
 
-        public static bool playerBox = true, playerName = true, playerHealth = true, playerCornerBox = false;
-        public static bool zombieBox = true, zombieName = true, zombieHealth = true, zombieCornerBox = false;
-        public static bool crosshair = true, fovCircle  = true;
+        public static bool playerBox = false, playerName = false, playerHealth = false, playerCornerBox = false;
+        public static bool zombieBox = false, zombieName = false, zombieHealth = false, zombieCornerBox = false;
+        public static bool crosshair = false, fovCircle  = false;
     }
 }
