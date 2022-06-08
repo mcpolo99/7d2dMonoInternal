@@ -1,9 +1,0 @@
-I:\Programing\build\debug\SevenDTD_mono.dll
-I:\Programing\build\debug\SevenDTD_mono.pdb
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\SevenDTD_mono.csproj.AssemblyReference.cache
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\SevenDTD_mono.Properties.Resources.resources
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\SevenDTD_mono.csproj.GenerateResource.cache
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\SevenDTD_mono.csproj.CoreCompileInputs.cache
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\SevenDTD_mono.csproj.CopyComplete
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\SevenDTD_mono.dll
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\SevenDTD_mono.pdb

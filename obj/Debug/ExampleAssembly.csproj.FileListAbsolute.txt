@@ -1,7 +1,0 @@
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\ExampleAssembly.csproj.AssemblyReference.cache
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\ExampleAssembly.csproj.CoreCompileInputs.cache
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\ExampleAssembly.csproj.CopyComplete
-I:\Programing\build\debug\7DTD_MONO_INJECT.dll
-I:\Programing\build\debug\7DTD_MONO_INJECT.pdb
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\7DTD_MONO_INJECT.dll
-I:\Programing\Games\7d2dMonoInternal\obj\Debug\7DTD_MONO_INJECT.pdb

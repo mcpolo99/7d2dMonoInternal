@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SevenDTD_mono
-{
-    static class ESPUtils 
-    {
+namespace ExampleAssembly {
+    static class ESPUtils {
         static ESPUtils() {
             whiteTexture = Texture2D.whiteTexture;
             drawingTex = new Texture2D(1, 1);

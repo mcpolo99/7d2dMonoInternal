@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SevenDTD_mono")]
+[assembly: AssemblyTitle("ExampleAssembly")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("polo")]
-[assembly: AssemblyProduct("SevenDTD_mono")]
-[assembly: AssemblyCopyright("Copyright © polo")]
+[assembly: AssemblyCompany("Biney")]
+[assembly: AssemblyProduct("ExampleAssembly")]
+[assembly: AssemblyCopyright("Copyright © Biney")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

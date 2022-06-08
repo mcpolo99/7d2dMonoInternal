@@ -1,4 +1,4 @@
-﻿namespace SevenDTD_mono
+﻿namespace ExampleAssembly
 {
     public class Loader
     {
@@ -9,8 +9,8 @@
             gameObject = new UnityEngine.GameObject();
             gameObject.AddComponent<Cheat>();
             gameObject.AddComponent<Objects>();
-            //gameObject.AddComponent<ESP>();
-            gameObject.AddComponent<NewMenu>();
+            gameObject.AddComponent<ESP>();
+            gameObject.AddComponent<Menu>();
             //gameObject.AddComponent<SceneDebugger>();
             UnityEngine.Object.DontDestroyOnLoad(gameObject);
         }

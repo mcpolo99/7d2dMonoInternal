@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SevenDTD_mono {
+namespace ExampleAssembly {
     public class Objects : MonoBehaviour {
         private void Start() {
             zombieList = new List<EntityZombie>();
@@ -11,9 +15,6 @@ namespace SevenDTD_mono {
             lastCachePlayer = Time.time + 5f;
             lastCacheZombies = Time.time + 3f;
             lastCacheItems = Time.time + 4f;
-
-            _entityplayer = FindObjectOfType<EntityPlayer>();
-            _enumstats = GetComponent<EnumGameStats>();
         }
 
         private void Update() {
@@ -55,8 +56,5 @@ namespace SevenDTD_mono {
         public static EntityPlayerLocal localPlayer;
         public static List<EntityZombie> zombieList;
         public static List<EntityItem> itemList;
-        public static EntityPlayer _entityplayer;
-        public static EnumGameStats _enumstats;    
     }
-
 }

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
-using O = SevenDTD_mono.Objects;
+using O = ExampleAssembly.Objects;
 
-namespace SevenDTD_mono {
-    public class Menu : MonoBehaviour 
-    {
+namespace ExampleAssembly {
+    public class Menu : MonoBehaviour {
         private void Start() {
             windowID = new System.Random(Environment.TickCount).Next(1000, 65535);
             windowRect = new Rect(5f, 5f, 300f, 150f);
@@ -15,15 +18,13 @@ namespace SevenDTD_mono {
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.Delete)) {
+            if (Input.GetKeyDown(KeyCode.Insert)) {
                 drawMenu = !drawMenu;
             }
         }
 
-        private void OnGUI() 
-        {
-            if (drawMenu) 
-            {
+        private void OnGUI() {
+            if (drawMenu) {
                 windowRect = GUILayout.Window(windowID, windowRect, Window, "Menu");
             }
         }
@@ -36,7 +37,7 @@ namespace SevenDTD_mono {
 
         private void Window(int windowID) {
             GUILayout.Label(MakeEnable("[F2] Speed ", Cheat.speed));
-            //GUILayout.Label("[O] Toggle Infinite Ammo");
+            GUILayout.Label("[O] Toggle Infinite Ammo");
             
             if (GUILayout.Button("Toggle Creative & Debug Mode")) {
                 cmDm = !cmDm;
@@ -57,13 +58,6 @@ namespace SevenDTD_mono {
                     prog.SkillPoints += 10;
                 }
             }
-
-           /* GUILayout.Toggle(Cheat.Levelup, "test");
-            {
-                Cheat.Levelup
-            }/*/
-
-
 
             GUILayout.BeginVertical("Options", GUI.skin.box); {
                 GUILayout.Space(20f);
@@ -145,7 +139,7 @@ namespace SevenDTD_mono {
             return $"{label} {status}";
         }
 
-        private bool drawMenu = false;
+        private bool drawMenu = true;
         private bool cmDm;
 
         private int windowID;
