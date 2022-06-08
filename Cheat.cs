@@ -195,6 +195,22 @@ namespace SevenDTD_mono
                 }
             }
 
+            if (cm)
+            {
+                cm = !cm;
+            }
+            if (cm) 
+            { 
+                if (O.localPlayer)
+                    {
+                        GameStats.Set(EnumGameStats.ShowSpawnWindow, cm);
+                        GameStats.Set(EnumGameStats.IsCreativeMenuEnabled, cm);
+                        GamePrefs.Set(EnumGamePrefs.DebugMenuEnabled, cm);
+                        GameStats.Set(EnumGameStats.ShowAllPlayersOnMap, cm);
+                        GameStats.Set(EnumGameStats.CraftTimer, cm);
+                    }
+            }//toggle on but no toggle of
+
             //if (speed)
             //{
             //    speed = false;
@@ -246,7 +262,7 @@ namespace SevenDTD_mono
             }
         }
 
-        public static void ToggleCmDm()
+        public static void ToggleCmDm()  //assigned to a button
         {
             cmDm = !cmDm;
             GameStats.Set(EnumGameStats.ShowSpawnWindow, cmDm);
@@ -297,7 +313,7 @@ namespace SevenDTD_mono
         private float lastChamTime;
 
         private Material chamsMaterial;
-        public static bool  speed, aimbot, infiniteAmmo, noWeaponBob, magicBullet, chams = false;
+        public static bool cm, speed, aimbot, infiniteAmmo, noWeaponBob, magicBullet, chams = false;
         //public static bool onehitkill = false;
     }
 }

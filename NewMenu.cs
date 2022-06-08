@@ -105,7 +105,7 @@ namespace SevenDTD_mono
                 Cheat.ToggleCmDm();
             };
             GUILayout.Toggle(Cheat.cmDm, "toggke cheat mode.");
-            Cheat.cmDm = GUILayout.Toggle(Cheat.cmDm, "toggke cheat mode.");
+            Cheat.cm = GUILayout.Toggle(Cheat.cm, "toggke cheat mode.");
             GUILayout.Button("Quick melt");
             GUILayout.Button("Quick scrap");
             GUILayout.Button("Instant loot");
