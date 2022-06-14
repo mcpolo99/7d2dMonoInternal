@@ -1,7 +1,7 @@
+I:\Visual Studio 2022\Source\build\debug\SevenDTD_mono.dll
+I:\Visual Studio 2022\Source\build\debug\SevenDTD_mono.pdb
 I:\Visual Studio 2022\Source\Repos\7d2dMonoInternal\obj\Debug\SevenDTD_mono.csproj.AssemblyReference.cache
 I:\Visual Studio 2022\Source\Repos\7d2dMonoInternal\obj\Debug\SevenDTD_mono.csproj.CoreCompileInputs.cache
 I:\Visual Studio 2022\Source\Repos\7d2dMonoInternal\obj\Debug\SevenDTD_mono.csproj.CopyComplete
-I:\Visual Studio 2022\Source\build\debug\SevenDTD_mono.dll
-I:\Visual Studio 2022\Source\build\debug\SevenDTD_mono.pdb
 I:\Visual Studio 2022\Source\Repos\7d2dMonoInternal\obj\Debug\SevenDTD_mono.dll
 I:\Visual Studio 2022\Source\Repos\7d2dMonoInternal\obj\Debug\SevenDTD_mono.pdb

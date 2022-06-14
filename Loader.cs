@@ -7,11 +7,18 @@
         public static void Load()
         {
             gameObject = new UnityEngine.GameObject();
-            gameObject.AddComponent<Cheat>();
-            gameObject.AddComponent<Objects>();
-            //gameObject.AddComponent<ESP>();
+
+
             gameObject.AddComponent<NewMenu>();
-            //gameObject.AddComponent<SceneDebugger>();
+            gameObject.AddComponent<Cheat>();
+            gameObject.AddComponent<Settings>();
+            gameObject.AddComponent<Objects>();
+            gameObject.AddComponent<ESP>();
+            gameObject.AddComponent<Visuals>();
+            gameObject.AddComponent<Aimbot>();
+            gameObject.AddComponent<Render>();
+            //gameObject.AddComponent<ESPUtils>();
+            gameObject.AddComponent<SceneDebugger>();
             UnityEngine.Object.DontDestroyOnLoad(gameObject);
         }
 
