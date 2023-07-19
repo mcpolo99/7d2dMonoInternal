@@ -13,8 +13,3 @@ Basic mono internal for 7 days to die. Pretty well optimised, with the menu open
 9. Teleport to players
 10. Level up
 11. Add 10 skill points
-
-# Planned
-alot ...
-# Video
-https://streamable.com/yct7tr (streamable fucked up my video quality, sorry)
