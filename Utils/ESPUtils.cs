@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace SevenDTD_mono
+namespace SevenDTDMono
 {
     static class ESPUtils 
     {

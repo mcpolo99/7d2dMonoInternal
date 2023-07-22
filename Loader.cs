@@ -1,8 +1,8 @@
-﻿namespace SevenDTD_mono
+﻿namespace SevenDTDMono
 {
     public class Loader
     {
-        static UnityEngine.GameObject gameObject;
+        internal static UnityEngine.GameObject gameObject;
 
         public static void Load()
         {

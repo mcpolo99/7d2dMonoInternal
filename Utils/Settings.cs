@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 
 
-namespace SevenDTD_mono 
+namespace SevenDTDMono
 { 
     public class Settings : MonoBehaviour
     {
@@ -19,27 +19,55 @@ namespace SevenDTD_mono
         public static bool noWeaponBob;
         public static bool magicBullet;
 
-        public static bool cmDm;
+        public static bool CmDm;
         public static bool cm;
+        public static bool reloadBuffs=false;
+        
         public static bool drpbp, onht;
         #endregion
 
         #region Bools defined
+
+        //ESP
         public static bool PlayerBox = false;
         public static bool PlayerName = false;
-
-        public static bool chams = false;
+        public static bool playerName = false;
+        public static bool zombieName = false;
         public static bool playerBox = false;
         public static bool zombieBox = false;
-        public static bool crosshair = false; 
+        public static bool crosshair = false;
         public static bool playerCornerBox = false;
         public static bool zombieCornerBox = false;
         public static bool zombieHealth = false;
         public static bool playerHealth = false;
-        public static bool zombieName = false;
+        public static bool chams = false;
         public static bool fovCircle = false;
-        public static bool playerName = false;
+
+
+        //cheats toggle
+
+        public static bool TESTTOG = false;
+        public static bool _healthNstamina = false;
+        public static bool _foodNwater = false;
+  
+
+
+        
+
+
+        public static bool _Buffs = false;
+
+        //not sure
         public static bool _trystackitems = false;
+        public static bool _QuickScrap = false;
+        public static bool _oneHit = false;
+        public static bool _InstantLoot = false;
+
+
+        //MISC
+
+        internal static bool drawDebug = false;
+        internal static bool selfDestruct = false;
         #endregion
 
 

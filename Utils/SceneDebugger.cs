@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using SETT = SevenDTDMono.Settings;
 
-namespace SevenDTD_mono 
+namespace SevenDTDMono
 {
     // Credit: https://github.com/shalzuth
     public class SceneDebugger : MonoBehaviour {
@@ -36,9 +37,15 @@ namespace SevenDTD_mono
             ProjectWindow = new Rect(HierarchyWindow.x - Margin - ProjectWidth, Margin, ProjectWidth, Screen.height - Margin * 2);
             InspectorWindow = new Rect(ProjectWindow.x - Margin - InspectorWidth, Margin, InspectorWidth, Screen.height - Margin * 2);
         }
-        public void OnGUI() {
-            HierarchyWindow = GUILayout.Window(HierarchyWindowId, HierarchyWindow, (GUI.WindowFunction)HierarchyWindowMethod, "Hierarchy", new GUILayoutOption[0]);
-            ProjectWindow = GUILayout.Window(ProjectWindowId, ProjectWindow, (GUI.WindowFunction)ProjectWindowMethod, "Project", new GUILayoutOption[0]);
+        public void OnGUI() 
+        {
+            if (SETT.drawDebug)
+            {
+                HierarchyWindow = GUILayout.Window(HierarchyWindowId, HierarchyWindow, (GUI.WindowFunction)HierarchyWindowMethod, "Hierarchy", new GUILayoutOption[0]);
+                ProjectWindow = GUILayout.Window(ProjectWindowId, ProjectWindow, (GUI.WindowFunction)ProjectWindowMethod, "Project", new GUILayoutOption[0]);
+            }
+
+            
         }
         #region Hierarchy GUI
         void DisplayGameObject(GameObject gameObj, Int32 level) {

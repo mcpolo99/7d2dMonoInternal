@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-using O = SevenDTD_mono.Objects;
-using SETT = SevenDTD_mono.Settings;
-using Eutl= SevenDTD_mono.ESPUtils;
+using O = SevenDTDMono.Objects;
+using SETT = SevenDTDMono.Settings;
+using Eutl= SevenDTDMono.ESPUtils;
 
-namespace SevenDTD_mono
+namespace SevenDTDMono
 {
     internal class Render : MonoBehaviour
     {

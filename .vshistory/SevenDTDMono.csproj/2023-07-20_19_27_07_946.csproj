@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{251A7FF8-4D39-4F8B-9838-61124BF62F99}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SevenDTDMono</RootNamespace>
+    <AssemblyName>SevenDTDMono</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\build\debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\build\release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony, Version=2.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Lib.Harmony.2.2.1\lib\net45\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="InControl, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\InControl.dll</HintPath>
+    </Reference>
+    <Reference Include="LogLibrary, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\LogLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Unity.Postprocessing.Runtime, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\Unity.Postprocessing.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AccessibilityModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.AccessibilityModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AIModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.AIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AndroidJNIModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.AndroidJNIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ARModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.ARModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClothModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterInputModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.ClusterInputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterRendererModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.ClusterRendererModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CrashReportingModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.CrashReportingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.DirectorModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.DirectorModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.DSPGraphModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.DSPGraphModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GameCenterModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.GameCenterModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GIModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.GIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GridModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.GridModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.HotReloadModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.HotReloadModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.LocalizationModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.LocalizationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PerformanceReportingModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.PerformanceReportingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule ">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ProfilerModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.ProfilerModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ScreenCaptureModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SharedInternalsModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpriteMaskModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpriteShapeModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.SpriteShapeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.StreamingModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SubstanceModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.SubstanceModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SubsystemsModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.SubsystemsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainPhysicsModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TilemapModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TLSModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.TLSModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsNativeModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UIElementsNativeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UmbraModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UNETModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityConnectModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UnityConnectModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityCurlModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UnityCurlModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityTestProtocolModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VehiclesModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.VehiclesModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VFXModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.VFXModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VideoModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.VideoModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VirtualTexturingModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.VirtualTexturingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VRModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.VRModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.WindModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.WindModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.XRModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.XRModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Features\Aimbot\Aimbot.cs" />
+    <Compile Include="Features\Cheat.cs" />
+    <Compile Include="Features\Render\ESP.cs" />
+    <Compile Include="Features\Render\Visuals.cs" />
+    <Compile Include="Features\Render\Render.cs" />
+    <Compile Include="Utils\ESPUtils.cs" />
+    <Compile Include="Loader.cs" />
+    <Compile Include="UI\Menu.cs" />
+    <Compile Include="UI\NewMenu.cs" />
+    <Compile Include="Utils\Objects.cs" />
+    <Compile Include="Utils\SceneDebugger.cs" />
+    <Compile Include="Utils\Settings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

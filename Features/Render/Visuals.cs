@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using SETT = SevenDTD_mono.Settings;
-using Eutl = SevenDTD_mono.ESPUtils;
-using O = SevenDTD_mono.Objects;
+using SETT = SevenDTDMono.Settings;
+using Eutl = SevenDTDMono.ESPUtils;
+using O = SevenDTDMono.Objects;
 
 
-namespace SevenDTD_mono
+namespace SevenDTDMono
 {
     public class Visuals : MonoBehaviour 
     {

@@ -1,0 +1,7 @@
+C:\VS\build\debug\7DTDMono.dll
+C:\VS\build\debug\7DTDMono.pdb
+C:\VS\Sources\7d2dMonoInternal\obj\Debug\7DTDMono.csproj.AssemblyReference.cache
+C:\VS\Sources\7d2dMonoInternal\obj\Debug\7DTDMono.csproj.CoreCompileInputs.cache
+C:\VS\Sources\7d2dMonoInternal\obj\Debug\7DTDMono.csproj.CopyComplete
+C:\VS\Sources\7d2dMonoInternal\obj\Debug\7DTDMono.dll
+C:\VS\Sources\7d2dMonoInternal\obj\Debug\7DTDMono.pdb
