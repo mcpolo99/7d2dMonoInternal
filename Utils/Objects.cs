@@ -1,41 +1,88 @@
-﻿using System;
+﻿//using HarmonyLib;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using static ImageEffectManager;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+//using HarmonyLib;
 
-namespace SevenDTDMono{
-    public class Objects : MonoBehaviour {
+namespace SevenDTDMono
+{
+    public class Objects : MonoBehaviour
+    {
+
+        public static List<EntityZombie> zombieList;
+        public static List<EntityItem> itemList;
+
+        public static EntityPlayerLocal LP;
+        public static EntityPlayerLocal localPlayer;
+        public static EntityPlayerLocal EPlayerL;
+        public static GameObject Gobj;
+        public static EntityPlayerLocal _entityplayerLocal;
+        public static EntityPlayerLocal ePL;
+        public static EntityPlayer _entityplayer;
+
+        public static GameManager _gameManager;
+        public static EnumGameStats _enumstats;
+        public static XUiM_PlayerInventory _playerinv;
+
+        private float lastCachePlayer;
+        private float Cache;
+        private float lastCacheZombies;
+        private float lastCacheItems;
+
+        public static List<BuffClass> buffClasses;
+        public static BuffClass _buffClass;
+        public static List<string> _BuffNames;
+
+        public Time time;
 
 
-        private void Start() {
-           
-            zombieList = new List<EntityZombie>();
-            itemList = new List<EntityItem>();
-            buffClasses = new List<BuffClass>();
+        private void Start()
+        {
+            //Time.time.ToString();
+
+            //Gobj =GameObject.Find("Players"); //Finds whole GameObject
+            //LocalPlayer LPlayer = Gobj.GetComponent<LocalPlayer>(); //this gets the component LocalPlayer from GameObject
+            ////EPlayerL = Gobj.GetComponent<EntityPlayerLocal>(); // this could work to get the EntityPlayerLocal from LocalPlayer
+            //EPlayerL = FindObjectOfType<EntityPlayerLocal>(); // this could work to get the EntityPlayerLocal from LocalPlayer
+            //ePL = GameObject.Find("Player_171").GetComponent<EntityPlayerLocal>();
+             
 
             lastCachePlayer = Time.time + 5f;
             lastCacheZombies = Time.time + 3f;
             lastCacheItems = Time.time + 4f;
             lastCacheItems = Time.time + 1000f;
-            //BuffClass buff = BuffManager.GetBuff(_name);
-            gameManager = (GameManager)UnityEngine.Object.FindObjectOfType(typeof(GameManager));
 
-            buffClasses = GetAvailableBuffClasses();
+            
+            zombieList = new List<EntityZombie>();
+            itemList = new List<EntityItem>();
+            buffClasses = new List<BuffClass>();
+
+
 
             _entityplayerLocal = FindObjectOfType<EntityPlayerLocal>();
             _entityplayer = FindObjectOfType<EntityPlayer>();
-            _enumstats = GetComponent<EnumGameStats>();
-            _playerinv = GetComponent<XUiM_PlayerInventory>();
-            
 
-            _buffClass = GetComponent<BuffClass>();
-            _BuffNames = GetAvailableBuffNames();
+
+
+            //_enumstats = GetComponent<EnumGameStats>();
+            //_playerinv = GetComponent<XUiM_PlayerInventory>();
+            //_buffClass = GetComponent<BuffClass>();
+
+
+            _gameManager = (GameManager)UnityEngine.Object.FindObjectOfType(typeof(GameManager));
+            _gameManager.GetGameStateManager();
+        }
+        public void timeee()
+        {
 
         }
-
-        private void Update() {
+        private void Update()
+        {
             /* 
              * Only a little bit of spaghetti : ^)
              * This is much more efficient than Coroutines are, which is why I'm using this spaghetti over them.
@@ -49,15 +96,21 @@ namespace SevenDTDMono{
                 Settings.reloadBuffs = false;
             }
 
-            if (Time.time >= lastCachePlayer) {
+            if (Time.time >= lastCachePlayer)
+            {
                 localPlayer = FindObjectOfType<EntityPlayerLocal>();
+                LP = localPlayer;
 
                 lastCachePlayer = Time.time + 5f;
-            } else if (Time.time >= lastCacheZombies) {
+            }
+            else if (Time.time >= lastCacheZombies)
+            {
                 zombieList = FindObjectsOfType<EntityZombie>().ToList();
 
                 lastCacheZombies = Time.time + 3f;
-            } else if (Time.time >= lastCacheItems) {
+            }
+            else if (Time.time >= lastCacheItems)
+            {
                 itemList = FindObjectsOfType<EntityItem>().ToList();
 
                 lastCacheItems = Time.time + 4f;
@@ -65,16 +118,20 @@ namespace SevenDTDMono{
         }
 
 
-        
-        public static List<EntityPlayer> PlayerList {
-            get {
+
+        public static List<EntityPlayer> PlayerList
+        {
+            get
+            {
                 if (GameManager.Instance != null)
                     if (GameManager.Instance.World != null)
                         return GameManager.Instance.World.GetPlayers();
                 return new List<EntityPlayer>();
             }
+
+
         }
-       
+
         public static List<string> GetAvailableBuffNames()
         {
             SortedDictionary<string, BuffClass> sortedDictionary = new SortedDictionary<string, BuffClass>(BuffManager.Buffs, StringComparer.OrdinalIgnoreCase);
@@ -95,43 +152,6 @@ namespace SevenDTDMono{
 
             return buffNames;
         }
-        public static List<string> GetAvailableBuffNames1()
-        {
-            SortedDictionary<string, BuffClass> sortedDictionary = new SortedDictionary<string, BuffClass>(BuffManager.Buffs, StringComparer.OrdinalIgnoreCase);
-            List<string> buffNames = new List<string>();
-
-            foreach (KeyValuePair<string, BuffClass> keyValuePair in sortedDictionary)
-            {
-                BuffClass buff = keyValuePair.Value;
-
-                // Check if the buff's EffectGroups contain PassiveEffects.None
-                if (buff.Effects != null && buff.Effects.PassivesIndex.Contains(PassiveEffects.None))
-                {
-                    // Add the buff name to the list if it has PassiveEffects.None
-                    buffNames.Add(keyValuePair.Key);
-                }
-            }
-
-            return buffNames;
-        }
-        public static List<BuffClass> GetBuffsByEffect(PassiveEffects effect)
-        {
-            List<BuffClass> buffsByEffect = new List<BuffClass>();
-
-            if (BuffManager.Buffs != null)
-            {
-                foreach (var buffEntry in BuffManager.Buffs)
-                {
-                    BuffClass buff = buffEntry.Value;
-                    if (buff.Effects != null && buff.Effects.PassivesIndex.Contains(PassiveEffects.None))
-                    {
-                        buffsByEffect.Add(buff);
-                    }
-                }
-            }
-
-            return buffsByEffect;
-        }
         public static List<BuffClass> GetAvailableBuffClasses()  // gets the buffclasses??
         {
             // Clear the list to ensure it's up-to-date.
@@ -139,14 +159,14 @@ namespace SevenDTDMono{
             //buffClasses.
             if (BuffManager.Buffs != null)
             {
-               
+
                 BuffManager.Buffs.OfType<BuffClass>();
                 foreach (var buffEntry in BuffManager.Buffs)
                 {
                     //buffEntry.Value.Effects.EffectGroups.
                     buffClasses.Add(buffEntry.Value);
 
-                     if (buffEntry.Value.Equals(BuffManager.Buffs.Last().Value))
+                    if (buffEntry.Value.Equals(BuffManager.Buffs.Last().Value))
                     {
                         // Do something specific for the last buff class (if needed)
                         // ...
@@ -154,37 +174,51 @@ namespace SevenDTDMono{
                         // Stop the loop after adding the last buff class
                         //break;
                     }
+                    LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "Test.txt"));
+
                 }
             }
 
             return buffClasses;
         }
+        private static void LogBuffClassesToFile(string filePath)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.WriteLine("Buff Name,Damage Type,Description");
 
-        public static EntityPlayerLocal localPlayer;
-        public static List<EntityZombie> zombieList;
-        //public static List<whatever that should stand here> buffList;        
-        public static List<EntityItem> itemList;
-        public static EntityPlayer _entityplayer;
-        public static EntityPlayerLocal _entityplayerLocal;
+                    foreach (var buffClass in buffClasses)
+                    {
+                        writer.WriteLine($"{EscapeForCsv(buffClass.Name)},{buffClass.DamageType},{EscapeForCsv(buffClass.NameTag.ToString())}");
+                    }
+                }
 
-        public static GameManager gameManager;
+                Console.WriteLine("Buff classes have been logged to the file.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred while logging buff classes: {ex.Message}");
+            }
+        }
 
+        private static string EscapeForCsv(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
 
-        
+            // If the value contains a comma or a double quote, enclose it in double quotes and escape any existing double quotes
+            if (value.Contains(',') || value.Contains('"'))
+            {
+                return $"\"{value.Replace("\"", "\"\"")}\"";
+            }
 
-        public static EnumGameStats _enumstats;
-        public static XUiM_PlayerInventory _playerinv;
+            return value;
+        }
 
-
-        public static List<BuffClass> buffClasses;
-
-
-        private float lastCachePlayer;
-        private float lastCacheZombies;
-        private float lastCacheItems;
-
-        public static BuffClass _buffClass;
-        public static List<string> _BuffNames;
 
     }
 

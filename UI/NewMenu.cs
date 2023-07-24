@@ -11,6 +11,8 @@ using UnityEngine.UIElements;
 using DynamicMusic;
 using UniLinq;
 using System.Linq;
+using UnityExplorer;
+using InControl;
 
 namespace SevenDTDMono
 {
@@ -48,6 +50,7 @@ namespace SevenDTDMono
         private float floatValue = 0.0f;
         private GUIStyle customBoxStyleGreen;
         GUIStyle centeredLabelStyle;
+        private Logger _log;
 
 
 
@@ -60,13 +63,14 @@ namespace SevenDTDMono
             windowRect = new Rect(10f, 10f, 400f, 300f);
             guiRect = new Rect(0, 0, 300, 300);
             GUI.color = Color.white;
- 
-
+            _log = new Logger();
+            _log.InitializeLogger();
         }
 
         // Update is called once per frame
         void Update()
         {
+            //ExplorerStandalone.O
             if (!Input.anyKey || !Input.anyKeyDown)
             {
                 return;
@@ -180,7 +184,7 @@ namespace SevenDTDMono
                             {
                                 Cheat.KillSelf();
                             }
-                            if (CGUILayout.Button("Ignored By AI"))
+                            if (CGUILayout.Button("Ignored By AI", ref SETT._ignoreByAI))
                             {
                                 Cheat.IgnoredbyAI();
                             }
@@ -197,7 +201,8 @@ namespace SevenDTDMono
                             CGUILayout.Button("Skillpoints", Cheat.skillpoints);
                             CGUILayout.Button("Health and Stamina", Cheat.HealthNStamina,ref SETT._healthNstamina);
 
-                            CGUILayout.Button("Health and Stamina", ref SETT._healthNstamina );
+                            CGUILayout.Button("Food And Water", ref SETT._foodNwater );
+                            CGUILayout.Button("Test get player", Cheat.Getplayer);
                             CGUILayout.Button(ref SETT.TESTTOG, "Test Toggle", Color.green, Color.red);
 
                         }GUILayout.EndVertical();
@@ -337,7 +342,7 @@ namespace SevenDTDMono
 
 
                         GUILayout.BeginVertical(GUI.skin.box);
-                        { // Start a vertical layout group for the label and horizontal layout
+                        { // Start a vertical layout group for the label and horizontal layoutqqq
                             GUILayout.Label("L1 Content for Menu 2", centeredLabelStyle); //Label for the menu
                             GUILayout.BeginHorizontal();
                             {
@@ -485,9 +490,15 @@ namespace SevenDTDMono
                                         O.buffClasses = O.GetAvailableBuffClasses();
                                         //BuffManager.Buffs.Clear(); Removed all buffs from runtime
                                     }
-                                    if (CGUILayout.Button("Buffs.ActiveBuffs.Clear() Empty"))
+                                    if (CGUILayout.Button("Remove Bad Buffs"))
                                     {
-                                        //O.localPlayer.Buffs.ActiveBuffs.Clear();
+                                        Cheat.RemoveBadBuff();
+                                      
+                                    }
+                                    if (CGUILayout.Button("add Good Buffs"))
+                                    {
+                                        Cheat.AddGoodBuff();
+
                                     }
                                     if (CGUILayout.Button("Remove All Active Buffs"))
                                     {

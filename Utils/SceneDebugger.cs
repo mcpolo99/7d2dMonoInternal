@@ -29,6 +29,12 @@ namespace SevenDTDMono
 
         Rect InspectorWindow;
         Int32 InspectorWidth = 350;
+        private void Start()
+        {
+            //UnityExplorer.ExplorerStandalone.CreateInstance();
+            //Loader.InitializeUnityExplorer();
+        }
+
 
         public void OnEnable() {
             HierarchyWindowId = GetHashCode();

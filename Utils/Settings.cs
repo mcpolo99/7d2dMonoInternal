@@ -35,8 +35,8 @@ namespace SevenDTDMono
         public static bool zombieName = false;
         public static bool playerBox = false;
         public static bool zombieBox = false;
-        public static bool crosshair = false;
-        public static bool playerCornerBox = false;
+        internal static bool crosshair = false;
+        internal static bool playerCornerBox = false;
         public static bool zombieCornerBox = false;
         public static bool zombieHealth = false;
         public static bool playerHealth = false;
@@ -49,7 +49,8 @@ namespace SevenDTDMono
         public static bool TESTTOG = false;
         public static bool _healthNstamina = false;
         public static bool _foodNwater = false;
-  
+        public static bool _ignoreByAI = false;
+        
 
 
         
@@ -68,6 +69,7 @@ namespace SevenDTDMono
 
         internal static bool drawDebug = false;
         internal static bool selfDestruct = false;
+        public static bool loaded=false;
         #endregion
 
 

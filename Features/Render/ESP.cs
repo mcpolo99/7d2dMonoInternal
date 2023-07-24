@@ -8,7 +8,7 @@ using O = SevenDTDMono.Objects;
 
 namespace SevenDTDMono{
     public class ESP : MonoBehaviour {
-
+        //public bool fovCircle = false;
         #region local def
         public static Camera mainCam;
 
