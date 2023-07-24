@@ -359,7 +359,7 @@
     <None Include="FileName.cs" />
     <Compile Include="Utils\AssemblyHelper.cs" />
     <Compile Include="Utils\ASMCHECK.cs" />
-    <Compile Include="Utils\GUILayoutExtensions.cs" />
+    <Compile Include="UI\GUILayoutExtensions.cs" />
     <Compile Include="Utils\ESPUtils.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="UI\Menu.cs" />

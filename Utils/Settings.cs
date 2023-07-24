@@ -61,7 +61,8 @@ namespace SevenDTDMono
         //not sure
         public static bool _trystackitems = false;
         public static bool _QuickScrap = false;
-        public static bool _oneHit = false;
+        public static bool _oneHitBlock = false;
+        public static bool _oneHitKill = false;
         public static bool _InstantLoot = false;
 
 

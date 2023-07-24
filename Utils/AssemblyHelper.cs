@@ -31,18 +31,6 @@ public class AssemblyHelper : IDisposable
             {
                 LoadAssembly(assemblyName);
             }
-            //foreach (string assemblyName in assembliesToLoad)
-            //{
-            //    string assemblyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", $"{assemblyName}.dll");
-            //    if (File.Exists(assemblyPath))
-            //    {
-            //        LoadAndExecuteAssembly(assemblyPath);
-            //    }
-            //    else
-            //    {
-            //        Log.Out($"{assemblyName} is not present at location: {assemblyPath}");
-            //    }
-            //}
         }
 
     }

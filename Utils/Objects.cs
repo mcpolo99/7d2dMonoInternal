@@ -22,6 +22,7 @@ namespace SevenDTDMono
         public static EntityPlayerLocal EPlayerL;
         public static GameObject Gobj;
         public static EntityPlayerLocal _entityplayerLocal;
+        public static BuffManager buffManager = new BuffManager();
         public static EntityPlayerLocal ePL;
         public static EntityPlayer _entityplayer;
 
@@ -63,9 +64,10 @@ namespace SevenDTDMono
             buffClasses = new List<BuffClass>();
 
 
-
+            //buffManager = FindObjectOfType<BuffManager>();
             _entityplayerLocal = FindObjectOfType<EntityPlayerLocal>();
             _entityplayer = FindObjectOfType<EntityPlayer>();
+
 
 
 
@@ -77,10 +79,22 @@ namespace SevenDTDMono
             _gameManager = (GameManager)UnityEngine.Object.FindObjectOfType(typeof(GameManager));
             _gameManager.GetGameStateManager();
         }
-        public void timeee()
-        {
 
-        }
+
+
+
+
+        //public void TimeTick(Action onAction,float intervall)
+        //{
+        //    float time = Time.time;
+        //    float ticker = time+intervall;
+        //    if (Time.time >= ticker)
+        //    {
+        //        onAction();
+
+        //        time += intervall;
+        //    }
+        //}
         private void Update()
         {
             /* 
@@ -90,11 +104,12 @@ namespace SevenDTDMono
              * but this will do just fine.
              */
 
-            if (Settings.reloadBuffs == true && buffClasses.Count == 0)
+            if (localPlayer != null && Settings.reloadBuffs == true && buffClasses.Count == 0)
             {
                 buffClasses = GetAvailableBuffClasses();
                 Settings.reloadBuffs = false;
             }
+
 
             if (Time.time >= lastCachePlayer)
             {
@@ -178,6 +193,7 @@ namespace SevenDTDMono
 
                 }
             }
+            buffClasses.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
 
             return buffClasses;
         }
@@ -191,7 +207,13 @@ namespace SevenDTDMono
 
                     foreach (var buffClass in buffClasses)
                     {
-                        writer.WriteLine($"{EscapeForCsv(buffClass.Name)},{buffClass.DamageType},{EscapeForCsv(buffClass.NameTag.ToString())}");
+
+                        string str1 = buffClass.DamageSource.ToString();
+                        string str2 = buffClass.Effects.EffectGroups[0].ToString();
+
+
+                        //writer.WriteLine($"{EscapeForCsv(buffClass.Name)},{buffClass.DamageType},{EscapeForCsv(buffClass.NameTag.ToString())}");
+                        writer.WriteLine($"{EscapeForCsv(buffClass.Name)},,");
                     }
                 }
 

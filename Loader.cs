@@ -134,7 +134,7 @@ namespace SevenDTDMono
 
             assemblyHelper = new AssemblyHelper();
             assemblyHelper.TryLoad();
-            //LoadAdditionalDLLs();
+        
             gameObject.AddComponent<NewMenu>();
             gameObject.AddComponent<Cheat>();
             gameObject.AddComponent<Settings>();
