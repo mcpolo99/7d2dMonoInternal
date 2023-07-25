@@ -20,6 +20,91 @@ namespace SevenDTDMono.Utils
         private static Vector2 mouseStartPos;
         private static Rect originalWinRect;
 
+        #region BeginHorizontal
+        public static void BeginHorizontal(GUIContent content, GUIStyle style, System.Action contentActions,  params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal(content,style,options);
+            contentActions?.Invoke();
+            GUILayout.EndHorizontal();
+        }
+        public static void BeginHorizontal(string _string, GUIStyle style, System.Action contentActions,  params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal(_string, style, options);
+            contentActions?.Invoke();
+            GUILayout.EndHorizontal();
+        }
+        public static void BeginHorizontal(GUIStyle style, System.Action contentActions, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal(style, options);
+            contentActions?.Invoke();
+            GUILayout.EndHorizontal();
+        }
+        public static void BeginHorizontal( System.Action contentActions, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal(options);
+            contentActions?.Invoke();
+            GUILayout.EndHorizontal();
+        }
+        public static void BeginHorizontal(GUIStyle style, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal(style,options);
+            //contentActions?.Invoke();
+            GUILayout.EndHorizontal();
+        }
+        #endregion
+
+        #region BeginVertical
+        public static void BeginVertical(GUIContent content, GUIStyle style, System.Action contentActions, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginVertical(content, style, options);
+            contentActions?.Invoke();
+            GUILayout.EndVertical();
+        }
+        public static void BeginVertical(string _string, GUIStyle style, System.Action contentActions, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginVertical(_string, style, options);
+            contentActions?.Invoke();
+            GUILayout.EndVertical();
+        }
+        public static void BeginVertical(GUIStyle style, System.Action contentActions, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginVertical(style, options);
+            contentActions?.Invoke();
+            GUILayout.EndVertical();
+        }
+        public static void BeginVertical(System.Action contentActions, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginVertical(options);
+            contentActions?.Invoke();
+            GUILayout.EndVertical();
+        }
+        public static void BeginVertical(GUIStyle style, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginVertical(style, options);
+            //contentActions?.Invoke();
+            GUILayout.EndVertical();
+        }
+        #endregion
+
+
+
+
+        //public static void BeginHorizontal(System.Action content, params GUILayoutOption[] options)
+        //{
+        //    GUILayout.BeginHorizontal(options);
+        //    content?.Invoke();
+        //    GUILayout.EndHorizontal();
+        //}
+        public static void BeginVertical(System.Action content)
+        {
+            GUILayout.BeginVertical();
+            content?.Invoke();
+            GUILayout.EndVertical();
+        }
+
+
+
+
 
 
         public static bool Toggle(bool value, string label, params GUILayoutOption[] options)
@@ -319,7 +404,85 @@ namespace SevenDTDMono.Utils
         }
 
 
+        public static bool CustomDropDown(string label, System.Action content, float width, params GUILayoutOption[] options)
+        {
+            //for every press toggle on and off for the customdrop down
+            bool toggle = false;
+            GUIStyle headerStyle = new GUIStyle(GUI.skin.box);
+            headerStyle.alignment = TextAnchor.MiddleCenter;
+            headerStyle.fontSize = 15;
+            if (toggle ? true : false)
+            {
+                headerStyle.fontStyle = FontStyle.Bold;
+                headerStyle.normal.textColor = Color.green;
+            }
+            else
+            {
+                headerStyle.fontStyle = FontStyle.Italic;
+                headerStyle.normal.textColor = Color.yellow;
+            }
+            Rect headerRect = GUILayoutUtility.GetRect(width, 20f, headerStyle); // Pass the width value here
+            Rect toggleRect = new Rect(headerRect.y, headerRect.x, 10f, 20f);
+            GUI.Box(headerRect, label, headerStyle);
+            Event e = Event.current;
+            if (e.type == EventType.Repaint)
+            {
+                //DrawFoldoutHorizontal1(toggleRect, display);
+            }
 
+            if (e.type == EventType.MouseDown && headerRect.Contains(e.mousePosition))
+            {
+                toggle = !toggle;
+                e.Use();
+            }
+
+            if (toggle)
+            {
+                content?.Invoke();
+            }
+
+            return toggle;
+        }
+
+        public static bool CustomDropDown(string label, System.Action content, params GUILayoutOption[] options)
+        {
+            //for every press toggle on and off for the customdrop down
+            bool toggle = false;
+            GUIStyle headerStyle = new GUIStyle(GUI.skin.box);
+            headerStyle.alignment = TextAnchor.MiddleCenter;
+            headerStyle.fontSize = 15;
+            if (toggle ? true : false)
+            {
+                headerStyle.fontStyle = FontStyle.Bold;
+                headerStyle.normal.textColor = Color.green;
+            }
+            else
+            {
+                headerStyle.fontStyle = FontStyle.Italic;
+                headerStyle.normal.textColor = Color.yellow;
+            }
+            Rect headerRect = GUILayoutUtility.GetRect(30, 20f, headerStyle); // Pass the width value here
+            Rect toggleRect = new Rect(headerRect.y, headerRect.x, 10f, 20f);
+            GUI.Box(headerRect, label, headerStyle);
+            Event e = Event.current;
+            if (e.type == EventType.Repaint)
+            {
+                //DrawFoldoutHorizontal1(toggleRect, display);
+            }
+
+            if (e.type == EventType.MouseDown && headerRect.Contains(e.mousePosition))
+            {
+                toggle = !toggle;
+                e.Use();
+            }
+
+            if (toggle)
+            {
+                content?.Invoke();
+            }
+
+            return toggle;
+        }
         //public static Rect Window(int windowID, Rect windowRect, GUI.WindowFunction drawWindowContents, string title)
         //{
         //    GUILayout.BeginArea(windowRect, title, GUI.skin.window);

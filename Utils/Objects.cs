@@ -7,6 +7,9 @@ using System.Reflection;
 using UnityEngine;
 using static ImageEffectManager;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using SevenDTDMono;
+using System.Runtime.InteropServices;
+using System.Collections;
 //using HarmonyLib;
 
 namespace SevenDTDMono
@@ -17,40 +20,29 @@ namespace SevenDTDMono
         public static List<EntityZombie> zombieList;
         public static List<EntityItem> itemList;
 
-        public static EntityPlayerLocal LP;
-        public static EntityPlayerLocal localPlayer;
-        public static EntityPlayerLocal EPlayerL;
-        public static GameObject Gobj;
-        public static EntityPlayerLocal _entityplayerLocal;
-        public static BuffManager buffManager = new BuffManager();
-        public static EntityPlayerLocal ePL;
+        public static EntityPlayerLocal ELP; // my final EntityPlayerLocal, This is the player on this pc
+        public static EntityPlayerLocal _entityplayerLocal; // not sure why i have this one
         public static EntityPlayer _entityplayer;
 
+
+        public static GameObject Gobj;
+        public static BuffManager buffManager = new BuffManager();
         public static GameManager _gameManager;
-        public static EnumGameStats _enumstats;
         public static XUiM_PlayerInventory _playerinv;
 
         private float lastCachePlayer;
-        private float Cache;
         private float lastCacheZombies;
         private float lastCacheItems;
 
         public static List<BuffClass> buffClasses;
         public static BuffClass _buffClass;
         public static List<string> _BuffNames;
+        private bool checkCompleted = false;
 
-        public Time time;
 
 
         private void Start()
         {
-            //Time.time.ToString();
-
-            //Gobj =GameObject.Find("Players"); //Finds whole GameObject
-            //LocalPlayer LPlayer = Gobj.GetComponent<LocalPlayer>(); //this gets the component LocalPlayer from GameObject
-            ////EPlayerL = Gobj.GetComponent<EntityPlayerLocal>(); // this could work to get the EntityPlayerLocal from LocalPlayer
-            //EPlayerL = FindObjectOfType<EntityPlayerLocal>(); // this could work to get the EntityPlayerLocal from LocalPlayer
-            //ePL = GameObject.Find("Player_171").GetComponent<EntityPlayerLocal>();
              
 
             lastCachePlayer = Time.time + 5f;
@@ -58,43 +50,60 @@ namespace SevenDTDMono
             lastCacheItems = Time.time + 4f;
             lastCacheItems = Time.time + 1000f;
 
-            
+            //_gameManager = new GameManager();
             zombieList = new List<EntityZombie>();
             itemList = new List<EntityItem>();
             buffClasses = new List<BuffClass>();
 
+           
 
-            //buffManager = FindObjectOfType<BuffManager>();
             _entityplayerLocal = FindObjectOfType<EntityPlayerLocal>();
             _entityplayer = FindObjectOfType<EntityPlayer>();
 
+            Log.Out("End of start objects");
+            Log.Out("End of start objects and _gameManger= " + _gameManager);
 
+            //_gameManager.GetGameStateManager();
+            //InvokeRepeating("CheckFunction", 0f, 60f);
 
-
-            //_enumstats = GetComponent<EnumGameStats>();
-            //_playerinv = GetComponent<XUiM_PlayerInventory>();
-            //_buffClass = GetComponent<BuffClass>();
-
-
-            _gameManager = (GameManager)UnityEngine.Object.FindObjectOfType(typeof(GameManager));
-            _gameManager.GetGameStateManager();
         }
 
+        IEnumerator CheckOncePerMinute()
+        {
 
+            while (!Settings.Istarted)
+            {
+                Log.Out("inside while");
+                if (_gameManager == null)
+                {
+                    Log.Out("_gamemanager was null");
+                    _gameManager = FindObjectOfType<GameManager>();
+                    Log.Out($"Gamemanager {_gameManager} is now present");
+                }
+                
+                else
+                {
+                    Log.Out("After else now _gameManger= " + _gameManager);
+                    // Only perform the check if it hasn't been done already
+                    if (_gameManager.gameStateManager.IsGameStarted()!=false)
+                    {
+                        Log.Out($"Debug World Isstarted? =  : " + Settings.Istarted);
+                        Settings.Istarted = true;
 
+                    }
+                    else
+                    {
+                        // Conditions are not met, log the current status and wait for one minute before checking again
+                        Log.Out($"Debug World Isstarted? =  : " + _gameManager.gameStateManager.IsGameStarted());
+                        Log.Out($"Debug Settings.Istarted: {Settings.Istarted}");
 
+                        // Wait for one minute before checking again
+                        yield return new WaitForSeconds(60f);
+                    }
+                }                  
+            }
+        }
 
-        //public void TimeTick(Action onAction,float intervall)
-        //{
-        //    float time = Time.time;
-        //    float ticker = time+intervall;
-        //    if (Time.time >= ticker)
-        //    {
-        //        onAction();
-
-        //        time += intervall;
-        //    }
-        //}
         private void Update()
         {
             /* 
@@ -104,7 +113,11 @@ namespace SevenDTDMono
              * but this will do just fine.
              */
 
-            if (localPlayer != null && Settings.reloadBuffs == true && buffClasses.Count == 0)
+            StartCoroutine(CheckOncePerMinute());
+
+
+
+            if (ELP != null && Settings.reloadBuffs == true && buffClasses.Count == 0)
             {
                 buffClasses = GetAvailableBuffClasses();
                 Settings.reloadBuffs = false;
@@ -113,9 +126,7 @@ namespace SevenDTDMono
 
             if (Time.time >= lastCachePlayer)
             {
-                localPlayer = FindObjectOfType<EntityPlayerLocal>();
-                LP = localPlayer;
-
+                ELP = FindObjectOfType<EntityPlayerLocal>();
                 lastCachePlayer = Time.time + 5f;
             }
             else if (Time.time >= lastCacheZombies)

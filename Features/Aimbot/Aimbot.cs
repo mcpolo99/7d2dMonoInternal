@@ -43,7 +43,7 @@ namespace SevenDTDMono
 
             if (O.PlayerList.Count > 1) {
                 foreach (EntityPlayer player in O.PlayerList) {
-                    if (player && player.IsAlive() && player != O.localPlayer) {
+                    if (player && player.IsAlive() && player != O.ELP) {
                         Vector3 lookAt = player.emodel.GetBellyPosition();
                         Vector3 w2s = ESP.mainCam.WorldToScreenPoint(lookAt);
 
@@ -90,7 +90,7 @@ namespace SevenDTDMono
                 }
 
             foreach (EntityPlayer player in O.PlayerList) {
-                if (player && player.IsAlive() && player != O.localPlayer) {
+                if (player && player.IsAlive() && player != O.ELP) {
                     Vector3 head = player.emodel.GetHeadTransform().position;
                     Vector3 w2s = ESP.mainCam.WorldToScreenPoint(head);
 
@@ -106,17 +106,17 @@ namespace SevenDTDMono
                 DamageSource source = new DamageSource(EnumDamageSource.External, EnumDamageTypes.Concuss);
 
                 ztarget.DamageEntity(source, 100, false, 1f);
-                ztarget.AwardKill(O.localPlayer);
+                ztarget.AwardKill(O.ELP);
             }
 
             if (ztarget) {
                 DamageSource source = new DamageSource(EnumDamageSource.External, EnumDamageTypes.Concuss);
-                source.CreatorEntityId = O.localPlayer.entityId;
+                source.CreatorEntityId = O.ELP.entityId;
 
                 ztarget.DamageEntity(source, 100, false, 1f);
-                ztarget.AwardKill(O.localPlayer);
+                ztarget.AwardKill(O.ELP);
 
-                O.localPlayer.AddKillXP(ztarget);
+                O.ELP.AddKillXP(ztarget);
             }
         }
 

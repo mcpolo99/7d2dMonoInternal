@@ -21,7 +21,7 @@ namespace SevenDTDMono
 
         public static bool CmDm;
         public static bool cm;
-        public static bool reloadBuffs=false;
+
         
         public static bool drpbp, onht;
         #endregion
@@ -71,6 +71,8 @@ namespace SevenDTDMono
         internal static bool drawDebug = false;
         internal static bool selfDestruct = false;
         public static bool loaded=false;
+        public static bool Istarted = false;
+        public static bool reloadBuffs = false;
         #endregion
 
 

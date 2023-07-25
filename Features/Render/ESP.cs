@@ -49,8 +49,8 @@ namespace SevenDTDMono{
                 SETT.playerCornerBox = false;
             } //Checking if Player box toggles stiuff is enabled?
 
-            if (O.localPlayer){
-                O.localPlayer.weaponCrossHairAlpha = SETT.crosshair ? 0f : 255f;
+            if (O.ELP){
+                O.ELP.weaponCrossHairAlpha = SETT.crosshair ? 0f : 255f;
             }//crosshair check if crosshair toogle is enabled?
         }
 
@@ -131,7 +131,7 @@ namespace SevenDTDMono{
 
             if (O.PlayerList.Count > 1 && (SETT.playerName || SETT.playerBox || SETT.playerHealth)) {
                 foreach (EntityPlayer player in O.PlayerList) {
-                    if (!player || player == O.localPlayer || !player.IsAlive()) {
+                    if (!player || player == O.ELP || !player.IsAlive()) {
                         continue;
                     }
 

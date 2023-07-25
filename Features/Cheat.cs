@@ -13,6 +13,9 @@ using System.IO;
 using System.Reflection;
 using UnityEngine.UIElements;
 using HarmonyLib;
+using SevenDTDMono.Interface;
+using UnityEngine.UI;
+using SevenDTDMono.Utils;
 
 //using SevenDTDMono.Objects;
 
@@ -151,9 +154,9 @@ namespace SevenDTDMono
         private void Update()
         {
 
-            if (SETT.noWeaponBob && O.localPlayer) // When noWeaponBob is active enable 
+            if (SETT.noWeaponBob && O.ELP) // When noWeaponBob is active enable 
             {
-                vp_FPWeapon weapon = O.localPlayer.vp_FPWeapon;
+                vp_FPWeapon weapon = O.ELP.vp_FPWeapon;
 
                 if (weapon)
                 {
@@ -166,12 +169,12 @@ namespace SevenDTDMono
 
             if (Input.GetKeyDown(KeyCode.O)) //infinity ammo ???
             {
-                if (!O.localPlayer)
+                if (!O.ELP)
                 {
                     return;
                 }
 
-                Inventory inventory = O.localPlayer.inventory;
+                Inventory inventory = O.ELP.inventory;
 
                 if (inventory != null)
                 {
@@ -212,12 +215,12 @@ namespace SevenDTDMono
 
             if (SETT._trystackitems == true)
             {
-                if (!O.localPlayer)
+                if (!O.ELP)
                 {
                     return;
                 }
 
-                Inventory inventory = O.localPlayer.inventory;
+                Inventory inventory = O.ELP.inventory;
                 if (inventory != null)
                 {
                     //if ()1
@@ -265,22 +268,22 @@ namespace SevenDTDMono
         public static void KillSelf()
         {
           
-             O.localPlayer.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+             O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
             SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity " );
         }
 
         public static void levelup()//up one level-Trigger once
         {
-            if (O.localPlayer)
+            if (O.ELP)
             {
-                Progression prog = O.localPlayer.Progression;
+                Progression prog = O.ELP.Progression;
                 prog.AddLevelExp(prog.ExpToNextLevel);
 
             }
         }
         public static void Getplayer()//add skillpoints - Trigger once
         {
-            string num = O.LP.name.ToString();
+            string num = O.ELP.name.ToString();
             Log.Out("player ID: "+num);
 
             //Log.Out("universal loaded as normal " + Loader.assemblyHelper.IsAssemblyLoaded1("UniverseLib.mono"));
@@ -297,13 +300,13 @@ namespace SevenDTDMono
         public static void updatebuffall()
         {
 
-            int num = O.localPlayer.Buffs.ActiveBuffs.Count;
+            int num = O.ELP.Buffs.ActiveBuffs.Count;
             for (int i = 0; i < num; i++)
             {
-                BuffValue buffValue = O.localPlayer.Buffs.ActiveBuffs[i];
+                BuffValue buffValue = O.ELP.Buffs.ActiveBuffs[i];
                 if (buffValue.Invalid)
                 {
-                    O.localPlayer.Buffs.ActiveBuffs.RemoveAt(i);
+                    O.ELP.Buffs.ActiveBuffs.RemoveAt(i);
                     i--;
                     num--;
                 }
@@ -317,9 +320,9 @@ namespace SevenDTDMono
         }
         public static void skillpoints()//add skillpoints - Trigger once
         {
-            if (O.localPlayer)
+            if (O.ELP)
             {
-                Progression prog = O.localPlayer.Progression;
+                Progression prog = O.ELP.Progression;
                 prog.SkillPoints += 10;
                 Log.Out($"Skillpoints added by 10is now {prog.SkillPoints}");
             }
@@ -328,9 +331,9 @@ namespace SevenDTDMono
         {
             //if(SETT._ignoreByAI )
             
-            O.localPlayer.SetIgnoredByAI(!O.localPlayer.IsIgnoredByAI());
+            O.ELP.SetIgnoredByAI(!O.ELP.IsIgnoredByAI());
             
-            Log.Out(O.localPlayer.name.ToString() +" is ignored by AI " + O.localPlayer.IsIgnoredByAI());
+            Log.Out(O.ELP.name.ToString() +" is ignored by AI " + O.ELP.IsIgnoredByAI());
         }
 
         public static void SOMECONSOLEPRINTOUT()  //Creative and debug mode -- Trigger
@@ -339,9 +342,9 @@ namespace SevenDTDMono
 
             string _type = "SETT.cmDm";
 
-            if (O.localPlayer)
+            if (O.ELP)
             {
-                 _value = O.localPlayer.DebugNameInfo;
+                 _value = O.ELP.DebugNameInfo;
 
             }
            
@@ -394,19 +397,19 @@ namespace SevenDTDMono
         public static void HealthNStamina()
         {
          
-            if (SETT._healthNstamina == true && O.LP)
+            if (SETT._healthNstamina == true && O.ELP)
             {
                 //Log.Out("");
-                O.LP.Stats.Health.Value = O.LP.Stats.Health.Max;
-                O.LP.Stats.Stamina.Value = O.LP.Stats.Stamina.Max;
-                O.LP.Stats.Health.LossPassive = PassiveEffects.HealthGain;
-                O.LP.Stats.Stamina.LossPassive = PassiveEffects.StaminaGain;
+                O.ELP.Stats.Health.Value = O.ELP.Stats.Health.Max;
+                O.ELP.Stats.Stamina.Value = O.ELP.Stats.Stamina.Max;
+                O.ELP.Stats.Health.LossPassive = PassiveEffects.HealthGain;
+                O.ELP.Stats.Stamina.LossPassive = PassiveEffects.StaminaGain;
 
             }
             else if(SETT._healthNstamina)
             {
-                O.LP.Stats.Health.LossPassive = PassiveEffects.HealthLoss;
-                O.LP.Stats.Stamina.LossPassive = PassiveEffects.StaminaLoss;
+                O.ELP.Stats.Health.LossPassive = PassiveEffects.HealthLoss;
+                O.ELP.Stats.Stamina.LossPassive = PassiveEffects.StaminaLoss;
 
             }
                 //O._entityplayerLocal.Stats.Water.RegenerationAmount += O._entityplayerLocal.Stats.Water.RegenerationAmount * EffectManager.GetValue(PassiveEffects.WaterGain, null, 1f, O._entityplayerLocal, null, default(FastTags), true, true, true, true, 1, true, false);
@@ -417,127 +420,125 @@ namespace SevenDTDMono
         public static void FoodNWater()
         {
 
-            //EntityPlayerLocal LP = O.localPlayer;
-            if (SETT._foodNwater == true && O.LP)
+            //EntityPlayerLocal LP = O.ELP;
+            if (SETT._foodNwater == true && O.ELP)
             {
-                O.LP.Stats.Food.Value = O.LP.Stats.Food.Max;
-                O.LP.Stats.Water.Value = O.LP.Stats.Water.Max;
-                O.LP.Stats.Food.LossPassive = PassiveEffects.HealthGain;
-                O.LP.Stats.Water.LossPassive = PassiveEffects.StaminaGain;
+                O.ELP.Stats.Food.Value = O.ELP.Stats.Food.Max;
+                O.ELP.Stats.Water.Value = O.ELP.Stats.Water.Max;
+                O.ELP.Stats.Food.LossPassive = PassiveEffects.HealthGain;
+                O.ELP.Stats.Water.LossPassive = PassiveEffects.StaminaGain;
 
             }
-            //O.localPlayer.Stats.Water.Value = O._entityplayerLocal.Stats.Water.BaseMax;
-            //O.localPlayer.Stats.Food.Value = O._entityplayerLocal.Stats.Food.BaseMax;
+            //O.ELP.Stats.Water.Value = O._entityplayerLocal.Stats.Water.BaseMax;
+            //O.ELP.Stats.Food.Value = O._entityplayerLocal.Stats.Food.BaseMax;
         }
 
 
-
-
-        public static void Buffs1() //Sett Buffs on player - Toggle
+        public static void ListButtonPlayer()
         {
-            if (O.localPlayer)
+            if (O.PlayerList.Count > 1)
             {
-                //passiveEffect = new PassiveEffect();
-                //passiveEffect.ModifyValue()
-                //effectManager = new EffectManager;
+                foreach (EntityPlayer player in O.PlayerList)
+                {
+                    if (!player || player == O.ELP || !player.IsAlive())
+                    {
+                        continue;
+                    }
 
-                //O.LP.Buffs.ActiveBuffs.
-                //attack.DamageBlock.Value = 200000;
-                //attack.DamageBlock.Value.ToString();
-                //string str = attack.Blockname.Name;
+                    if (CGUILayout.CustomDropDown(player.EntityName, () =>
+                    {
+                        if (GUILayout.Button("Teleport"))
+                        {
+                            O.ELP.TeleportToPosition(player.GetPosition());
+                        }
+                        if (GUILayout.Button("kill"))
+                        {
+                            O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                        }
 
-                //blockDamage.Damage = 40;
-                //block.OnBlockDamaged();
-                //blockDamage.OnBlockDamaged()
+                    })) 
+                    { 
+                    
+                    };
 
-
-                //O._entityplayerLocal.Attack(true);
-
-
-                //if (RegenerationAmount > 0f)
-                //{
-                //    if (StatType == Stat.StatTypes.Stamina)
-                //    {O.localPlayer.Stats.ResetStats();
-                //        O.localPlayer.Stats.Water.RegenerationAmount += 20f * EffectManager.GetValue(PassiveEffects.WaterLossPerStaminaPointGained, null, 1f, Stat.Entity, null, default(FastTags), true, true, true, true, 1, true, false);
-                //        O.localPlayer.Stats.Food.RegenerationAmount += 20f * EffectManager.GetValue(PassiveEffects.FoodLossPerStaminaPointGained, null, 1f, this.Entity, null, default(FastTags), true, true, true, true, 1, true, false);
-                //    }
-                //    else if (StatType == Stat.StatTypes.Health)
-                //    {
-                //        O.localPlayer.Stats.Water.RegenerationAmount -= 20f * EffectManager.GetValue(PassiveEffects.WaterLossPerHealthPointGained, null, 1f, O.localPlayer.Entity, null, default(FastTags), true, true, true, true, 1, true, false);
-                //        O.localPlayer.Stats.Food.RegenerationAmount -= 20f* EffectManager.GetValue(PassiveEffects.FoodLossPerHealthPointGained, null, 1f, this.Entity, null, default(FastTags), true, true, true, true, 1, true, false);
-                //    }
-                //}
-                //int _V = 9999;
-                //O.localPlayer.AddHealth(_V);
-                //string staminamax = O.localPlayer.GetMaxStamina().ToString();
-                //string stammult = O.localPlayer.GetStaminaMultiplier().ToString();
-                //string hippos = O.localPlayer.getHipPosition().ToString();
-                //string maxhp = O.localPlayer.GetMaxHealth().ToString();
-                //Debug.Log($"stamimax <color=_col>Log</color> for : " + staminamax);
-                //Debug.Log($"multi <color=_col>Log</color> for : " + stammult);
-                //Debug.Log($"hip <color=_col>Log</color> for : " + hippos);
-                ////Debug.Log($"MAxhp <color=_col>Log</color> for : " + maxhp);
-
-                //O.localPlayer.Stats.Water.BaseMax = 200f;
-                //O.localPlayer.Stats.Health.GainPassive += 90;
-                //O.localPlayer.Stats.Food.GainPassive += 10;
-
-                //O.localPlayer.AddStamina(_V);
-                //O.localPlayer.Stats.Stamina.Value += 999f;
-
+                }
             }
             else
             {
-               // O._entityplayer.Stamina = 0;
-
+            
+                GUILayout.Label("No players found.");
             }
-            //O.localPlayer.Buffs.ActiveBuffs.Add(BuffManager.Buffs.));
-            //O.local
         }
-        public static void BuffList(bool _bool, EntityPlayerLocal entityLocalPlayer,List<BuffClass> buffClasses)
+
+        public static void ListbuttonZombie() 
         {
-            if (buffClasses !=null)
-
-
-            if (entityLocalPlayer != null|| buffClasses != null)
+            if (O.zombieList.Count > 1)
             {
-                if (buffClasses.Count > 0)
+                foreach (EntityZombie zombie in O.zombieList)
                 {
-                    // int currentIndex = 0;
-                    //Log.Out(O.buffClasses.Count.ToString());
-                    foreach (BuffClass buffClass in buffClasses)
+                    if (!zombie || zombie == O.ELP || !zombie.IsAlive())
                     {
-                        // Log.Out(currentIndex.ToString());
-                        //Log.Out(buffClass.Name);
+                        continue;
+                    }
+
+                    if (CGUILayout.CustomDropDown(zombie.EntityName, () =>
+                    {
+                        if (GUILayout.Button("Teleport"))
+                        {
+                            O.ELP.TeleportToPosition(zombie.GetPosition());
+                        }
+                        if (GUILayout.Button("kill"))
+                        {
+                            O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                        }
+
+                    }))
+                    {
+
+                    };
+
+                    //if (GUILayout.Button(zombie.EntityName))
+                    //{
+                    //    //O.localPlayer.TeleportToPosition(zombie.GetPosition());
+                    //    zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                    //    SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
+                    //}
+                }
+            }
+            else
+            {
+                GUILayout.Label("No entities found.");
+            }
+        }
+
+        //public interface IListItem
+        //{
+        //    string Name { get; } // Replace this with the actual property or method that is common to your lists
+        //}
+
+
+
+        public static void GetList(bool _bool, EntityPlayerLocal entityLocalPlayer, List<BuffClass> ListOFClass)
+        {
+            if (ListOFClass != null)
+
+
+            if (entityLocalPlayer != null|| ListOFClass != null)
+            {
+                if (ListOFClass.Count > 0)
+                {
+                    foreach (BuffClass buffClass in ListOFClass)
+                    {
                         // se GUILayout.Button to create a button for each buff name
                         if (GUILayout.Button(buffClass.Name))
                         {
-
-                            //EntityBuffs.BuffStatus buffStatus =
                            entityLocalPlayer.Buffs.AddBuff(buffClass.Name, -1, true, false, false, 500f);
                             //Logic when the button is clicked
                         }
-                        //currentIndex++;
-                        //if (currentIndex == O.buffClasses.Count - 1)
-                        //{
-                        //    Log.Out(currentIndex.ToString());
-                        //    lastBuffAdded = true;
-                        //}
-
                         if (_bool)
                         {
                             break;
                         }
-
-                        //int numC = O.buffClasses.Count;
-
-                        //if (buffClass.Name.Equals(O.buffClasses[O.buffClasses.Count - 1].Name))
-                        //{
-                        //    string str = O.buffClasses[O.buffClasses.Count - 1].Name;
-                        //    Log.Out(str);
-
-                        //    //lastBuffAdded = true;
-                        //}
                     }
 
                 }
@@ -550,14 +551,116 @@ namespace SevenDTDMono
             }
             else
             {
-                    if(buffClasses == null)
+                    if(ListOFClass == null)
                     {
-                        buffClasses = O.GetAvailableBuffClasses();
+                        ListOFClass = O.GetAvailableBuffClasses();
                     }
 
                 
                 GUILayout.Label("Not ingame");
             }
+
+        }
+        public static void GetList(bool _bool, EntityPlayerLocal entityLocalPlayer, List<EntityZombie> ListOFClass)
+        {
+            if (ListOFClass != null)
+
+
+                if (entityLocalPlayer != null || ListOFClass != null)
+                {
+                    if (ListOFClass.Count > 1)
+                    { 
+                        foreach (EntityZombie Class in ListOFClass)
+                        {
+                            if (!Class || Class == O.ELP || !Class.IsAlive())
+                            {
+                                continue;
+                            }
+                            // se GUILayout.Button to create a button for each buff name
+                            if (GUILayout.Button(Class.EntityName))
+                            {
+
+                                Class.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                                SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
+                                //Logic when the button is clicked
+                            }
+        
+
+                            if (_bool)
+                            {
+                                break;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        GUILayout.Label("No buffs found.");
+
+                    }
+
+                }
+                else
+                {
+                    if (ListOFClass == null)
+                    {
+                        //ListOFClass 
+                    }
+
+
+                    GUILayout.Label("Not ingame");
+                }
+
+        }
+        public static void GetList(bool _bool, EntityPlayerLocal entityLocalPlayer, List<EntityPlayer> ListOFClass)
+        {
+            if (ListOFClass != null)
+
+
+                if (entityLocalPlayer != null || ListOFClass != null)
+                {
+                    if (ListOFClass.Count > 1)
+                    {
+                        foreach (EntityPlayer Class in ListOFClass)
+                        {
+                            if (!Class || Class == O.ELP || !Class.IsAlive())
+                            {
+                                continue;
+                            }
+                            // se GUILayout.Button to create a button for each buff name
+                            if (GUILayout.Button(Class.EntityName))
+                            {
+
+                                Class.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                                SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
+                                //Logic when the button is clicked
+                            }
+
+
+                            if (_bool)
+                            {
+                                break;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        GUILayout.Label("No buffs found.");
+
+                    }
+
+                }
+                else
+                {
+                    if (ListOFClass == null)
+                    {
+                        //ListOFClass 
+                    }
+
+
+                    GUILayout.Label("Not ingame");
+                }
 
         }
 
@@ -568,14 +671,14 @@ namespace SevenDTDMono
             {
                 foreach (EntityZombie zombie in O.zombieList)
                 {
-                    if (!zombie || zombie == O.localPlayer || !zombie.IsAlive())
+                    if (!zombie || zombie == O.ELP || !zombie.IsAlive())
                     {
                         continue;
                     }
 
                     if (GUILayout.Button(zombie.EntityName))
                     {
-                        //O.localPlayer.TeleportToPosition(zombie.GetPosition());
+                        //O.ELP.TeleportToPosition(zombie.GetPosition());
                         zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
                         SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
                     }
@@ -618,14 +721,14 @@ namespace SevenDTDMono
         };
         public static void RemoveBadBuff()
         {
-            List<BuffValue> activeBuffs = O.LP.Buffs.ActiveBuffs;
+            List<BuffValue> activeBuffs = O.ELP.Buffs.ActiveBuffs;
             foreach (BuffValue buff in activeBuffs)
             {
                 //if (buff.BuffClass.DamageType == desiredDamageTypes)
                 //if (desiredDamageTypes.Contains(buff.BuffClass.DamageType))
                 if (buff.BuffClass.DamageType != EnumDamageTypes.None &&  !ListPerksAlwaysremove.Contains(buff.BuffClass.Name))
                 {
-                    O.LP.Buffs.RemoveBuff(buff.BuffName);
+                    O.ELP.Buffs.RemoveBuff(buff.BuffName);
                 }
             }
 
@@ -644,12 +747,12 @@ namespace SevenDTDMono
         private static List<string> perkstarts = new List<string> { "twitch", "test_", "trigger", "infection", "injury", "getsworse" };
         public static void RemoveGoodBuff()
         {
-            List<BuffValue> activeBuffs = O.LP.Buffs.ActiveBuffs;
+            List<BuffValue> activeBuffs = O.ELP.Buffs.ActiveBuffs;
             foreach (BuffValue buff in activeBuffs)
             {
                 if (buff.BuffClass.DamageType == EnumDamageTypes.None)
                 {
-                    O.LP.Buffs.RemoveBuff(buff.BuffName);
+                    O.ELP.Buffs.RemoveBuff(buff.BuffName);
                 }
             }
         }
@@ -663,7 +766,7 @@ namespace SevenDTDMono
                 {
                     foreach (BuffClass buffClass in O.buffClasses.Where(bc => bc.DamageType == EnumDamageTypes.None && !ListPerksAlwaysremove.Contains(bc.Name) && !perkstarts.Any(prefix => bc.Name.StartsWith(prefix)|| bc.Name.Contains(prefix))))
                     {
-                        O.localPlayer.Buffs.AddBuff(buffClass.Name, -1, true, false, false, 20f);
+                        O.ELP.Buffs.AddBuff(buffClass.Name, -1, true, false, false, 20f);
                         buffClass.DurationMax = 999f; // how lonmg the perk will last
                         //buffClass.InitialDurationMax;
                         writer.WriteLine($"{buffClass.Name}");
@@ -676,11 +779,6 @@ namespace SevenDTDMono
             {
 
             }
-
-
-
-
-
         }
 
         public static void custombuff()
@@ -793,7 +891,7 @@ namespace SevenDTDMono
             };
             customBuff.Effects = effectController;
             test.Effects = effectController;
-            O.LP.Buffs.AddBuff("testbuff");
+            O.ELP.Buffs.AddBuff("testbuff");
 
             if (BuffManager.GetBuff("customBuff") == null)
             {
@@ -813,10 +911,10 @@ namespace SevenDTDMono
             O.buffClasses.Add(customBuff);
             O.buffClasses.Add(customBuff2);
 
-            O.LP.Buffs.AddBuff("customBuff");
-            O.LP.Buffs.AddBuff("customBuff2");
+            O.ELP.Buffs.AddBuff("customBuff");
+            O.ELP.Buffs.AddBuff("customBuff2");
 
-            if(O.LP.Buffs.GetBuff("customBuff") != null)
+            if(O.ELP.Buffs.GetBuff("customBuff") != null)
             {
                 Log.Out("custombuff2 was found and init, chaning values");
 
@@ -828,11 +926,11 @@ namespace SevenDTDMono
             }
 
 
-            if (O.LP.Buffs.GetBuff("customBuff") != null)
+            if (O.ELP.Buffs.GetBuff("customBuff") != null)
             {
                 Log.Out("custombuff was found and init, chaning values");
                 //Log.Out(buff.BuffName.ToString());
-                buff = O.LP.Buffs.GetBuff("customBuff");
+                buff = O.ELP.Buffs.GetBuff("customBuff");
                 buff.BuffClass.DurationMax = 99999999f;
                 buff.BuffClass.Icon = "ui_game_symbol_agility";
                 buff.BuffClass.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
@@ -846,7 +944,7 @@ namespace SevenDTDMono
             {
                 Log.Out("no custombuff found here ");
             }
-            //buff = O.LP.Buffs.GetBuff("customBuff");
+            //buff = O.ELP.Buffs.GetBuff("customBuff");
             
             //buff.BuffClass.DurationMax = 99999999f;
             //buff.BuffClass.Icon = "ui_game_symbol_agility";
@@ -939,14 +1037,14 @@ namespace SevenDTDMono
 
         public static void onehitBlock()   //one hit break - Toggle
         {
-            if (O.LP)
+            if (O.ELP)
             {
                 if (SETT._oneHitBlock == true)
                 {
                     float flt = 99999999;
                     BuffValue buff;
-                    O.LP.Buffs.AddBuff("megadamage", -1, true, false, false, 20000000000f);
-                    buff = O.LP.Buffs.GetBuff("megadamage");
+                    O.ELP.Buffs.AddBuff("megadamage", -1, true, false, false, 20000000000f);
+                    buff = O.ELP.Buffs.GetBuff("megadamage");
                     // need to create a index check so correct index is sekected.
                     buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = flt;
 
@@ -957,7 +1055,7 @@ namespace SevenDTDMono
                 }
                 else if (SETT._oneHitBlock == false)
                 {
-                    O.LP.Buffs.RemoveBuff("megadamage");
+                    O.ELP.Buffs.RemoveBuff("megadamage");
                 }
 
 
@@ -972,7 +1070,7 @@ namespace SevenDTDMono
 
 
 
-                //buff = O.LP.Buffs.GetBuff("megadamage"); // first finding the buff that was added, Each buff has diffrent strings
+                //buff = O.ELP.Buffs.GetBuff("megadamage"); // first finding the buff that was added, Each buff has diffrent strings
                 //MinEffectController effectController = buff.BuffClass.Effects; // inside the buff we have many things but i want the effects, which is controled by effectcontroller 
                 //MinEffectGroup Passive = effectController.EffectGroups[0]; // Then i want the passives, and those are under effect groups, Which is a list of one to many effect groups 
                 //PassiveEffect passiveEffect = Passive.PassiveEffects[1];  // i know by studing the game that the block damage is in passive effect index 1 when using "megadamage"
@@ -1000,8 +1098,8 @@ namespace SevenDTDMono
                 BuffValue buff;
                 float flt = 99999999;
                 // hew we also use "megadamage" as a reference since it is easier to just utilize a already existing buff with the neccessary passive effects
-                O.LP.Buffs.AddBuff("megadamage", -1, true, false, false, 20000000000f);
-                buff = O.LP.Buffs.GetBuff("megadamage");
+                O.ELP.Buffs.AddBuff("megadamage", -1, true, false, false, 20000000000f);
+                buff = O.ELP.Buffs.GetBuff("megadamage");
                 buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = flt;
 
                 buff.BuffClass.Hidden = true;
@@ -1011,14 +1109,14 @@ namespace SevenDTDMono
             }
             else if (SETT._oneHitBlock == false)
             {
-                O.LP.Buffs.RemoveBuff("megadamage");
+                O.ELP.Buffs.RemoveBuff("megadamage");
             }
             #region How i managed to find correct getBuff
 
 
 
 
-            //buff = O.LP.Buffs.GetBuff("megadamage"); // first finding the buff that was added, Each buff has diffrent strings
+            //buff = O.ELP.Buffs.GetBuff("megadamage"); // first finding the buff that was added, Each buff has diffrent strings
             //MinEffectController effectController = buff.BuffClass.Effects; // inside the buff we have many things but i want the effects, which is controled by effectcontroller 
             //MinEffectGroup Passive = effectController.EffectGroups[0]; // Then i want the passives, and those are under effect groups, Which is a list of one to many effect groups 
             //PassiveEffect passiveEffect = Passive.PassiveEffects[1];  // i know by studing the game that the block damage is in passive effect index 1 when using "megadamage"

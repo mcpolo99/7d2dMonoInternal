@@ -364,6 +364,7 @@
     <Compile Include="Loader.cs" />
     <Compile Include="UI\Menu.cs" />
     <Compile Include="UI\NewMenu.cs" />
+    <Compile Include="Utils\Interface.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\Objects.cs" />
     <Compile Include="Utils\SceneDebugger.cs" />
