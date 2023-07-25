@@ -159,17 +159,17 @@ namespace SevenDTDMono
 
         private void Window(int windowID)
         {
-            if (Settings.Istarted == true)
-            {
-                windowRect.height = 50;
-                GUILayout.Space(10f);
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Start a game to load the Menu",centeredLabelStyle);
-                GUILayout.EndHorizontal();
-                GUILayout.Space(10f);
-                GUI.DragWindow();
-            }
-            else
+            //if (Settings.Istarted == true|| Settings.Istarted == false)
+            //{
+            //    windowRect.height = 50;
+            //    GUILayout.Space(10f);
+            //    GUILayout.BeginHorizontal();
+            //    GUILayout.Label("Start a game to load the Menu",centeredLabelStyle);
+            //    GUILayout.EndHorizontal();
+            //    GUILayout.Space(10f);
+            //    GUI.DragWindow();
+            //}
+            //else
             {
                 windowRect.height = 500;
                 _group = CGUILayout.Toolbar4(_group, CheatsString, GUI.skin.box); //creating the group for switch comand    
@@ -245,6 +245,8 @@ namespace SevenDTDMono
 
                                 CGUILayout.Button("Test get player", Cheat.Getplayer);
                                 CGUILayout.Button(ref SETT.TESTTOG, "Test Toggle", Color.green, Color.red);
+                                bool tg = false;
+                                GUILayout.Toggle(tg,"hello test local toggle");
 
                             }
                             GUILayout.EndVertical();
@@ -458,7 +460,7 @@ namespace SevenDTDMono
 
                                 scrollKill = GUILayout.BeginScrollView(scrollKill, GUILayout.MaxWidth(300f));
                                 {
-                                    Cheat.ListbuttonZombie();
+                                    Cheat.ListbuttonZombie2();
                                 }
                                 GUILayout.EndScrollView();
                             }
@@ -469,6 +471,7 @@ namespace SevenDTDMono
 
                                 scrollPlayer = GUILayout.BeginScrollView(scrollPlayer, GUILayout.MaxWidth(300f));
                                 {
+                                    Cheat.ListbuttonZombie1();
                                     Cheat.ListButtonPlayer();
                                 }
                                 GUILayout.EndScrollView();

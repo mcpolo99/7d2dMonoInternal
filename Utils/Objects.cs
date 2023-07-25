@@ -18,13 +18,15 @@ namespace SevenDTDMono
     {
 
         public static List<EntityZombie> zombieList;
+        public static List<EntityEnemy> enemylist;
         public static List<EntityItem> itemList;
 
         public static EntityPlayerLocal ELP; // my final EntityPlayerLocal, This is the player on this pc
         public static EntityPlayerLocal _entityplayerLocal; // not sure why i have this one
         public static EntityPlayer _entityplayer;
 
-
+        public static Entity entity;
+        public static EntityEnemy entity1;
         public static GameObject Gobj;
         public static BuffManager buffManager = new BuffManager();
         public static GameManager _gameManager;
@@ -52,6 +54,7 @@ namespace SevenDTDMono
 
             //_gameManager = new GameManager();
             zombieList = new List<EntityZombie>();
+            enemylist = new List<EntityEnemy>();
             itemList = new List<EntityItem>();
             buffClasses = new List<BuffClass>();
 
@@ -59,6 +62,9 @@ namespace SevenDTDMono
 
             _entityplayerLocal = FindObjectOfType<EntityPlayerLocal>();
             _entityplayer = FindObjectOfType<EntityPlayer>();
+            entity = FindObjectOfType<Entity>();
+
+           //entity1.e
 
             Log.Out("End of start objects");
             Log.Out("End of start objects and _gameManger= " + _gameManager);
@@ -132,6 +138,7 @@ namespace SevenDTDMono
             else if (Time.time >= lastCacheZombies)
             {
                 zombieList = FindObjectsOfType<EntityZombie>().ToList();
+                enemylist = FindObjectsOfType<EntityEnemy>().ToList();
 
                 lastCacheZombies = Time.time + 3f;
             }

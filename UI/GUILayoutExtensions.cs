@@ -444,10 +444,10 @@ namespace SevenDTDMono.Utils
             return toggle;
         }
 
-        public static bool CustomDropDown(string label, System.Action content, params GUILayoutOption[] options)
+        public static bool CustomDropDown(bool toggle ,string label, System.Action content, params GUILayoutOption[] options)
         {
             //for every press toggle on and off for the customdrop down
-            bool toggle = false;
+           
             GUIStyle headerStyle = new GUIStyle(GUI.skin.box);
             headerStyle.alignment = TextAnchor.MiddleCenter;
             headerStyle.fontSize = 15;
@@ -483,6 +483,54 @@ namespace SevenDTDMono.Utils
 
             return toggle;
         }
+
+
+        public static void CustomDropDown(string label, System.Action content, ref bool toggle, params GUILayoutOption[] options)
+        {
+            GUIStyle headerStyle = new GUIStyle(GUI.skin.box);
+            headerStyle.alignment = TextAnchor.MiddleCenter;
+            headerStyle.fontSize = 15;
+
+            if (toggle)
+            {
+                headerStyle.fontStyle = FontStyle.Bold;
+                headerStyle.normal.textColor = Color.green;
+            }
+            else
+            {
+                headerStyle.fontStyle = FontStyle.Italic;
+                headerStyle.normal.textColor = Color.yellow;
+            }
+
+            Rect headerRect = GUILayoutUtility.GetRect(30, 20f, headerStyle); // Pass the width value here
+            GUI.Box(headerRect, label, headerStyle);
+
+            if (Event.current.type == EventType.MouseDown && headerRect.Contains(Event.current.mousePosition))
+            {
+                toggle = !toggle;
+                Event.current.Use();
+            }
+
+            if (toggle)
+            {
+                content?.Invoke();
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         //public static Rect Window(int windowID, Rect windowRect, GUI.WindowFunction drawWindowContents, string title)
         //{
         //    GUILayout.BeginArea(windowRect, title, GUI.skin.window);

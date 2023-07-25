@@ -16,6 +16,7 @@ using HarmonyLib;
 using SevenDTDMono.Interface;
 using UnityEngine.UI;
 using SevenDTDMono.Utils;
+using System.Web;
 
 //using SevenDTDMono.Objects;
 
@@ -444,8 +445,14 @@ namespace SevenDTDMono
                     {
                         continue;
                     }
+                    bool bl = false;
 
-                    if (CGUILayout.CustomDropDown(player.EntityName, () =>
+
+                    
+
+
+
+                    if (CGUILayout.FoldableMenuHorizontal(bl,player.EntityName, () =>
                     {
                         if (GUILayout.Button("Teleport"))
                         {
@@ -456,8 +463,9 @@ namespace SevenDTDMono
                             O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
                         }
 
-                    })) 
+                    },50f)) 
                     { 
+
                     
                     };
 
@@ -470,6 +478,7 @@ namespace SevenDTDMono
             }
         }
 
+        private static Dictionary<string, bool> zombieToggleStates = new Dictionary<string, bool>();
         public static void ListbuttonZombie() 
         {
             if (O.zombieList.Count > 1)
@@ -480,29 +489,49 @@ namespace SevenDTDMono
                     {
                         continue;
                     }
+                    bool bl = false;
 
-                    if (CGUILayout.CustomDropDown(zombie.EntityName, () =>
+                    if (CGUILayout.Button(ref SETT.TESTTOG, zombie.EntityName , Color.green, Color.red))
                     {
-                        if (GUILayout.Button("Teleport"))
+                        CGUILayout.FoldableMenuHorizontal(!SETT.TESTTOG,zombie.EntityName, () =>
                         {
-                            O.ELP.TeleportToPosition(zombie.GetPosition());
-                        }
-                        if (GUILayout.Button("kill"))
-                        {
-                            O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                        }
+                            if (GUILayout.Button("Teleport"))
+                            {
+                                O.ELP.TeleportToPosition(zombie.GetPosition());
+                            }
+                            if (GUILayout.Button("kill"))
+                            {
+                                O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                            }
 
-                    }))
+                        },50f);
+                        ////O.localPlayer.TeleportToPosition(zombie.GetPosition());
+                        //zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                        //SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
+
+                    }
+                   
+                    if (GUILayout.Toggle(!SETT.TESTTOG, zombie.EntityName))
                     {
+                        CGUILayout.CustomDropDown(SETT.TESTTOG, zombie.EntityName, () =>
+                        {
+                            if (GUILayout.Button("Teleport"))
+                            {
+                                O.ELP.TeleportToPosition(zombie.GetPosition());
+                            }
+                            if (GUILayout.Button("kill"))
+                            {
+                                O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                            }
 
-                    };
+                        });
+                        ////O.localPlayer.TeleportToPosition(zombie.GetPosition());
+                        //zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                        //SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
+                    }
 
-                    //if (GUILayout.Button(zombie.EntityName))
-                    //{
-                    //    //O.localPlayer.TeleportToPosition(zombie.GetPosition());
-                    //    zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                    //    SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
-                    //}
+
+
                 }
             }
             else
@@ -510,11 +539,119 @@ namespace SevenDTDMono
                 GUILayout.Label("No entities found.");
             }
         }
+        public static void ListbuttonZombie1()
+        {
+            if (O.zombieList.Count > 1)
+            {
+                foreach (EntityZombie zombie in O.zombieList)
+                {
+                    if (!zombie || zombie == O.ELP || !zombie.IsAlive())
+                    {
+                        continue;
+                    }
 
-        //public interface IListItem
+                    string zombieName = zombie.EntityName;
+
+                    // Get or set the zombie's toggle state in the dictionary.
+                    if (!zombieToggleStates.ContainsKey(zombieName))
+                    {
+                        zombieToggleStates[zombieName] = false; // Set the initial state to false for new zombies.
+                    }
+
+                    bool toggleState = zombieToggleStates[zombieName];
+
+                    GUILayout.BeginHorizontal();
+                    CGUILayout.CustomDropDown(zombieName, () =>
+                    {
+                        if (GUILayout.Button("Teleport"))
+                        {
+                            // Perform teleport action for the zombie.
+                            O.ELP.TeleportToPosition(zombie.GetPosition());
+                        }
+                        if (GUILayout.Button("Kill"))
+                        {
+                            // Perform kill action for the zombie.
+                            O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                        }
+                    }, ref toggleState);
+                    GUILayout.EndHorizontal();
+
+                    // Update the toggle state in the dictionary.
+                    zombieToggleStates[zombieName] = toggleState;
+                }
+            }
+            else
+            {
+                GUILayout.Label("No zombies found.");
+            }
+        }
+
+        public static void ListbuttonZombie2() /////////////////////////////// WORKING OOOOOOODOGOGO
+        {
+            if (O.enemylist.Count > 1)
+            {
+                foreach (EntityEnemy zombie in O.enemylist)
+                {
+                    if (!zombie || zombie == O.ELP || !zombie.IsAlive())
+                    {
+                        continue;
+                    }
+
+
+                    string zombieName = zombie.entityId.ToString();
+                    string zm = zombie.name;
+
+                    // Get or set the zombie's toggle state in the dictionary.
+                    if (!zombieToggleStates.ContainsKey(zombieName))
+                    {
+                        zombieToggleStates[zombieName] = false; // Set the initial state to false for new zombies.
+                    }
+
+                    bool toggleState = zombieToggleStates[zombieName];
+
+                    GUILayout.BeginHorizontal();
+                    CGUILayout.CustomDropDown(zm+zombieName, () =>
+                    {
+                        if (GUILayout.Button("Teleport"))
+                        {
+                            // Perform teleport action for the zombie.
+                            O.ELP.TeleportToPosition(zombie.GetPosition());
+                        }
+                        if (GUILayout.Button("Kill"))
+                        {
+                            // Perform kill action for the zombie.
+                            zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                        }
+                    }, ref toggleState);
+                    GUILayout.EndHorizontal();
+
+                    // Update the toggle state in the dictionary.
+                    zombieToggleStates[zombieName] = toggleState;
+                }
+            }
+            else
+            {
+                GUILayout.Label("No zombies found.");
+            }
+        }
+
+        //private static void DrawZombieDropdown(EntityZombie zombie)
         //{
-        //    string Name { get; } // Replace this with the actual property or method that is common to your lists
+        //    CGUILayout.CustomDropDown(zombie.EntityName, () =>
+        //    {
+        //        if (GUILayout.Button("Teleport"))
+        //        {
+        //            // Perform teleport action for the zombie.
+        //            O.ELP.TeleportToPosition(zombie.GetPosition());
+        //        }
+        //        if (GUILayout.Button("Kill"))
+        //        {
+        //            // Perform kill action for the zombie.
+        //            O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+        //        }
+        //    }, ref zombieToggleStates[zombie.EntityName]);
         //}
+
 
 
 
