@@ -17,6 +17,7 @@ using SevenDTDMono.Interface;
 using UnityEngine.UI;
 using SevenDTDMono.Utils;
 using System.Web;
+using static PassiveEffect;
 
 //using SevenDTDMono.Objects;
 
@@ -115,13 +116,48 @@ namespace SevenDTDMono
         public static Block block;
         public static BlockDamage blockDamage;
         public static ItemActionAttack attack;
-        public static PassiveEffect passiveEffect;
-        //public static EffectManager effectManager;
+        //public static PassiveEffect passiveEffect;
+        public  static string inputPassiveEffects = "none";
+        public  static string inputFloat = "1";
+        private static Dictionary<string, bool> zombieToggleStates = new Dictionary<string, bool>();
+        private static Dictionary<PassiveEffects, bool> passiveToggleStates = new Dictionary<PassiveEffects, bool>();
 
-        //[DllImport("user32.dll")]
-        //private static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
-        //private float damageMultiplier = 1f;
-        //public bool ShowOnHUD = true;
+        private static List<string> ListPerksAlwaysAdd = new List<string>
+        { "buffringoffire",
+            "buffdontbreakmyleg",
+            "buffheadshotsonly",
+            "buffcrouching",
+            "buffhealwatermax",
+            "buffhealfood",
+            "buffhealhealt"
+
+        };
+        private static List<string> ListPerks = new List<string> { "god", "megadamage", "nerfme", "messmeup" };
+        private static List<string> ListPerksNotToAdd = new List<string> { "god", "megadamage", "nerfme", "messmeup", "buffbrokenlimbstatus", "buffneardeathtrauma" };
+        private static List<string> ListPerksAlwaysremove = new List<string>
+        {
+
+            "buffdontmove",
+            "buffelementwet",
+            "electricity",
+            "messmeup" ,
+            "buffbrokenlimbstatus" ,
+            "bufflegsprained",
+            "buffinjuryabrasion" ,
+            "bufflaceration",
+            "buffinfectionmain",
+            "nerfme",
+            "megadamage",
+            "god",
+            "buffelementcold",
+
+
+
+
+
+
+        };
+        private static List<string> perkstarts = new List<string> { "twitch", "test_", "trigger", "infection", "injury", "getsworse" };
 
 
 
@@ -133,7 +169,51 @@ namespace SevenDTDMono
         //--------------------------------------------------------------------------------------------------------
 
 
+        #region finished cheats
+        //toggle
+        public static void CmDm() //Creative and DEbug - Toggle
+        {
+            GameStats.Set(EnumGameStats.ShowSpawnWindow, SETT.CmDm); // sets the GameStat to the value of CmDm
+            GameStats.Set(EnumGameStats.IsCreativeMenuEnabled, SETT.CmDm);
+            GamePrefs.Set(EnumGamePrefs.DebugMenuEnabled, SETT.CmDm);
+        }
 
+
+        //Trigger
+        public static void skillpoints()//add skillpoints - Trigger once
+        {
+            if (O.ELP)
+            {
+                Progression prog = O.ELP.Progression;
+                prog.SkillPoints += 10;
+                Log.Out($"Skillpoints added by 10is now {prog.SkillPoints}");
+            }
+        }
+        public static void KillSelf()
+        {
+
+            O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
+        }
+        public static void levelup()//up one level-Trigger once
+        {
+            if (O.ELP)
+            {
+                Progression prog = O.ELP.Progression;
+                prog.AddLevelExp(prog.ExpToNextLevel);
+
+            }
+        }
+        public static void Getplayer()//add skillpoints - Trigger once
+        {
+            string num = O.ELP.name.ToString();
+            Log.Out("player ID: " + num);
+        }
+
+        
+
+
+        #endregion
 
 
         public void OnHud()
@@ -242,6 +322,24 @@ namespace SevenDTDMono
 
                 FoodNWater();
             };
+            if (SETT._NoBadBuff == true)
+            {
+
+                RemoveBadBuff();
+            };
+            if (SETT._addgoodbuff == true)
+            {
+
+                RemoveBadBuff();
+                AddGoodBuff();
+            };
+            if (SETT._ignoreByAI == true)
+            {
+                IgnoredbyAI();
+            };
+
+
+
         }
 
 
@@ -264,41 +362,11 @@ namespace SevenDTDMono
         //--------------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------------
-        #region Methods
+
         #region Triggers
-        public static void KillSelf()
-        {
-          
-             O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity " );
-        }
 
-        public static void levelup()//up one level-Trigger once
-        {
-            if (O.ELP)
-            {
-                Progression prog = O.ELP.Progression;
-                prog.AddLevelExp(prog.ExpToNextLevel);
 
-            }
-        }
-        public static void Getplayer()//add skillpoints - Trigger once
-        {
-            string num = O.ELP.name.ToString();
-            Log.Out("player ID: "+num);
-
-            //Log.Out("universal loaded as normal " + Loader.assemblyHelper.IsAssemblyLoaded1("UniverseLib.mono"));
-
-        }
-
-        public static void Unload()//add skillpoints - Trigger once
-        {
-            Log.Out("try unload");
-
-          
-
-        }
-        public static void updatebuffall()
+        public static void IncreaseBuffTimer()
         {
 
             int num = O.ELP.Buffs.ActiveBuffs.Count;
@@ -319,22 +387,14 @@ namespace SevenDTDMono
             }
 
         }
-        public static void skillpoints()//add skillpoints - Trigger once
-        {
-            if (O.ELP)
-            {
-                Progression prog = O.ELP.Progression;
-                prog.SkillPoints += 10;
-                Log.Out($"Skillpoints added by 10is now {prog.SkillPoints}");
-            }
-        }
+
         public static void IgnoredbyAI()
         {
             //if(SETT._ignoreByAI )
-            
+
             O.ELP.SetIgnoredByAI(!O.ELP.IsIgnoredByAI());
-            
-            Log.Out(O.ELP.name.ToString() +" is ignored by AI " + O.ELP.IsIgnoredByAI());
+
+            Log.Out(O.ELP.name.ToString() + " is ignored by AI " + O.ELP.IsIgnoredByAI());
         }
 
         public static void SOMECONSOLEPRINTOUT()  //Creative and debug mode -- Trigger
@@ -345,13 +405,13 @@ namespace SevenDTDMono
 
             if (O.ELP)
             {
-                 _value = O.ELP.DebugNameInfo;
+                _value = O.ELP.DebugNameInfo;
 
             }
-           
+
             Debug.developerConsoleVisible = true;
             Console.WriteLine("THIS IS WRITE LINE" + _type);
-            Debug.LogWarning($"Debug <color=_col>LogWarnig</color> for {_type}: " + _value );
+            Debug.LogWarning($"Debug <color=_col>LogWarnig</color> for {_type}: " + _value);
             Debug.LogError($"Debug <color=_col>LogError</color> for {_type}: " + _value);
             Debug.Log($"Debug <color=_col>Log</color> for {_type}: " + _type);
             print($"This is a <color=_col_col>Print Message</color> for {_type}: " + _value);
@@ -371,33 +431,98 @@ namespace SevenDTDMono
         //--------------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------------
         #region Toggles
-        public static void CmDm() //Creative and DEbug - Toggle
-        {
-            string _SETT = "SETT.cm";
-            var _value = SETT.cm;
-            //Debug.LogWarning($"Debug <color=_col>LogWarnig</color> for {_SETT}: " + _value);
-            GameStats.Set(EnumGameStats.ShowSpawnWindow, SETT.CmDm); // sets the GameStat to the value of CmDm
-            GameStats.Set(EnumGameStats.IsCreativeMenuEnabled, SETT.CmDm);
-            GamePrefs.Set(EnumGamePrefs.DebugMenuEnabled, SETT.CmDm);
-
-            //if (SETT.cm) //updates to check if cm IS yet toggled. SETT.cm is toggled in NewMenu.Debug
-            //{
-            //    //var _value = SETT.cm;
-            //    GameStats.Set(EnumGameStats.ShowSpawnWindow, _value);
-            //    GameStats.Set(EnumGameStats.IsCreativeMenuEnabled, _value);
-            //    GamePrefs.Set(EnumGamePrefs.DebugMenuEnabled, _value);
-
-            //    // GameStats.Set(EnumGameStats.ShowAllPlayersOnMap, SETT.cmDm);
-            //    //GameStats.Set(EnumGameStats.CraftTimer, !SETT.cmDm);
-            //}
-        }
         //public static EntityAlive Entity;
-
-        
-
-        public static void HealthNStamina()
+        public static void onehitBlock()   //one hit break - Toggle
         {
-         
+            if (O.ELP)
+            {
+                if (SETT._oneHitBlock == true)
+                {
+                    float flt = 99999999;
+                    BuffValue buff;
+                    O.ELP.Buffs.AddBuff("megadamage", -1, true, false, false, 20000000000f);
+                    buff = O.ELP.Buffs.GetBuff("megadamage");
+                    // need to create a index check so correct index is sekected.
+                    buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = flt;
+
+                    buff.BuffClass.Hidden = true;
+                    buff.BuffClass.RemoveOnDeath = true;
+                    buff.BuffClass.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
+
+                }
+                else if (SETT._oneHitBlock == false)
+                {
+                    O.ELP.Buffs.RemoveBuff("megadamage");
+                }
+                //pegasus for run speed sett float slider on passiveeffect.values
+
+                #region How i managed to find correct getBuff
+
+
+
+
+                //buff = O.ELP.Buffs.GetBuff("megadamage"); // first finding the buff that was added, Each buff has diffrent strings
+                //MinEffectController effectController = buff.BuffClass.Effects; // inside the buff we have many things but i want the effects, which is controled by effectcontroller 
+                //MinEffectGroup Passive = effectController.EffectGroups[0]; // Then i want the passives, and those are under effect groups, Which is a list of one to many effect groups 
+                //PassiveEffect passiveEffect = Passive.PassiveEffects[1];  // i know by studing the game that the block damage is in passive effect index 1 when using "megadamage"
+                //passiveEffect.Values[0]=999999f; // and here i am inside passive effect blockdamage, and i want to sett the value of the damage to index 0 (first index)
+
+                ////////buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = 9999999f; // here is collect everything in one line, becuse using "." makes us go more down the chain of methods and classes etc
+
+                //////effectController.EffectGroups[0].PassiveEffects[1].Values[2] = 50f; 
+                #endregion
+            }
+
+
+        }
+        //public static BuffValue buff;
+
+        public static void onehitKill()   //one hit kill - Toggle
+        {
+            AddPassive(PassiveEffects.EntityDamage, 99999f, ValueModifierTypes.base_set);
+
+            if (SETT._oneHitBlock == true)
+            {
+                BuffValue buff;
+                float flt = 99999999;
+                // hew we also use "megadamage" as a reference since it is easier to just utilize a already existing buff with the neccessary passive effects
+                O.ELP.Buffs.AddBuff("megadamage", -1, true, false, false, 20000000000f);
+                buff = O.ELP.Buffs.GetBuff("megadamage");
+                buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = flt;
+
+                buff.BuffClass.Hidden = true;
+                buff.BuffClass.RemoveOnDeath = true;
+                buff.BuffClass.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
+
+            }
+            else if (SETT._oneHitBlock == false)
+            {
+                O.ELP.Buffs.RemoveBuff("megadamage");
+            }
+            #region How i managed to find correct getBuff
+
+
+
+
+            //buff = O.ELP.Buffs.GetBuff("megadamage"); // first finding the buff that was added, Each buff has diffrent strings
+            //MinEffectController effectController = buff.BuffClass.Effects; // inside the buff we have many things but i want the effects, which is controled by effectcontroller 
+            //MinEffectGroup Passive = effectController.EffectGroups[0]; // Then i want the passives, and those are under effect groups, Which is a list of one to many effect groups 
+            //PassiveEffect passiveEffect = Passive.PassiveEffects[1];  // i know by studing the game that the block damage is in passive effect index 1 when using "megadamage"
+            //passiveEffect.Values[0]=999999f; // and here i am inside passive effect blockdamage, and i want to sett the value of the damage to index 2 (third)
+
+            ////////buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = 9999999f; // here is collect everything in one line, becuse using "." makes us go more down the chain of methods and classes etc
+
+            //////effectController.EffectGroups[0].PassiveEffects[1].Values[2] = 50f; 
+            #endregion
+
+
+
+        }
+
+
+        public static void HealthNStamina() //works but loosing healt to damages, wont degrease by time only direkt damage 
+        {
+
             if (SETT._healthNstamina == true && O.ELP)
             {
                 //Log.Out("");
@@ -407,21 +532,14 @@ namespace SevenDTDMono
                 O.ELP.Stats.Stamina.LossPassive = PassiveEffects.StaminaGain;
 
             }
-            else if(SETT._healthNstamina)
+            else if (SETT._healthNstamina)
             {
                 O.ELP.Stats.Health.LossPassive = PassiveEffects.HealthLoss;
                 O.ELP.Stats.Stamina.LossPassive = PassiveEffects.StaminaLoss;
-
             }
-                //O._entityplayerLocal.Stats.Water.RegenerationAmount += O._entityplayerLocal.Stats.Water.RegenerationAmount * EffectManager.GetValue(PassiveEffects.WaterGain, null, 1f, O._entityplayerLocal, null, default(FastTags), true, true, true, true, 1, true, false);
-                //O._entityplayerLocal.Stats.Food.RegenerationAmount += O._entityplayerLocal.Stats.Food.RegenerationAmount * EffectManager.GetValue(PassiveEffects.FoodGain, null, 1f, O._entityplayerLocal, null, default(FastTags), true, true, true, true, 1, true, false);
-                //O._entityplayerLocal.Stats.Health.RegenerationAmount += O._entityplayerLocal.Stats.Health.RegenerationAmount * EffectManager.GetValue(PassiveEffects.HealthGain, null, 1f, O._entityplayerLocal, null, default(FastTags), true, true, true, true, 1, true, false);
-                //O._entityplayerLocal.Stats.Stamina.RegenerationAmount += O._entityplayerLocal.Stats.Stamina.RegenerationAmount * EffectManager.GetValue(PassiveEffects.StaminaGain, null, 1f, O._entityplayerLocal, null, default(FastTags), true, true, true, true, 1, true, false); 
-        }
-        public static void FoodNWater()
+        } 
+        public static void FoodNWater() //works okey
         {
-
-            //EntityPlayerLocal LP = O.ELP;
             if (SETT._foodNwater == true && O.ELP)
             {
                 O.ELP.Stats.Food.Value = O.ELP.Stats.Food.Max;
@@ -430,163 +548,23 @@ namespace SevenDTDMono
                 O.ELP.Stats.Water.LossPassive = PassiveEffects.StaminaGain;
 
             }
-            //O.ELP.Stats.Water.Value = O._entityplayerLocal.Stats.Water.BaseMax;
-            //O.ELP.Stats.Food.Value = O._entityplayerLocal.Stats.Food.BaseMax;
         }
 
 
-        public static void ListButtonPlayer()
-        {
-            if (O.PlayerList.Count > 1)
-            {
-                foreach (EntityPlayer player in O.PlayerList)
-                {
-                    if (!player || player == O.ELP || !player.IsAlive())
-                    {
-                        continue;
-                    }
-                    bool bl = false;
+
+        #endregion
 
 
-                    
+        #region Methods
 
 
 
-                    if (CGUILayout.FoldableMenuHorizontal(bl,player.EntityName, () =>
-                    {
-                        if (GUILayout.Button("Teleport"))
-                        {
-                            O.ELP.TeleportToPosition(player.GetPosition());
-                        }
-                        if (GUILayout.Button("kill"))
-                        {
-                            O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                        }
-
-                    },50f)) 
-                    { 
-
-                    
-                    };
-
-                }
-            }
-            else
-            {
-            
-                GUILayout.Label("No players found.");
-            }
-        }
-
-        private static Dictionary<string, bool> zombieToggleStates = new Dictionary<string, bool>();
-        public static void ListbuttonZombie() 
-        {
-            if (O.zombieList.Count > 1)
-            {
-                foreach (EntityZombie zombie in O.zombieList)
-                {
-                    if (!zombie || zombie == O.ELP || !zombie.IsAlive())
-                    {
-                        continue;
-                    }
-                    bool bl = false;
-
-                    if (CGUILayout.Button(ref SETT.TESTTOG, zombie.EntityName , Color.green, Color.red))
-                    {
-                        CGUILayout.FoldableMenuHorizontal(!SETT.TESTTOG,zombie.EntityName, () =>
-                        {
-                            if (GUILayout.Button("Teleport"))
-                            {
-                                O.ELP.TeleportToPosition(zombie.GetPosition());
-                            }
-                            if (GUILayout.Button("kill"))
-                            {
-                                O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                            }
-
-                        },50f);
-                        ////O.localPlayer.TeleportToPosition(zombie.GetPosition());
-                        //zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                        //SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
-
-                    }
-                   
-                    if (GUILayout.Toggle(!SETT.TESTTOG, zombie.EntityName))
-                    {
-                        CGUILayout.CustomDropDown(SETT.TESTTOG, zombie.EntityName, () =>
-                        {
-                            if (GUILayout.Button("Teleport"))
-                            {
-                                O.ELP.TeleportToPosition(zombie.GetPosition());
-                            }
-                            if (GUILayout.Button("kill"))
-                            {
-                                O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                            }
-
-                        });
-                        ////O.localPlayer.TeleportToPosition(zombie.GetPosition());
-                        //zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                        //SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
-                    }
 
 
 
-                }
-            }
-            else
-            {
-                GUILayout.Label("No entities found.");
-            }
-        }
-        public static void ListbuttonZombie1()
-        {
-            if (O.zombieList.Count > 1)
-            {
-                foreach (EntityZombie zombie in O.zombieList)
-                {
-                    if (!zombie || zombie == O.ELP || !zombie.IsAlive())
-                    {
-                        continue;
-                    }
 
-                    string zombieName = zombie.EntityName;
 
-                    // Get or set the zombie's toggle state in the dictionary.
-                    if (!zombieToggleStates.ContainsKey(zombieName))
-                    {
-                        zombieToggleStates[zombieName] = false; // Set the initial state to false for new zombies.
-                    }
-
-                    bool toggleState = zombieToggleStates[zombieName];
-
-                    GUILayout.BeginHorizontal();
-                    CGUILayout.CustomDropDown(zombieName, () =>
-                    {
-                        if (GUILayout.Button("Teleport"))
-                        {
-                            // Perform teleport action for the zombie.
-                            O.ELP.TeleportToPosition(zombie.GetPosition());
-                        }
-                        if (GUILayout.Button("Kill"))
-                        {
-                            // Perform kill action for the zombie.
-                            O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                        }
-                    }, ref toggleState);
-                    GUILayout.EndHorizontal();
-
-                    // Update the toggle state in the dictionary.
-                    zombieToggleStates[zombieName] = toggleState;
-                }
-            }
-            else
-            {
-                GUILayout.Label("No zombies found.");
-            }
-        }
-
-        public static void ListbuttonZombie2() /////////////////////////////// WORKING OOOOOOODOGOGO
+        public static void ListZombie1() /////////////////////////////// WORKING OOOOOOODOGOGO
         {
             if (O.enemylist.Count > 1)
             {
@@ -606,11 +584,9 @@ namespace SevenDTDMono
                     {
                         zombieToggleStates[zombieName] = false; // Set the initial state to false for new zombies.
                     }
-
+                  
                     bool toggleState = zombieToggleStates[zombieName];
-
-                    GUILayout.BeginHorizontal();
-                    CGUILayout.CustomDropDown(zm+zombieName, () =>
+                    CGUILayout.DropDownForMethods(zombieName, () =>
                     {
                         if (GUILayout.Button("Teleport"))
                         {
@@ -619,11 +595,32 @@ namespace SevenDTDMono
                         }
                         if (GUILayout.Button("Kill"))
                         {
+                        
                             // Perform kill action for the zombie.
                             zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                            
                         }
+                        
+
                     }, ref toggleState);
-                    GUILayout.EndHorizontal();
+
+
+
+                    //GUILayout.BeginHorizontal();
+                    //CGUILayout.CustomDropDown(zm+zombieName, () =>
+                    //{
+                    //    if (GUILayout.Button("Teleport"))
+                    //    {
+                    //        // Perform teleport action for the zombie.
+                    //        O.ELP.TeleportToPosition(zombie.GetPosition());
+                    //    }
+                    //    if (GUILayout.Button("Kill"))
+                    //    {
+                    //        // Perform kill action for the zombie.
+                    //        zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                    //    }
+                    //}, ref toggleState);
+                    //GUILayout.EndHorizontal();
 
                     // Update the toggle state in the dictionary.
                     zombieToggleStates[zombieName] = toggleState;
@@ -634,27 +631,55 @@ namespace SevenDTDMono
                 GUILayout.Label("No zombies found.");
             }
         }
-
-        //private static void DrawZombieDropdown(EntityZombie zombie)
-        //{
-        //    CGUILayout.CustomDropDown(zombie.EntityName, () =>
-        //    {
-        //        if (GUILayout.Button("Teleport"))
-        //        {
-        //            // Perform teleport action for the zombie.
-        //            O.ELP.TeleportToPosition(zombie.GetPosition());
-        //        }
-        //        if (GUILayout.Button("Kill"))
-        //        {
-        //            // Perform kill action for the zombie.
-        //            O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-        //        }
-        //    }, ref zombieToggleStates[zombie.EntityName]);
-        //}
+        public static void ListPlayer1() /////////////////////////////// WORKING OOOOOOODOGOGO
+        {
+            if (O.enemylist.Count > 1)
+            {
+                foreach (EntityPlayer player in O.PlayerList)
+                {
+                    if (!player || player == O.ELP || !player.IsAlive())
+                    {
+                        continue;
+                    }
 
 
+                    string zombieName = player.name.ToString();
+                    string zm = player.name;
 
+                    // Get or set the zombie's toggle state in the dictionary.
+                    if (!zombieToggleStates.ContainsKey(zombieName))
+                    {
+                        zombieToggleStates[zombieName] = false; // Set the initial state to false for new zombies.
+                    }
 
+                    bool toggleState = zombieToggleStates[zombieName];
+                    CGUILayout.DropDownForMethods(zombieName, () =>
+                    {
+                        //CGUILayout.Button("whatever", Color.yellow, Color.blue);
+                        if (GUILayout.Button("Teleport"))
+                        {
+                            // Perform teleport action for the zombie.
+                            O.ELP.TeleportToPosition(player.GetPosition());
+                        }
+                        if (GUILayout.Button("Kill"))
+                        {
+                            // Perform kill action for the zombie.
+                            player.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                        }//zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+
+                    }, ref toggleState);
+
+                    // Update the toggle state in the dictionary.
+                    zombieToggleStates[zombieName] = toggleState;
+                }
+            }
+            else
+            {
+                GUILayout.Label("No Players found.");
+            }
+        }
+
+      
         public static void GetList(bool _bool, EntityPlayerLocal entityLocalPlayer, List<BuffClass> ListOFClass)
         {
             if (ListOFClass != null)
@@ -670,6 +695,7 @@ namespace SevenDTDMono
                         if (GUILayout.Button(buffClass.Name))
                         {
                            entityLocalPlayer.Buffs.AddBuff(buffClass.Name, -1, true, false, false, 500f);
+                                Debug.LogWarning($"{buffClass.Name} Added to player {O.ELP.gameObject.name}");
                             //Logic when the button is clicked
                         }
                         if (_bool)
@@ -713,15 +739,44 @@ namespace SevenDTDMono
                             {
                                 continue;
                             }
-                            // se GUILayout.Button to create a button for each buff name
-                            if (GUILayout.Button(Class.EntityName))
-                            {
 
-                                Class.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                                SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
-                                //Logic when the button is clicked
+                            string zombieName = Class.entityId.ToString();
+                            string zm = Class.name;
+
+                            // Get or set the zombie's toggle state in the dictionary.
+                            if (!zombieToggleStates.ContainsKey(zombieName))
+                            {
+                                zombieToggleStates[zombieName] = false; // Set the initial state to false for new zombies.
                             }
-        
+
+                            bool toggleState = zombieToggleStates[zombieName];
+                            CGUILayout.DropDownForMethods(zombieName, () =>
+                            {
+                                if (GUILayout.Button("Teleport"))
+                                {
+                                    // Perform teleport action for the zombie.
+                                    O.ELP.TeleportToPosition(Class.GetPosition());
+                                }
+                                if (GUILayout.Button("Kill"))
+                                {
+
+                                    // Perform kill action for the zombie.
+                                    Class.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+
+                                }
+
+
+                            }, ref toggleState);
+
+                            //// se GUILayout.Button to create a button for each buff name
+                            //if (GUILayout.Button(Class.EntityName))
+                            //{
+
+                            //    Class.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                            //    SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
+                            //    //Logic when the button is clicked
+                            //}
+
 
                             if (_bool)
                             {
@@ -801,61 +856,64 @@ namespace SevenDTDMono
 
         }
 
-        public static void ZombiesList()
+
+        public static void GetListPassiveEffects()
         {
 
-            if (O.zombieList.Count > 1)
+            // Get all enum values and sort them alphabetically
+            PassiveEffects[] enumValues = System.Enum.GetValues(typeof(PassiveEffects)).Cast<PassiveEffects>().OrderBy(effect => effect.ToString()).ToArray();
+
+            // Calculate the half amount of buttons
+            int halfAmount = Mathf.CeilToInt(enumValues.Length / 2f);
+            PassiveEffects[] leftColumnEffects = enumValues.Take(halfAmount).ToArray();
+            PassiveEffects[] rightColumnEffects = enumValues.Skip(halfAmount).ToArray();
+
+            //bool toggleState = passiveToggleStates[effect];
+            CGUILayout.BeginHorizontal(() =>
             {
-                foreach (EntityZombie zombie in O.zombieList)
+                CGUILayout.BeginVertical(() =>
                 {
-                    if (!zombie || zombie == O.ELP || !zombie.IsAlive())
+                    // Display the buttons in the left column
+                    foreach (PassiveEffects effect in leftColumnEffects)
                     {
-                        continue;
+                        //CGUILayout.Button(effect.ToString(), GUILayout.MaxWidth(150));
+                        DisplayToggleButton(effect);
                     }
+                });
+                CGUILayout.BeginVertical(() =>
+                {
+                    // Display the buttons in the right column
+                    foreach (PassiveEffects effect in rightColumnEffects)
+                    {
+                        //CGUILayout.Button(effect.ToString(), GUILayout.MaxWidth(150));
+                        DisplayToggleButton(effect);
+                    }
+                });
+            });
+        }
 
-                    if (GUILayout.Button(zombie.EntityName))
-                    {
-                        //O.ELP.TeleportToPosition(zombie.GetPosition());
-                        zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                        SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
-                    }
-                }
-            }
-            else
+
+        private static void DisplayToggleButton(PassiveEffects effect)
+        {
+            // Get or set the toggle state in the dictionary.
+            if (!passiveToggleStates.ContainsKey(effect))
             {
-                GUILayout.Label("No entities found.");
+                passiveToggleStates[effect] = false; // Set the initial state to false for new effects.
             }
+            bool toggleState = passiveToggleStates[effect];
 
+            // Display the toggle button and update the toggle state in the dictionary.
+            bool buttonPressed = CGUILayout.Button(effect.ToString(), GUILayout.MaxWidth(150));
+            passiveToggleStates[effect] = buttonPressed;
+
+            // If the button is pressed, set the input text field to the same string as the button text
+            if (buttonPressed)
+            {
+                inputPassiveEffects = effect.ToString();
+            }
         }
-        public static void dropbkp() //no drop on death -- toggle
-        {
 
-        }
-
-
-        private static List<string> ListPerks = new List<string> { "god", "megadamage", "nerfme", "messmeup" };
-        private static List<string> ListPerksNotToAdd = new List<string> { "god", "megadamage", "nerfme", "messmeup", "buffbrokenlimbstatus", "buffneardeathtrauma" };
-        private static List<string> ListPerksAlwaysremove = new List<string>
-        {
-
-            "buffdontmove",
-            "buffelementwet",
-            "electricity",
-            "messmeup" ,
-            "buffbrokenlimbstatus" ,
-            "bufflegsprained",
-            "buffinjuryabrasion" ,
-            "bufflaceration",
-            "buffinfectionmain",
-            "nerfme",
-            "megadamage",
-            "god",
-
-
-
-
-
-        };
+     
         public static void RemoveBadBuff()
         {
             List<BuffValue> activeBuffs = O.ELP.Buffs.ActiveBuffs;
@@ -863,25 +921,30 @@ namespace SevenDTDMono
             {
                 //if (buff.BuffClass.DamageType == desiredDamageTypes)
                 //if (desiredDamageTypes.Contains(buff.BuffClass.DamageType))
-                if (buff.BuffClass.DamageType != EnumDamageTypes.None &&  !ListPerksAlwaysremove.Contains(buff.BuffClass.Name))
+                if (buff.BuffClass.DamageType != EnumDamageTypes.None &&  !ListPerksAlwaysremove.Contains(buff.BuffClass.Name) && buff.BuffName.Contains("customBuff"))
                 {
                     O.ELP.Buffs.RemoveBuff(buff.BuffName);
                 }
             }
 
         }
+        public static void RemoveAllBuff()
+        {
+            List<BuffValue> activeBuffs = O.ELP.Buffs.ActiveBuffs;
+            foreach (BuffValue buff in activeBuffs)
+            {
+                //if (buff.BuffClass.DamageType == desiredDamageTypes)
+                //if (desiredDamageTypes.Contains(buff.BuffClass.DamageType))
+                //if (buff.BuffClass.DamageType != EnumDamageTypes.None && !ListPerksAlwaysremove.Contains(buff.BuffClass.Name) && buff.BuffName.Contains("customBuff"))
+                //{
+                    O.ELP.Buffs.RemoveBuff(buff.BuffName);
+                //}
+            }
+            //O._minEffectController.EffectGroups.Clear();
+            O._minEffectController.EffectGroups[0].PassiveEffects.Clear();
+            O._minEffectController.PassivesIndex.Clear();
+        }
 
-        private static List<string> ListPerksAlwaysAdd = new List<string> 
-        { "buffringoffire", 
-            "buffdontbreakmyleg", 
-            "buffheadshotsonly", 
-            "buffcrouching",
-            "buffhealwatermax",
-            "buffhealfood",
-            "buffhealhealt"
-        
-        };
-        private static List<string> perkstarts = new List<string> { "twitch", "test_", "trigger", "infection", "injury", "getsworse" };
         public static void RemoveGoodBuff()
         {
             List<BuffValue> activeBuffs = O.ELP.Buffs.ActiveBuffs;
@@ -901,15 +964,15 @@ namespace SevenDTDMono
             {
                 using (StreamWriter writer = new StreamWriter(filePath))
                 {
-                    foreach (BuffClass buffClass in O.buffClasses.Where(bc => bc.DamageType == EnumDamageTypes.None && !ListPerksAlwaysremove.Contains(bc.Name) && !perkstarts.Any(prefix => bc.Name.StartsWith(prefix)|| bc.Name.Contains(prefix))))
+                    //foreach (BuffClass buffClass in O.buffClasses.Where(bc => bc.DamageType == EnumDamageTypes.None && !ListPerksAlwaysremove.Contains(bc.Name) && !perkstarts.Any(prefix => bc.Name.StartsWith(prefix)|| bc.Name.Contains(prefix))))
+                    foreach (BuffClass buffClass in O.buffClasses.Where(bc => ListPerksAlwaysAdd.Contains(bc.Name)))
                     {
-                        O.ELP.Buffs.AddBuff(buffClass.Name, -1, true, false, false, 20f);
+                        O.ELP.Buffs.AddBuff(buffClass.Name, -1, true, false, true, 20f);
                         buffClass.DurationMax = 999f; // how lonmg the perk will last
                         //buffClass.InitialDurationMax;
                         writer.WriteLine($"{buffClass.Name}");
+                        Log.Out($"Buff {buffClass.Name} has been added to player");
                     }
-
-
                 }
             }
             catch (Exception ex)
@@ -917,14 +980,103 @@ namespace SevenDTDMono
 
             }
         }
-
-        public static void custombuff()
+        public static void AddEffectGRoup__() // worksXD
         {
+            MinEffectGroup effectGroup = O._minEffectController.EffectGroups[0];
             
-            BuffValue buff;
-            BuffClass customBuff = new BuffClass();
+           
+            PassiveEffect newPassiveEffect = new PassiveEffect
+            {
+                MatchAnyTags = true,
+                Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                Type = PassiveEffects.JumpStrength,
+                Values = new float[] { 50 }, // Adjust the values accordingly
+                                              // Set other properties if needed
+            };
+            O._minEffectController.PassivesIndex.Add(PassiveEffects.JumpStrength);
+
+            effectGroup.PassiveEffects.Remove(newPassiveEffect);
+            effectGroup.PassiveEffects.Add(newPassiveEffect);
+        }
+        public static void AddPassive(PassiveEffects passiveEffects, float value ,ValueModifierTypes valueModifierTypes) 
+        {
 
 
+
+            /*valueModifierTypes
+            Base_set - Sets to valu w eshoose
+            Base_add - adds ontop of defalut base
+            base_subtract - subtract from base valu
+            perc_set _ Multiplier by default eg 100base * 5 float = 500
+            perc_add --||--
+            perc_subtract - Removes by multiplier
+            count - No clue
+
+
+
+
+            */
+
+
+
+            if (O.ELP.Buffs.HasBuff("CheatBuff") == false)
+            {
+                O.ELP.Buffs.AddBuff("CheatBuff");
+            }
+
+            List<PassiveEffect> pE1 = new List<PassiveEffect>();
+            MinEffectGroup effectGroup = O._minEffectController.EffectGroups[0];
+    
+            PassiveEffect newPassiveEffect = new PassiveEffect
+            {
+                MatchAnyTags = true,
+                Modifier = valueModifierTypes, 
+                Type = passiveEffects,
+                Values = new float[] { value }, // Adjust the values accordingly
+                                             // Set other properties if needed
+            };//this is just the passive effects
+ 
+
+
+
+            var passiveEffectsList = O._minEffectController.EffectGroups[0].PassiveEffects;
+            for (int i = passiveEffectsList.Count - 1; i >= 0; i--)
+            {
+                var effect = passiveEffectsList[i];
+                if (
+                    //effect.MatchAnyTags == newPassiveEffect.MatchAnyTags &&
+                    //effect.Modifier == newPassiveEffect.Modifier &&
+                    effect.Type == newPassiveEffect.Type
+                    /*&&*/
+                    //effect.Values.SequenceEqual(newPassiveEffect.Values)
+                    )
+                {
+                    passiveEffectsList.RemoveAt(i);
+                }
+            }
+
+            O._minEffectController.PassivesIndex.Add(passiveEffects); // adds to MinEffectController.PassivesIndex MUST DO OTHERWISE NULL REFERENCE ERROR
+            //effectGroup.PassiveEffects.Add(newPassiveEffect);           // MinEffectController.MinEffectGroup.PassivesIndex __ This location just adds buffs on top if added multiple times
+            O._minEffectController.EffectGroups[0].PassiveEffects.Add(newPassiveEffect);           // MinEffectController.MinEffectGroup.PassivesIndex __ This location just adds buffs on top if added multiple times
+           // O._minEffectController.PassivesIndex = new HashSet<PassiveEffects>
+           //{
+           //        passiveEffects,
+           //};
+
+
+        }
+
+        public static void AddCheatBuff()
+        {
+            /*
+            float WalkSlider = SETT._run;  //set 1 to 5
+            float RunSlider = SETT._run;  //set 1 to 5
+            float BlockDMGSlider = SETT._dmg;   //set 1 to 50
+
+            //BuffValue buff;
+
+
+            
             BuffClass test = BuffManager.GetBuff("testbuff");
             test.DamageType = EnumDamageTypes.None; // Set the appropriate damage type if applicable
             test.Description = "This is a custom buff.";
@@ -934,34 +1086,17 @@ namespace SevenDTDMono
             //test.Hidden = false;
             test.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
             test.DisplayType = EnumEntityUINotificationDisplayMode.IconPlusDetail;
+            
 
-
-
-
-            float WalkSlider = 1f;  //set 1 to 5
-            float RunSlider = 1f;   //set 1 to 5
-            float BlockDMGSlider = 50f;   //set 1 to 50
-            // Set the properties of the custom buff
-            customBuff.Name = "customBuff";
-            customBuff.DamageType = EnumDamageTypes.None; // Set the appropriate damage type if applicable
-            customBuff.Description = "This is a custom buff.";
-            customBuff.DurationMax = 99999999f;
-            customBuff.Icon = "ui_game_symbol_agility";
-            customBuff.ShowOnHUD = true;
-            customBuff.Hidden = false;
-            customBuff.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
-            customBuff.DisplayType = EnumEntityUINotificationDisplayMode.IconOnly;
-            customBuff.LocalizedName = "This is name in inventory";
-            MinEffectController effectController = new MinEffectController 
-            { 
-                EffectGroups = new List<MinEffectGroup>
+            
+            O._minEffectController.EffectGroups = new List<MinEffectGroup>
+            {
+                new MinEffectGroup
                 {
-                    new MinEffectGroup
+                    OwnerTiered = true,
+                    PassiveEffects = new List<PassiveEffect> 
                     {
-                        OwnerTiered = true,
-                        PassiveEffects = new List<PassiveEffect>
-                        {
-                             new PassiveEffect
+                          new PassiveEffect
                              {
                                  MatchAnyTags = true,
                                  Type = PassiveEffects.WalkSpeed,
@@ -976,6 +1111,7 @@ namespace SevenDTDMono
                                  Modifier = PassiveEffect.ValueModifierTypes.base_add,
                                  Type = PassiveEffects.RunSpeed,
                                  Values = new float[] { WalkSlider },
+
                                  //Set other properties if needed
                             },
                             new PassiveEffect
@@ -1001,7 +1137,89 @@ namespace SevenDTDMono
                                 // Set the properties of the PassiveEffect instance accordingly
                                  MatchAnyTags = true,
                                  Modifier = PassiveEffect.ValueModifierTypes.base_add,
-                                 Type = PassiveEffects.FoodMax,
+                                 Type = PassiveEffects.FoodGain,
+                                 Values = new float[] { 9999 },
+                                 //Set other properties if needed
+                            }
+                    },
+                    PassivesIndex = new List<PassiveEffects>
+                        {
+                             PassiveEffects.WalkSpeed,
+                             PassiveEffects.BlockDamage,
+                             PassiveEffects.CraftingTime,
+                             PassiveEffects.FoodGain,
+                        }
+                }
+
+            };
+            O._minEffectController.PassivesIndex = new HashSet<PassiveEffects> 
+            {
+                
+                    PassiveEffects.WalkSpeed,
+                    PassiveEffects.RunSpeed,
+                    PassiveEffects.BlockDamage,
+                    PassiveEffects.CraftingTime,
+                    PassiveEffects.None
+            };
+            /*
+            // Set the properties of the custom buff
+
+
+
+            /*
+
+
+            MinEffectController effectController = new MinEffectController 
+            { 
+                EffectGroups = new List<MinEffectGroup>
+                {
+                    new MinEffectGroup
+                    {
+                        OwnerTiered = true,
+                        PassiveEffects = new List<PassiveEffect>
+                        {
+                             new PassiveEffect
+                             {
+                                 MatchAnyTags = true,
+                                 Type = PassiveEffects.WalkSpeed,
+                                 Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                                 Values = new float[] { RunSlider }
+                                 //Set other properties of PassiveEffect if needed
+                             },
+                            new PassiveEffect
+                            {
+                                // Set the properties of the PassiveEffect instance accordingly
+                                 MatchAnyTags = true,
+                                 Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                                 Type = PassiveEffects.RunSpeed,
+                                 Values = new float[] { WalkSlider },
+
+                                 //Set other properties if needed
+                            },
+                            new PassiveEffect
+                            {
+                                // Set the properties of the PassiveEffect instance accordingly
+                                 MatchAnyTags = true,
+                                 Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                                 Type = PassiveEffects.BlockDamage,
+                                 Values = new float[] { BlockDMGSlider },
+                                 //Set other properties if needed
+                            },
+                            new PassiveEffect
+                            {
+                                // Set the properties of the PassiveEffect instance accordingly
+                                 MatchAnyTags = true,
+                                 Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                                 Type = PassiveEffects.CraftingTime,
+                                 Values = new float[] { 0 },
+                                 //Set other properties if needed
+                            },
+                            new PassiveEffect
+                            {
+                                // Set the properties of the PassiveEffect instance accordingly
+                                 MatchAnyTags = true,
+                                 Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                                 Type = PassiveEffects.FoodGain,
                                  Values = new float[] { 9999 },
                                  //Set other properties if needed
                             }
@@ -1012,7 +1230,7 @@ namespace SevenDTDMono
                              PassiveEffects.WalkSpeed,
                              PassiveEffects.BlockDamage,
                              PassiveEffects.CraftingTime,
-                             PassiveEffects.FoodMax,
+                             PassiveEffects.FoodGain,
                         }
 
                     }
@@ -1023,34 +1241,95 @@ namespace SevenDTDMono
                     PassiveEffects.RunSpeed,
                     PassiveEffects.BlockDamage,
                     PassiveEffects.CraftingTime,
-                    PassiveEffects.FoodMax,
+                    PassiveEffects.FoodGain,
                 }
             };
-            customBuff.Effects = effectController;
-            test.Effects = effectController;
-            O.ELP.Buffs.AddBuff("testbuff");
 
-            if (BuffManager.GetBuff("customBuff") == null)
+            
+            //customBuff.Name = "customBuff";
+            //customBuff.DamageType = EnumDamageTypes.None; // Set the appropriate damage type if applicable
+            //customBuff.Description = "This is a custom buff.";
+            //customBuff.DurationMax = 99999999f;
+            //customBuff.Icon = "ui_game_symbol_agility";
+            //customBuff.ShowOnHUD = true;
+            //customBuff.Hidden = false;
+            //customBuff.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
+            //customBuff.DisplayType = EnumEntityUINotificationDisplayMode.IconOnly;
+            //customBuff.LocalizedName = "This is name in inventory";
+            //customBuff.Effects = O._minEffectController;
+          
+            //O.ELP.Buffs.AddBuff("testbuff");
+            */
+            if (BuffManager.GetBuff(O.CheatBuff.Name) == null)
             {
-                BuffManager.Buffs.Add("customBuff", customBuff); // need to add to buffmanager before init Everything before adding to buffmanager is what will define the buff
-                Log.Out($"Buff {customBuff} has ben added");
+                
+                Log.Out($"Buff {O.CheatBuff} has ben added");
+
+                O.ELP.Buffs.AddBuff(O.CheatBuff.Name);
+                Log.Out($"Buff {O.CheatBuff.Name} has ben added to{O.ELP.Buffs.ActiveBuffs.GetInternalArray()} ");
             }
             else
             {
-                Log.Out($"Buff {customBuff} was already added");
-            }
+                Debug.LogWarning($"Buff {O.CheatBuff.Name} was already added to the system");
+                if (O.ELP.Buffs.GetBuff(O.CheatBuff.Name) == null)
+                {
+                    
+                    O.ELP.Buffs.AddBuff(O.CheatBuff.Name);
+                    Log.Out($"Buff {O.CheatBuff.Name} was Added to to Player again");
+                }
+            }           
+        }
+        
+        public static void ClearCheatBuff()
+        {
+            Debug.LogWarning("Clearing CheatBuff");
+            O._minEffectController.EffectGroups[0].PassiveEffects.Clear();
+            O._minEffectController.PassivesIndex.Clear();
+        }
+        public static void AddEffectGroup()
+        {
+            Debug.LogWarning("adding effectGroup");
+            O._minEffectController.EffectGroups = new List<MinEffectGroup>
+            {
 
-            BuffClass customBuff2 = BuffManager.GetBuff("customBuff"); // need to  init the buff inside buff class before adding to player
+                new MinEffectGroup
+               {
+                   OwnerTiered = true,
+                   PassiveEffects = new List<PassiveEffect>
+                   {
+                   },
+                   PassivesIndex = new List<PassiveEffects>
+                       {  
+                       }
+               }
+            };
+            //O._minEffectController.PassivesIndex = new HashSet<PassiveEffects>();
+        }
 
-            customBuff2.Name = "customBuff2";
-            customBuff2.Effects = effectController;
 
-            O.buffClasses.Add(customBuff);
-            O.buffClasses.Add(customBuff2);
 
-            O.ELP.Buffs.AddBuff("customBuff");
-            O.ELP.Buffs.AddBuff("customBuff2");
+        #endregion
+    }
+}
 
+
+
+/*
+ * 
+ * 
+            //BuffClass customBuff2 = BuffManager.GetBuff("customBuff"); // need to  init the buff inside buff class before adding to player
+
+            //customBuff2.Name = "customBuff2";
+            //customBuff2.Effects = effectController;
+
+            
+            //O.buffClasses.Add(customBuff2);
+
+            
+            //O.ELP.Buffs.AddBuff("customBuff2");
+
+
+            /*
             if(O.ELP.Buffs.GetBuff("customBuff") != null)
             {
                 Log.Out("custombuff2 was found and init, chaning values");
@@ -1081,217 +1360,233 @@ namespace SevenDTDMono
             {
                 Log.Out("no custombuff found here ");
             }
-            //buff = O.ELP.Buffs.GetBuff("customBuff");
+
+
             
-            //buff.BuffClass.DurationMax = 99999999f;
-            //buff.BuffClass.Icon = "ui_game_symbol_agility";
-            //buff.BuffClass.ShowOnHUD = true;
-            //buff.BuffClass.Hidden = false;
-            //buff.BuffClass.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
-            //buff.BuffClass.DisplayType = EnumEntityUINotificationDisplayMode.IconOnly;
-
-     
-
-
-
-
-
-
-            //MinEffectGroup minEffectGroup = new MinEffectGroup { 
-            //OwnerTiered = false,
-
-            //}
-            //minEffectGroup.PassiveEffects.Add(newPassiveEffect);
+*
+*   //private static void DrawZombieDropdown(EntityZombie zombie)
+//{
+//    CGUILayout.CustomDropDown(zombie.EntityName, () =>
+//    {
+//        if (GUILayout.Button("Teleport"))
+//        {
+//            // Perform teleport action for the zombie.
+//            O.ELP.TeleportToPosition(zombie.GetPosition());
+//        }
+//        if (GUILayout.Button("Kill"))
+//        {
+//            // Perform kill action for the zombie.
+//            O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+//        }
+//    }, ref zombieToggleStates[zombie.EntityName]);
+//}
 
 
-            //List<MinEffectGroup> effectGroupsList = new List<MinEffectGroup>();
-            //effectGroupsList.Add(minEffectGroup);
+ * 
+ *      public static void ZombiesList()
+{
 
-
-            //effectController.EffectGroups = effectGroupsList;
-
-
-            //customBuff.Effects = effectController;
-
-
-
-            //effectController.EffectGroups
-
-
-            //whats above here is what the buff will look like when added to player
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //buff.BuffClass.Effects.PassivesIndex.Add(PassiveEffects.BlockDamage); //good adding  adds it to effect controller is not added to effectgroup
-            //add check if ther is only one effect group
-            //buff.BuffClass.Effects.EffectGroups[0].PassivesIndex.Add(PassiveEffects.BlockDamage); // adds to effectsgroup but empty
-            // for next step we need to loop throuh all passiveIndex to get the ones added manually then modify or
-
-            //buff.BuffClass.Effects.EffectGroups[0].PassivesIndex.Contains(PassiveEffects.BlockDamage);
-
-
-
-            //var indexvar = buff.BuffClass.Effects.EffectGroups[0].PassivesIndex.Find(effect => effect == PassiveEffects.BlockDamage); // returns passive effect
-
-            //int index = buff.BuffClass.Effects.EffectGroups[0].PassivesIndex.FindIndex(effect => effect == PassiveEffects.BlockDamage); // returns index 
-            //if (index != -1)
-            //{
-            //    buff.BuffClass.Effects.EffectGroups[0].PassivesIndex[index]. // does not return what i want
-            //    // Do something with the index thats been selected?... 
-            //}
-
-
-
-
-            //PassiveEffect newPassiveEffect = new PassiveEffect
-            //{
-            //    // Set the properties of the PassiveEffect instance accordingly
-            //    MatchAnyTags = true,
-            //    Modifier = PassiveEffect.ValueModifierTypes.base_add,
-            //    Type = PassiveEffects.BlockDamage,
-            //    Values = new float[] { 500 },
-            //    // Set other properties if needed
-            //};
-            //buff.BuffClass.Effects.EffectGroups[0].PassiveEffects.Add(newPassiveEffect);
-
-
-
-        }
-
-
-        public static void onehitBlock()   //one hit break - Toggle
+    if (O.zombieList.Count > 1)
+    {
+        foreach (EntityZombie zombie in O.zombieList)
         {
-            if (O.ELP)
+            if (!zombie || zombie == O.ELP || !zombie.IsAlive())
             {
-                if (SETT._oneHitBlock == true)
-                {
-                    float flt = 99999999;
-                    BuffValue buff;
-                    O.ELP.Buffs.AddBuff("megadamage", -1, true, false, false, 20000000000f);
-                    buff = O.ELP.Buffs.GetBuff("megadamage");
-                    // need to create a index check so correct index is sekected.
-                    buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = flt;
-
-                    buff.BuffClass.Hidden = true;
-                    buff.BuffClass.RemoveOnDeath = true;
-                    buff.BuffClass.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
-
-                }
-                else if (SETT._oneHitBlock == false)
-                {
-                    O.ELP.Buffs.RemoveBuff("megadamage");
-                }
-
-
-
-
-
-
-                //pegasus for run speed sett float slider on passiveeffect.values
-
-                #region How i managed to find correct getBuff
-
-
-
-
-                //buff = O.ELP.Buffs.GetBuff("megadamage"); // first finding the buff that was added, Each buff has diffrent strings
-                //MinEffectController effectController = buff.BuffClass.Effects; // inside the buff we have many things but i want the effects, which is controled by effectcontroller 
-                //MinEffectGroup Passive = effectController.EffectGroups[0]; // Then i want the passives, and those are under effect groups, Which is a list of one to many effect groups 
-                //PassiveEffect passiveEffect = Passive.PassiveEffects[1];  // i know by studing the game that the block damage is in passive effect index 1 when using "megadamage"
-                //passiveEffect.Values[0]=999999f; // and here i am inside passive effect blockdamage, and i want to sett the value of the damage to index 0 (first index)
-
-                ////////buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = 9999999f; // here is collect everything in one line, becuse using "." makes us go more down the chain of methods and classes etc
-
-                //////effectController.EffectGroups[0].PassiveEffects[1].Values[2] = 50f; 
-                #endregion
-
-
-
-
+                continue;
             }
 
-
+            if (GUILayout.Button(zombie.EntityName))
+            {
+                //O.ELP.TeleportToPosition(zombie.GetPosition());
+                zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Gave 99999 damage to entity ");
+            }
         }
-        //public static BuffValue buff;
+    }
+    else
+    {
+        GUILayout.Label("No entities found.");
+    }
 
-        public static void onehitKill()   //one hit kill - Toggle
+}
+
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ *  //buff = O.ELP.Buffs.GetBuff("customBuff");
+
+    //buff.BuffClass.DurationMax = 99999999f;
+    //buff.BuffClass.Icon = "ui_game_symbol_agility";
+    //buff.BuffClass.ShowOnHUD = true;
+    //buff.BuffClass.Hidden = false;
+    //buff.BuffClass.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
+    //buff.BuffClass.DisplayType = EnumEntityUINotificationDisplayMode.IconOnly;
+
+
+
+
+
+
+
+
+    //MinEffectGroup minEffectGroup = new MinEffectGroup { 
+    //OwnerTiered = false,
+
+    //}
+    //minEffectGroup.PassiveEffects.Add(newPassiveEffect);
+
+
+    //List<MinEffectGroup> effectGroupsList = new List<MinEffectGroup>();
+    //effectGroupsList.Add(minEffectGroup);
+
+
+    //effectController.EffectGroups = effectGroupsList;
+
+
+    //customBuff.Effects = effectController;
+
+
+
+    //effectController.EffectGroups
+
+
+    //whats above here is what the buff will look like when added to player
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //buff.BuffClass.Effects.PassivesIndex.Add(PassiveEffects.BlockDamage); //good adding  adds it to effect controller is not added to effectgroup
+    //add check if ther is only one effect group
+    //buff.BuffClass.Effects.EffectGroups[0].PassivesIndex.Add(PassiveEffects.BlockDamage); // adds to effectsgroup but empty
+    // for next step we need to loop throuh all passiveIndex to get the ones added manually then modify or
+
+    //buff.BuffClass.Effects.EffectGroups[0].PassivesIndex.Contains(PassiveEffects.BlockDamage);
+
+
+
+    //var indexvar = buff.BuffClass.Effects.EffectGroups[0].PassivesIndex.Find(effect => effect == PassiveEffects.BlockDamage); // returns passive effect
+
+    //int index = buff.BuffClass.Effects.EffectGroups[0].PassivesIndex.FindIndex(effect => effect == PassiveEffects.BlockDamage); // returns index 
+    //if (index != -1)
+    //{
+    //    buff.BuffClass.Effects.EffectGroups[0].PassivesIndex[index]. // does not return what i want
+    //    // Do something with the index thats been selected?... 
+    //}
+
+
+
+
+    //PassiveEffect newPassiveEffect = new PassiveEffect
+    //{
+    //    // Set the properties of the PassiveEffect instance accordingly
+    //    MatchAnyTags = true,
+    //    Modifier = PassiveEffect.ValueModifierTypes.base_add,
+    //    Type = PassiveEffects.BlockDamage,
+    //    Values = new float[] { 500 },
+    //    // Set other properties if needed
+    //};
+    //buff.BuffClass.Effects.EffectGroups[0].PassiveEffects.Add(newPassiveEffect);
+
+
+
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * //one hitt break block --Toggle
+//public static void DEbugoutCM()  //Creative and debug mode -- toggle
+//{
+
+//    string _type = "SETT.cm";
+//    var _value = SETT.cm;
+//    Debug.developerConsoleVisible = true;
+//    Console.WriteLine("THIS IS WRITE LINE" + _type);
+//    Debug.LogWarning($"Debug <color=_col>LogWarnig</color> for {_type}: " + _value);
+//    Debug.LogError($"Debug <color=_col>LogError</color> for {_type}: " + _value);
+//    Debug.Log($"Debug <color=_col>Log</color> for {_type}: " + _type);
+//    print($"This is a <color=_col_col>Print Message</color> for {_type}: " + _value);
+//    //Debug.developerConsoleVisible = true;
+//    GameSparks.Platforms.DefaultPlatform.print($"This is Actually the <color=green>INF/Print </color> console out for {_type} +cm+: " + _value);
+//    Log.Out("BYYYYY");
+
+
+//}
+
+
+
+
+
+
+ * public static void ListButtonPlayer()
+{
+    if (O.PlayerList.Count > 1)
+    {
+        foreach (EntityPlayer player in O.PlayerList)
         {
-
-            if (SETT._oneHitBlock == true)
+            if (!player || player == O.ELP || !player.IsAlive())
             {
-                BuffValue buff;
-                float flt = 99999999;
-                // hew we also use "megadamage" as a reference since it is easier to just utilize a already existing buff with the neccessary passive effects
-                O.ELP.Buffs.AddBuff("megadamage", -1, true, false, false, 20000000000f);
-                buff = O.ELP.Buffs.GetBuff("megadamage");
-                buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = flt;
-
-                buff.BuffClass.Hidden = true;
-                buff.BuffClass.RemoveOnDeath = true;
-                buff.BuffClass.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
-
+                continue;
             }
-            else if (SETT._oneHitBlock == false)
+            bool bl = false;
+            if (CGUILayout.FoldableMenuHorizontal(bl,player.EntityName, () =>
             {
-                O.ELP.Buffs.RemoveBuff("megadamage");
-            }
-            #region How i managed to find correct getBuff
+                if (GUILayout.Button("Teleport"))
+                {
+                    O.ELP.TeleportToPosition(player.GetPosition());
+                }
+                if (GUILayout.Button("kill"))
+                {
+                    O.ELP.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                }
+
+            },50f)) 
+            { 
 
 
-
-
-            //buff = O.ELP.Buffs.GetBuff("megadamage"); // first finding the buff that was added, Each buff has diffrent strings
-            //MinEffectController effectController = buff.BuffClass.Effects; // inside the buff we have many things but i want the effects, which is controled by effectcontroller 
-            //MinEffectGroup Passive = effectController.EffectGroups[0]; // Then i want the passives, and those are under effect groups, Which is a list of one to many effect groups 
-            //PassiveEffect passiveEffect = Passive.PassiveEffects[1];  // i know by studing the game that the block damage is in passive effect index 1 when using "megadamage"
-            //passiveEffect.Values[0]=999999f; // and here i am inside passive effect blockdamage, and i want to sett the value of the damage to index 2 (third)
-
-            ////////buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = 9999999f; // here is collect everything in one line, becuse using "." makes us go more down the chain of methods and classes etc
-
-            //////effectController.EffectGroups[0].PassiveEffects[1].Values[2] = 50f; 
-            #endregion
-
-
+            };
 
         }
+    }
+    else
+    {
 
-        //one hitt break block --Toggle
-        //public static void DEbugoutCM()  //Creative and debug mode -- toggle
-        //{
-
-        //    string _type = "SETT.cm";
-        //    var _value = SETT.cm;
-        //    Debug.developerConsoleVisible = true;
-        //    Console.WriteLine("THIS IS WRITE LINE" + _type);
-        //    Debug.LogWarning($"Debug <color=_col>LogWarnig</color> for {_type}: " + _value);
-        //    Debug.LogError($"Debug <color=_col>LogError</color> for {_type}: " + _value);
-        //    Debug.Log($"Debug <color=_col>Log</color> for {_type}: " + _type);
-        //    print($"This is a <color=_col_col>Print Message</color> for {_type}: " + _value);
-        //    //Debug.developerConsoleVisible = true;
-        //    GameSparks.Platforms.DefaultPlatform.print($"This is Actually the <color=green>INF/Print </color> console out for {_type} +cm+: " + _value);
-        //    Log.Out("BYYYYY");
-
-
-        //}
-
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        #endregion
-        #endregion
+        GUILayout.Label("No players found.");
     }
 }
+
+ * 
+ * 
+ * 
+ */

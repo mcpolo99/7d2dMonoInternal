@@ -155,9 +155,9 @@ namespace SevenDTDMono
         }
         public static void InitializeUnityExplorer()
         {
-            if (assemblyHelper.AreAllAssembliesLoaded() == true && Settings.loaded == false)
+            if (assemblyHelper.AreAllAssembliesLoaded() == true && Settings.ASMloaded == false)
             {
-                Settings.loaded=true;
+                Settings.ASMloaded=true;
                 UnityExplorer.ExplorerStandalone.CreateInstance();
             }
 

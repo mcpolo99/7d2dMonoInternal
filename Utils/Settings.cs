@@ -50,6 +50,8 @@ namespace SevenDTDMono
         public static bool _healthNstamina = false;
         public static bool _foodNwater = false;
         public static bool _ignoreByAI = false;
+        public static bool _NoBadBuff = false;
+        public static bool _addgoodbuff = false;
         
 
 
@@ -70,15 +72,22 @@ namespace SevenDTDMono
 
         internal static bool drawDebug = false;
         internal static bool selfDestruct = false;
-        public static bool loaded=false;
-        public static bool Istarted = false;
+        public static bool IsGameStarted; //when we are loaded into the gameworld
+        public static bool IsVarsLoaded; //
+
+        public static bool ASMloaded=false; //assemblies loader preventing looploading
+        public static bool StartMenuStarted = false;
+
+
         public static bool reloadBuffs = false;
         #endregion
 
 
 
         #region FLoats
-        public static float _dmg;
+        public static float _dmg = 10;
+        public static float _run = 10;
+        public static float _jmp = 10;
         #endregion
 
         #region Vars

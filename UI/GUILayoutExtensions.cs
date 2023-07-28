@@ -8,6 +8,7 @@ using UnityEditor;
 using InControl;
 using XInputDotNetPure;
 using InControl.UnityDeviceProfiles;
+using static PassiveEffect;
 
 namespace SevenDTDMono.Utils
 {
@@ -21,13 +22,13 @@ namespace SevenDTDMono.Utils
         private static Rect originalWinRect;
 
         #region BeginHorizontal
-        public static void BeginHorizontal(GUIContent content, GUIStyle style, System.Action contentActions,  params GUILayoutOption[] options)
+        public static void BeginHorizontal(GUIContent content, GUIStyle style, System.Action contentActions, params GUILayoutOption[] options)
         {
-            GUILayout.BeginHorizontal(content,style,options);
+            GUILayout.BeginHorizontal(content, style, options);
             contentActions?.Invoke();
             GUILayout.EndHorizontal();
         }
-        public static void BeginHorizontal(string _string, GUIStyle style, System.Action contentActions,  params GUILayoutOption[] options)
+        public static void BeginHorizontal(string _string, GUIStyle style, System.Action contentActions, params GUILayoutOption[] options)
         {
             GUILayout.BeginHorizontal(_string, style, options);
             contentActions?.Invoke();
@@ -39,7 +40,7 @@ namespace SevenDTDMono.Utils
             contentActions?.Invoke();
             GUILayout.EndHorizontal();
         }
-        public static void BeginHorizontal( System.Action contentActions, params GUILayoutOption[] options)
+        public static void BeginHorizontal(System.Action contentActions, params GUILayoutOption[] options)
         {
             GUILayout.BeginHorizontal(options);
             contentActions?.Invoke();
@@ -47,7 +48,7 @@ namespace SevenDTDMono.Utils
         }
         public static void BeginHorizontal(GUIStyle style, params GUILayoutOption[] options)
         {
-            GUILayout.BeginHorizontal(style,options);
+            GUILayout.BeginHorizontal(style, options);
             //contentActions?.Invoke();
             GUILayout.EndHorizontal();
         }
@@ -316,7 +317,7 @@ namespace SevenDTDMono.Utils
             GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
             buttonStyle.normal.textColor = toggle ? Active : Inactive;
             buttonStyle.active.textColor = Active;
-            buttonStyle.hover.textColor =  Hover;
+            buttonStyle.hover.textColor = Hover;
 
             bool isClicked = GUILayout.Button(label, buttonStyle, options);
 
@@ -333,7 +334,46 @@ namespace SevenDTDMono.Utils
             return isClicked;
         }
 
-     
+        public static bool Button(string label, ref int currentIndex, params GUILayoutOption[] buttonOptions)//Cycle enumlist item
+        {
+            // Display the button with the label and the current enum value as buttonText.
+            bool buttonPressed = GUILayout.Button(label + " " + ((Enum)System.Enum.ToObject(typeof(ValueModifierTypes), currentIndex)).ToString(), buttonOptions);
+
+            // If the button is pressed, increment the index and loop back to the beginning if needed.
+            if (buttonPressed)
+            {
+                currentIndex = (currentIndex + 1) % System.Enum.GetValues(typeof(ValueModifierTypes)).Length;
+            }
+
+            // Return the buttonPressed state.
+            return buttonPressed;
+        }
+
+
+
+
+
+        public static bool Button1(string label, Action[] onClickActions, params GUILayoutOption[] options)
+        {
+            GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+            buttonStyle.normal.textColor = Inactive;
+            buttonStyle.active.textColor = Active;
+            buttonStyle.hover.textColor = Hover;
+
+            bool isClicked = GUILayout.Button(label, buttonStyle, options);
+
+            if (isClicked && onClickActions != null)
+            {
+                foreach (var onClickAction in onClickActions)
+                {
+                    onClickAction?.Invoke();
+                }
+            }
+
+            return isClicked;
+        }
+
+
 
         public static int Toolbar4(int selected, string[] texts, GUIStyle style, params GUILayoutOption[] options)
         {
@@ -382,6 +422,11 @@ namespace SevenDTDMono.Utils
             }
             Rect headerRect = GUILayoutUtility.GetRect(width, 20f, headerStyle); // Pass the width value here
             Rect toggleRect = new Rect(headerRect.y, headerRect.x, 10f, 20f);
+
+            float lineHeight = 10f;
+            Rect lineRect = new Rect(headerRect.x, headerRect.y + (headerRect.height - lineHeight) * 0.5f, 30, lineHeight);
+            DrawLine(lineRect, display ? Color.green : Color.yellow);
+
             GUI.Box(headerRect, label, headerStyle);
             Event e = Event.current;
             if (e.type == EventType.Repaint)
@@ -402,6 +447,55 @@ namespace SevenDTDMono.Utils
 
             return display;
         }
+        public static void DropDownForMethods(string label, System.Action content, ref bool toggle, params GUILayoutOption[] options)
+        {
+
+            GUIStyle headerStyle = new GUIStyle(GUI.skin.button);
+            //GUIStyle headerStyle = new GUIStyle(GUI.skin.box);
+            headerStyle.alignment = TextAnchor.MiddleRight;
+            headerStyle.fontSize = 15;
+
+            if (!toggle)
+            {
+                headerStyle.fontStyle = FontStyle.Bold;
+                //headerStyle.normal.textColor = Color.green;
+            }
+            else
+            {
+                headerStyle.fontStyle = FontStyle.BoldAndItalic;
+                //headerStyle.normal.textColor = Color.yellow;
+            }
+            // GUIContent content1 = new GUIContent(toggle ? "\u25BC" : "\u25BA", "Click to expand/collapse");
+
+            Rect headerRect = GUILayoutUtility.GetRect(300, 30f, headerStyle); // Pass the width value here
+
+            //Rect headerRect = GUILayoutUtility.GetRect(content1, headerStyle); // Pass the width value here
+            //Rect headerRect1 = GUILayoutUtility.GetRect(100, 10); // Pass the width value here
+            float lineHeight = 10f;
+            Rect lineRect = new Rect(headerRect.x, headerRect.y + (headerRect.height - lineHeight) * 0.5f, 30, lineHeight);
+            DrawLine(lineRect, toggle ? Color.green : Color.yellow);
+            GUI.Box(headerRect, label, headerStyle);
+            if (Event.current.type == EventType.MouseDown && headerRect.Contains(Event.current.mousePosition))
+            {
+                toggle = !toggle;
+                Event.current.Use();
+            }
+
+            if (toggle)
+            {
+
+                CGUILayout.BeginVertical(GUI.skin.box, () =>
+                {
+
+                    content?.Invoke();
+
+                });
+
+
+
+            }
+        }
+
 
 
         public static bool CustomDropDown(string label, System.Action content, float width, params GUILayoutOption[] options)
@@ -444,10 +538,10 @@ namespace SevenDTDMono.Utils
             return toggle;
         }
 
-        public static bool CustomDropDown(bool toggle ,string label, System.Action content, params GUILayoutOption[] options)
+        public static bool CustomDropDown(bool toggle, string label, System.Action content, params GUILayoutOption[] options)
         {
             //for every press toggle on and off for the customdrop down
-           
+
             GUIStyle headerStyle = new GUIStyle(GUI.skin.box);
             headerStyle.alignment = TextAnchor.MiddleCenter;
             headerStyle.fontSize = 15;
@@ -521,7 +615,12 @@ namespace SevenDTDMono.Utils
 
 
 
-
+        public static void DrawLine(Rect rect, Color color)
+        {
+            GUI.color = color;
+            GUI.DrawTexture(rect, Texture2D.whiteTexture);
+            GUI.color = Color.white;
+        }
 
 
 
