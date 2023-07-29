@@ -20,15 +20,22 @@ F7 default for UnityExplorer. rekomended to set to other button since 7dtd use f
 6. Toggle creative mode and debug mode +
 7. Crosshair, FOV circle
 8. Speedhack
-9. Teleport to players
+9. Teleport to players / zombies Also Kill Players /Zombies
 10. Level up
 11. Add 10 skill points
-12. Health and staminba
-13. food and water
-14. Buffs trigger
-15. Buffs remove
+12. Health and stamina  // you can still take damage! this only makes regen as same phase as loss
+13. food and water //this only makes regen as same phase as loss
+14.BUFFS
+    14.1  Buffs trigger //just press button in buffs scroll view to apply buff to yourself
+    14.2 Remove all buffs
+    14.3 Add good Buffs
+    14.4 Add out custom cheatbuff shich work together with Passive effect add //
+    14.5 Clear cheatbuff incase we mess upp
+    14.6 add effect group should not need to be used, but incase you dont get effects by addding passive effect use this button
+    14.7 some more buttosn setting passives  
 16. Ignored på AI
-17.  SceneDebugger (F3)
+17. SceneDebugger (F3)
+18. 
 
 I added some log output, Primary for debugging but could be usefull in other cases
 ![log_](https://github.com/mcpolo99/7d2dMonoInternal/assets/32239939/90c01af9-dbf6-44df-9a82-e5df20f1be37)
