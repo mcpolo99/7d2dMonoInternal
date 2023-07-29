@@ -1,6 +1,6 @@
 
 # 7d2dMonoInternal
-Basic mono internal for 7 days to die. Pretty well optimised, with the menu open and all features enabled I get ~80-90 FPS while normally I get ~100 FPS. BYPASS NOT INCLUDED.
+Basic mono internal for 7 days to die. 100 % spagetti code
 
 Git https://github.com/mcpolo99/SharpMonoInjector.git
 
