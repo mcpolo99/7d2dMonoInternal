@@ -120,6 +120,7 @@ namespace SevenDTDMono
         public  static string inputPassiveEffects = "none";
         public  static string inputFloat = "1";
         private static Dictionary<string, bool> zombieToggleStates = new Dictionary<string, bool>();
+        private static Dictionary<string, bool> playerToggleStates = new Dictionary<string, bool>();
         private static Dictionary<PassiveEffects, bool> passiveToggleStates = new Dictionary<PassiveEffects, bool>();
 
         private static List<string> ListPerksAlwaysAdd = new List<string>
@@ -279,11 +280,11 @@ namespace SevenDTDMono
             {
                 CmDm();
             }
-            if (SETT._oneHitBlock || !SETT._oneHitBlock ) //Toggle for ingame Creative and Debug Working like a sharm
+            if (SETT._oneHitBlock&& SETT.IsGameStarted == true || !SETT._oneHitBlock && SETT.IsGameStarted == true) //Toggle for ingame Creative and Debug Working like a sharm
             {
                 onehitBlock();
             }
-            if (SETT._oneHitKill == true) //Toggle for ingame Creative and Debug Working like a sharm
+            if (SETT._oneHitKill == true && SETT.IsGameStarted == true) //Toggle for ingame Creative and Debug Working like a sharm
             {
                 onehitKill();
             }
@@ -313,27 +314,27 @@ namespace SevenDTDMono
 
             }
 
-            if(SETT._healthNstamina==true)
+            if(SETT._healthNstamina==true&& SETT.IsGameStarted == true)
             {
                 HealthNStamina();
             };
-            if(SETT._foodNwater == true)
+            if(SETT._foodNwater == true&& SETT.IsGameStarted == true)
             {
 
                 FoodNWater();
             };
-            if (SETT._NoBadBuff == true)
+            if (SETT._NoBadBuff == true && SETT.IsGameStarted == true)
             {
 
                 RemoveBadBuff();
             };
-            if (SETT._addgoodbuff == true)
+            if (SETT._addgoodbuff == true && SETT.IsGameStarted == true)
             {
 
                 RemoveBadBuff();
                 AddGoodBuff();
             };
-            if (SETT._ignoreByAI == true)
+            if (SETT._ignoreByAI == true && SETT.IsGameStarted == true)
             {
                 IgnoredbyAI();
             };
@@ -434,24 +435,28 @@ namespace SevenDTDMono
         //public static EntityAlive Entity;
         public static void onehitBlock()   //one hit break - Toggle
         {
-            if (O.ELP)
+            if (O.ELP && SETT.IsGameStarted)
             {
+                //PassiveEffects.BlockDamage
                 if (SETT._oneHitBlock == true)
                 {
-                    float flt = 99999999;
-                    BuffValue buff;
-                    O.ELP.Buffs.AddBuff("megadamage", -1, true, false, false, 20000000000f);
-                    buff = O.ELP.Buffs.GetBuff("megadamage");
-                    // need to create a index check so correct index is sekected.
-                    buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = flt;
+                    
 
-                    buff.BuffClass.Hidden = true;
-                    buff.BuffClass.RemoveOnDeath = true;
-                    buff.BuffClass.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
+                    float flt = 99999999;
+                    //BuffValue buff;
+                    //O.ELP.Buffs.AddBuff("megadamage", -1, true, false, false, 20000000000f);
+                    //buff = O.ELP.Buffs.GetBuff("megadamage");
+                    // need to create a index check so correct index is sekected.
+                    //buff.BuffClass.Effects.EffectGroups[0].PassiveEffects[1].Values[2] = flt;
+
+                    //buff.BuffClass.Hidden = true;
+                    //buff.BuffClass.RemoveOnDeath = true;
+                    //buff.BuffClass.IconColor = new Color(0.22f, 0.4f, 1f, 100f);
 
                 }
                 else if (SETT._oneHitBlock == false)
                 {
+
                     O.ELP.Buffs.RemoveBuff("megadamage");
                 }
                 //pegasus for run speed sett float slider on passiveeffect.values
@@ -557,8 +562,103 @@ namespace SevenDTDMono
 
         #region Methods
 
+        public static void DamageBuff()
+        {
+            MinEffectController _MEFC = new MinEffectController
+            {
+                EffectGroups = new List<MinEffectGroup>
+                {
+                    new MinEffectGroup
+                    {
+                        OwnerTiered = true,
+                        PassiveEffects = new List<PassiveEffect>
+                        {
+                             new PassiveEffect
+                             {
+                                 MatchAnyTags = true,
+                                 Type = PassiveEffects.BlockDamage,
+                                 Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                                 Values = new float[] { 10}
+                                 //Set other properties of PassiveEffect if needed
+                             }
+                             ,
+                            new PassiveEffect
+                            {
+                                // Set the properties of the PassiveEffect instance accordingly
+                                 MatchAnyTags = true,
+                                 Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                                 Type = PassiveEffects.EntityDamage,
+                                 Values = new float[] { 10 },
+
+                                 //Set other properties if needed
+                            }
+                             /*,
+                            new PassiveEffect
+                            {
+                                // Set the properties of the PassiveEffect instance accordingly
+                                 MatchAnyTags = true,
+                                 Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                                 Type = PassiveEffects.BlockDamage,
+                                 Values = new float[] { BlockDMGSlider },
+                                 //Set other properties if needed
+                            },
+                            new PassiveEffect
+                            {
+                                // Set the properties of the PassiveEffect instance accordingly
+                                 MatchAnyTags = true,
+                                 Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                                 Type = PassiveEffects.CraftingTime,
+                                 Values = new float[] { 0 },
+                                 //Set other properties if needed
+                            },
+                            new PassiveEffect
+                            {
+                                // Set the properties of the PassiveEffect instance accordingly
+                                 MatchAnyTags = true,
+                                 Modifier = PassiveEffect.ValueModifierTypes.base_add,
+                                 Type = PassiveEffects.FoodGain,
+                                 Values = new float[] { 9999 },
+                                 //Set other properties if needed
+                            }
+                            */
+                        },
+
+                        PassivesIndex = new List<PassiveEffects>
+                        {
+
+                             PassiveEffects.BlockDamage,
+                             PassiveEffects.EntityDamage,
+
+                        }
+
+                    }
+                },
+                PassivesIndex = new HashSet<PassiveEffects>
+                {
+
+                    PassiveEffects.EntityDamage,
+                    PassiveEffects.BlockDamage
+
+                }
+            };
+            BuffClass DMGBUFF = new BuffClass()
+            {
+                Name = "DMGBUFF",
+                DamageType = EnumDamageTypes.None, // Set the appropriate damage type if applicable
+                Description = $"This is a DMGBUFF",
+                DurationMax = 99999999f,
+                Effects = _MEFC,
+            };
+            
+
+           
+            BuffManager.Buffs.Add(DMGBUFF.Name, DMGBUFF);  // need to add to buffmanager before init Everything before adding to buffmanager is what will define the buff
+            O.buffClasses.Add(DMGBUFF);
 
 
+
+
+        }
 
 
 
@@ -575,18 +675,19 @@ namespace SevenDTDMono
                         continue;
                     }
 
-
-                    string zombieName = zombie.entityId.ToString();
+                    string xm1 = zombie.entityFlags.ToString();
+                    string ZM1= zombie.EntityName.ToString();
+                    string zombieIID = zombie.entityId.ToString();
                     string zm = zombie.name;
 
                     // Get or set the zombie's toggle state in the dictionary.
-                    if (!zombieToggleStates.ContainsKey(zombieName))
+                    if (!zombieToggleStates.ContainsKey(ZM1+ zombieIID))
                     {
-                        zombieToggleStates[zombieName] = false; // Set the initial state to false for new zombies.
+                        zombieToggleStates[zombieIID] = false; // Set the initial state to false for new zombies.
                     }
                   
-                    bool toggleState = zombieToggleStates[zombieName];
-                    CGUILayout.DropDownForMethods(zombieName, () =>
+                    bool toggleState = zombieToggleStates[zombieIID];
+                    CGUILayout.DropDownForMethods(zombieIID, () =>
                     {
                         if (GUILayout.Button("Teleport"))
                         {
@@ -607,7 +708,7 @@ namespace SevenDTDMono
 
 
                     //GUILayout.BeginHorizontal();
-                    //CGUILayout.CustomDropDown(zm+zombieName, () =>
+                    //CGUILayout.CustomDropDown(zm + zombieIID, () =>
                     //{
                     //    if (GUILayout.Button("Teleport"))
                     //    {
@@ -623,7 +724,7 @@ namespace SevenDTDMono
                     //GUILayout.EndHorizontal();
 
                     // Update the toggle state in the dictionary.
-                    zombieToggleStates[zombieName] = toggleState;
+                    zombieToggleStates[zombieIID] = toggleState;
                 }
             }
             else
@@ -643,17 +744,17 @@ namespace SevenDTDMono
                     }
 
 
-                    string zombieName = player.name.ToString();
+                    string playerName = player.name.ToString();
                     string zm = player.name;
 
                     // Get or set the zombie's toggle state in the dictionary.
-                    if (!zombieToggleStates.ContainsKey(zombieName))
+                    if (!playerToggleStates.ContainsKey(playerName))
                     {
-                        zombieToggleStates[zombieName] = false; // Set the initial state to false for new zombies.
+                        playerToggleStates[playerName] = false; // Set the initial state to false for new zombies.
                     }
 
-                    bool toggleState = zombieToggleStates[zombieName];
-                    CGUILayout.DropDownForMethods(zombieName, () =>
+                    bool toggleState = playerToggleStates[playerName];
+                    CGUILayout.DropDownForMethods(playerName, () =>
                     {
                         //CGUILayout.Button("whatever", Color.yellow, Color.blue);
                         if (GUILayout.Button("Teleport"))
@@ -670,7 +771,7 @@ namespace SevenDTDMono
                     }, ref toggleState);
 
                     // Update the toggle state in the dictionary.
-                    zombieToggleStates[zombieName] = toggleState;
+                    playerToggleStates[playerName] = toggleState;
                 }
             }
             else
@@ -1013,10 +1114,10 @@ namespace SevenDTDMono
             count - No clue
 
 
-
+            
 
             */
-
+            
 
 
             if (O.ELP.Buffs.HasBuff("CheatBuff") == false)
@@ -1035,8 +1136,8 @@ namespace SevenDTDMono
                 Values = new float[] { value }, // Adjust the values accordingly
                                              // Set other properties if needed
             };//this is just the passive effects
- 
 
+           
 
 
             var passiveEffectsList = O._minEffectController.EffectGroups[0].PassiveEffects;

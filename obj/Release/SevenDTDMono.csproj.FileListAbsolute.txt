@@ -1,0 +1,6 @@
+C:\VS\Sources\build\release\SevenDTDMono.dll
+C:\VS\Sources\build\release\SevenDTDMono.pdb
+C:\VS\Sources\7DaysToDie\7d2dMonoInternal\obj\Release\SevenDTDMono.csproj.AssemblyReference.cache
+C:\VS\Sources\7DaysToDie\7d2dMonoInternal\obj\Release\SevenDTDMono.csproj.CoreCompileInputs.cache
+C:\VS\Sources\7DaysToDie\7d2dMonoInternal\obj\Release\SevenDTDMono.dll
+C:\VS\Sources\7DaysToDie\7d2dMonoInternal\obj\Release\SevenDTDMono.pdb

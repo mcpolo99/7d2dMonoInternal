@@ -300,40 +300,40 @@ namespace SevenDTDMono
                 CGUILayout.BeginHorizontal(() => { GUILayout.Label("Modifiers"); });
                 CGUILayout.BeginVertical(() =>
                 {
-                    //GUILayout.Space(10);
-                    CGUILayout.BeginHorizontal(() =>
-                    {
-                        GUILayout.Label("Damage", Labelstyle, GUILayout.MaxWidth(60));
-                        SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0f, 0f, 200f);
+                //    //GUILayout.Space(10);
+                //    CGUILayout.BeginHorizontal(() =>
+                //    {
+                //        GUILayout.Label("Damage", Labelstyle, GUILayout.MaxWidth(60));
+                //        SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0f, 0f, 200f);
 
-                        //SETT._dmg = GUILayout.HorizontalSlider(SETT._dmg, 0f, 200f);
-                        //SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0.1f, 0f, 200f, GUILayout.ExpandWidth(true));
-                        GUILayout.Label(SETT._dmg.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
-
-
-                    });
-                    CGUILayout.BeginHorizontal(() =>
-                    {
-                        GUILayout.Label("Sprint", Labelstyle, GUILayout.MaxWidth(60));
-                        SETT._run = GUILayout.HorizontalScrollbar(SETT._run, 0f, 0f, 200f);
-
-                        //SETT._dmg = GUILayout.HorizontalSlider(SETT._dmg, 0f, 200f);
-                        //SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0.1f, 0f, 200f, GUILayout.ExpandWidth(true));
-                        GUILayout.Label(SETT._run.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
+                //        //SETT._dmg = GUILayout.HorizontalSlider(SETT._dmg, 0f, 200f);
+                //        //SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0.1f, 0f, 200f, GUILayout.ExpandWidth(true));
+                //        GUILayout.Label(SETT._dmg.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
 
 
-                    });
-                    CGUILayout.BeginHorizontal(() =>
-                    {
-                        GUILayout.Label("Jump", Labelstyle, GUILayout.MaxWidth(60));
-                        SETT._jmp = GUILayout.HorizontalScrollbar(SETT._jmp, 0f, 0f, 200f);
+                //    });
+                //    CGUILayout.BeginHorizontal(() =>
+                //    {
+                //        GUILayout.Label("Sprint", Labelstyle, GUILayout.MaxWidth(60));
+                //        SETT._run = GUILayout.HorizontalScrollbar(SETT._run, 0f, 0f, 200f);
 
-                        //SETT._dmg = GUILayout.HorizontalSlider(SETT._dmg, 0f, 200f);
-                        //SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0.1f, 0f, 200f, GUILayout.ExpandWidth(true));
-                        GUILayout.Label(SETT._jmp.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
+                //        //SETT._dmg = GUILayout.HorizontalSlider(SETT._dmg, 0f, 200f);
+                //        //SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0.1f, 0f, 200f, GUILayout.ExpandWidth(true));
+                //        GUILayout.Label(SETT._run.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
 
 
-                    });
+                //    });
+                //    CGUILayout.BeginHorizontal(() =>
+                //    {
+                //        GUILayout.Label("Jump", Labelstyle, GUILayout.MaxWidth(60));
+                //        SETT._jmp = GUILayout.HorizontalScrollbar(SETT._jmp, 0f, 0f, 200f);
+
+                //        //SETT._dmg = GUILayout.HorizontalSlider(SETT._dmg, 0f, 200f);
+                //        //SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0.1f, 0f, 200f, GUILayout.ExpandWidth(true));
+                //        GUILayout.Label(SETT._jmp.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
+
+
+                //    });
                 });
 
 
@@ -518,9 +518,9 @@ namespace SevenDTDMono
                             CGUILayout.BeginHorizontal(customBoxStyleGreen);
                             scrollZombie = GUILayout.BeginScrollView(scrollZombie, GUILayout.MinHeight(100f), GUILayout.MaxHeight(400f));//GUILayout.MaxWidth(250f), GUILayout.Width(250f),, GUILayout.Height(200f)
                             {
-                                Cheat.GetList(lastzombieadded, O.ELP, O.zombieList);
+                                //Cheat.GetList(lastzombieadded, O.ELP, O.zombieList);
                                 //LISTDROPPDOWNMENU();
-                                //Cheat.ListZombie1();
+                                Cheat.ListZombie1();
                                 //Cheat.GetList(lastBuffAdded, O.ELP, O.buffClasses);
                             }
                             GUILayout.EndScrollView();
