@@ -9,6 +9,7 @@ Git https://github.com/mcpolo99/SharpMonoInjector.git
 
 Buttons, F2 to open menu
 F3 to open scenedebugger
+F7 default for UnityExplorer. rekomended to set to other button since 7dtd use f7 to hide gui
 
 # Features
 1. Magic Bullet (players & zombies)
