@@ -330,9 +330,3 @@ C:\VS\Sources\7d2dMonoInternal\obj\Debug\SevenDTDMono.csproj.CoreCompileInputs.c
 C:\VS\Sources\7d2dMonoInternal\obj\Debug\SevenDTDMono.csproj.CopyComplete
 C:\VS\Sources\7d2dMonoInternal\obj\Debug\SevenDTDMono.dll
 C:\VS\Sources\7d2dMonoInternal\obj\Debug\SevenDTDMono.pdb
-C:\VS\Sources\7DaysToDie\7d2dMonoInternal\bin\debug\SevenDTDMono.dll
-C:\VS\Sources\7DaysToDie\7d2dMonoInternal\bin\debug\SevenDTDMono.pdb
-C:\VS\Sources\7DaysToDie\7d2dMonoInternal\obj\Debug\SevenDTDMono.csproj.AssemblyReference.cache
-C:\VS\Sources\7DaysToDie\7d2dMonoInternal\obj\Debug\SevenDTDMono.csproj.CoreCompileInputs.cache
-C:\VS\Sources\7DaysToDie\7d2dMonoInternal\obj\Debug\SevenDTDMono.dll
-C:\VS\Sources\7DaysToDie\7d2dMonoInternal\obj\Debug\SevenDTDMono.pdb
