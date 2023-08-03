@@ -1,4 +1,5 @@
 ﻿
+using SevenDTDMono;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,9 +31,11 @@ public class AssemblyHelper : IDisposable
             foreach (string assemblyName in assembliesToLoad)
             {
                 LoadAssembly(assemblyName);
+                
             }
-        }
 
+
+        }
     }
 
     private static void LoadAssembly(string assemblyName)
@@ -54,6 +57,7 @@ public class AssemblyHelper : IDisposable
             else
             {
                 Log.Out($"{assemblyName} is not present at location: {assemblyPath}");
+                Settings.ASMPreload = false;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 
@@ -44,27 +45,10 @@ namespace SevenDTDMono
         public static bool fovCircle = false;
 
 
-        //cheats toggle
-
-        public static bool TESTTOG = false;
-        public static bool _healthNstamina = false;
-        public static bool _foodNwater = false;
-        public static bool _ignoreByAI = false;
-        public static bool _NoBadBuff = false;
-        public static bool _addgoodbuff = false;
-        
-
-
-        
-
-
-        public static bool _Buffs = false;
 
         //not sure
         public static bool _trystackitems = false;
         public static bool _QuickScrap = false;
-        public static bool _oneHitBlock = false;
-        public static bool _oneHitKill = false;
         public static bool _InstantLoot = false;
 
 
@@ -74,20 +58,47 @@ namespace SevenDTDMono
         internal static bool selfDestruct = false;
         public static bool IsGameStarted; //when we are loaded into the gameworld
         public static bool IsVarsLoaded; //
+        public static bool IsGameStartMenu; //
+
 
         public static bool ASMloaded=false; //assemblies loader preventing looploading
+        public static bool ASMPreload=false; //assemblies loader preventing looploading
+
         public static bool StartMenuStarted = false;
 
 
         public static bool reloadBuffs = false;
+
+
+
+        //cheats toggle
+
+        public static bool _QuestComplete = false;
+        public static bool _EtraderOpen = false;
+        public static bool _LOQuestRewards = false;
+        public static bool _healthNstamina = false;
+        public static bool _foodNwater = false;
+        public static bool _ignoreByAI = false;
+        public static bool _NoBadBuff = false;
+        public static bool _BL_Harvest = false;
+        public static bool _BL_Blockdmg = false;
+        public static bool _BL_Kill = false;
+        public static bool _BL_Run = false;
+        public static bool _BL_Jmp = false;
+        public static bool _BL_APM = false;
+
         #endregion
 
 
 
-        #region FLoats
-        public static float _dmg = 10;
-        public static float _run = 10;
-        public static float _jmp = 10;
+        #region FLoats Sliders
+        public static float _FL_dmg = 0.5f;
+        public static float _FL_run = 0.5f; //RunSpeed
+        public static float _FL_jmp = 0.5f; //JumpStrength
+        public static float _FL_killdmg = 0.5f; // EntityDamage
+        public static float _FL_blokdmg = 0.5f; //blockdamage
+        public static float _FL_harvest = 2f;   //Harvestcount
+        public static float _FL_APM = 2f; //AttacksPerMinute
         #endregion
 
         #region Vars
@@ -95,6 +106,7 @@ namespace SevenDTDMono
 
         #endregion
 
+        public static Dictionary<string, bool> BTS = new Dictionary<string, bool>();
         #region DEf
         public static string Text= "Text";
         public static Text BOOLText;

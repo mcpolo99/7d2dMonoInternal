@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.IO;
 using O = SevenDTDMono.Objects;
 using SETT = SevenDTDMono.Settings;
 using SevenDTDMono.Utils;
@@ -11,14 +12,16 @@ using UnityEngine.UIElements;
 using DynamicMusic;
 using UniLinq;
 using System.Linq;
-using UnityExplorer;
+//using UnityExplorer;
 using InControl;
 using System.CodeDom;
 using SevenDTDMono;
 using TMPro;
-using UniverseLib;
+//using UniverseLib;
 using static PassiveEffect;
 using System.Reflection;
+using System.Xml.Linq;
+using System.Collections.Concurrent;
 
 namespace SevenDTDMono
 {
@@ -39,6 +42,7 @@ namespace SevenDTDMono
         private bool FoldPlayer = false;
         private bool FoldZombie = false;
         private bool FoldBuff = false;
+        private bool FoldCBuff = false;
         private bool FoldPassive = false;
         private bool lastBuffAdded = false;
         private bool lastzombieadded = false;
@@ -61,6 +65,7 @@ namespace SevenDTDMono
         private Vector2 scrollPlayer;
         private Vector2 scrollKill;
         private Vector2 scrollBuff;
+        private Vector2 scrollCBuff;
         private Vector2 scrollZombie;
         private Vector2 scrollPassive;
 
@@ -69,6 +74,7 @@ namespace SevenDTDMono
         private Vector2 ScrollMenu2 = Vector2.zero;
         private Vector2 ScrollMenu1 = Vector2.zero;
         private Vector2 ScrollMenu0 = Vector2.zero;
+        private Vector2 test;
 
         //public ToggleColors toggleColors;
         private GUIStyle customBoxStyleGreen;
@@ -81,14 +87,19 @@ namespace SevenDTDMono
         public float counter;
         public string Text;
         public Text counterText;
-        private Logger _log;
         #endregion
 
 
+        //public Dictionary<string, bool> ToggleStates = new Dictionary<string, bool>();
 
 
+        ConcurrentDictionary<object, Boolean> ToggleBools = new ConcurrentDictionary<object, Boolean>();
 
 
+        void OnDestroy() 
+        {
+            O.ELP.Buffs.RemoveBuffs();
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -96,11 +107,6 @@ namespace SevenDTDMono
             windowID = new System.Random(Environment.TickCount).Next(1000, 65535);
             windowRect = new Rect(10f, 400f, 400f, 500f);
             GUI.color = Color.white;
-            _log = new Logger();
-            _log.InitializeLogger();
-
-
-
         }
 
         // Update is called once per frame
@@ -125,6 +131,11 @@ namespace SevenDTDMono
                 SETT.selfDestruct = false; //set bool to false so we can inject again
                 Destroy(Loader.gameObject); // destroys our game object we injected
             }
+            if (SETT.aimbot==true)
+            {
+
+            }
+
 
 
         }
@@ -240,10 +251,11 @@ namespace SevenDTDMono
                                 CGUILayout.Button("Kill Self", Cheat.KillSelf);
                                 //CGUILayout.Button("Ignored By AI with ref", ref SETT._ignoreByAI);
 
-                                CGUILayout.Button("Ignored By AI", Cheat.IgnoredbyAI);
+                                CGUILayout.Button("Ignored By AI",ref SETT._ignoreByAI);
+                              
                                 //CGUILayout.Button("Ignored By AI", Cheat.IgnoredbyAI);
                                 CGUILayout.Button("Level Up", Cheat.levelup);
-                                CGUILayout.Button("Add skillpoints", Cheat.skillpoints);
+
                                 CGUILayout.Button("Creative/Debug Mode", ref SETT.CmDm);
 
                             });
@@ -253,11 +265,19 @@ namespace SevenDTDMono
 
                                 CGUILayout.Button("BTN", Cheat.levelup);
                                 //CGUILayout.Button("Skillpoints", Cheat.skillpoints);
-                                CGUILayout.Button("Health and Stamina", Cheat.HealthNStamina, ref SETT._healthNstamina);//one type of button
-                                CGUILayout.Button("Food And Water", ref SETT._foodNwater);
+                                //CGUILayout.Button("Health and Stamina", Cheat.HealthNStamina, ref SETT._healthNstamina);//USE BUFF INSTEAD
+                                //CGUILayout.Button("Food And Water", Cheat.FoodNWater,ref SETT._foodNwater);//USE BUFF INSTEAD
+                                if (CGUILayout.Button($"Teleport To Marker "))
+                                {
+                                    O.ELP.TeleportToPosition(new Vector3(O.ELP.markerPosition.ToVector3().x, O.ELP.markerPosition.ToVector3().y+2, O.ELP.markerPosition.ToVector3().z));
+                                }
+                                CGUILayout.Button("Instant Quest", ref SETT._QuestComplete);
+                                CGUILayout.Button("Loop LAST Quest Rewards", ref SETT._LOQuestRewards);
+                                CGUILayout.Button("Trader Open 24/7", ref SETT._EtraderOpen);
+
 
                                 //CGUILayout.Button("Test get player", Cheat.Getplayer);
-                                CGUILayout.Button(ref SETT.TESTTOG, "Test Toggle", Color.green, Color.red);
+                                //CGUILayout.Button(ref SETT.TESTTOG, "Test Toggle", Color.green, Color.red);
 
                             });
                         });
@@ -300,42 +320,52 @@ namespace SevenDTDMono
                 CGUILayout.BeginHorizontal(() => { GUILayout.Label("Modifiers"); });
                 CGUILayout.BeginVertical(() =>
                 {
-                //    //GUILayout.Space(10);
-                //    CGUILayout.BeginHorizontal(() =>
-                //    {
-                //        GUILayout.Label("Damage", Labelstyle, GUILayout.MaxWidth(60));
-                //        SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0f, 0f, 200f);
+                    //GUILayout.Space(10);
+                    CGUILayout.HorizontalScrollbarWithLabel("Attacks/minute", ref SETT._FL_APM,500f);
+                    CGUILayout.HorizontalScrollbarWithLabel("Jump Strength", ref SETT._FL_jmp, 5f);
+                    CGUILayout.HorizontalScrollbarWithLabel("Harvest Dubbler", ref SETT._FL_harvest, 20f);
+                    CGUILayout.HorizontalScrollbarWithLabel("Sprint Speed", ref SETT._FL_run, 25f);
+                    CGUILayout.HorizontalScrollbarWithLabel("Kill DMG xM", ref SETT._FL_killdmg, 1000f);
+                    CGUILayout.HorizontalScrollbarWithLabel("Block DMG", ref SETT._FL_blokdmg, 1000f);
+                    //CGUILayout.BeginHorizontal(() =>
+                    //{
+                    //    GUILayout.Label("Attacks/minute", Labelstyle, GUILayout.MaxWidth(60));
+                    //    SETT._FL_APM = GUILayout.HorizontalScrollbar(SETT._FL_APM, 0f, 0f, 20f);
 
-                //        //SETT._dmg = GUILayout.HorizontalSlider(SETT._dmg, 0f, 200f);
-                //        //SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0.1f, 0f, 200f, GUILayout.ExpandWidth(true));
-                //        GUILayout.Label(SETT._dmg.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
-
-
-                //    });
-                //    CGUILayout.BeginHorizontal(() =>
-                //    {
-                //        GUILayout.Label("Sprint", Labelstyle, GUILayout.MaxWidth(60));
-                //        SETT._run = GUILayout.HorizontalScrollbar(SETT._run, 0f, 0f, 200f);
-
-                //        //SETT._dmg = GUILayout.HorizontalSlider(SETT._dmg, 0f, 200f);
-                //        //SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0.1f, 0f, 200f, GUILayout.ExpandWidth(true));
-                //        GUILayout.Label(SETT._run.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
-
-
-                //    });
-                //    CGUILayout.BeginHorizontal(() =>
-                //    {
-                //        GUILayout.Label("Jump", Labelstyle, GUILayout.MaxWidth(60));
-                //        SETT._jmp = GUILayout.HorizontalScrollbar(SETT._jmp, 0f, 0f, 200f);
-
-                //        //SETT._dmg = GUILayout.HorizontalSlider(SETT._dmg, 0f, 200f);
-                //        //SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0.1f, 0f, 200f, GUILayout.ExpandWidth(true));
-                //        GUILayout.Label(SETT._jmp.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
-
-
-                //    });
+                    //    //SETT._dmg = GUILayout.HorizontalSlider(SETT._dmg, 0f, 200f);
+                    //    //SETT._dmg = GUILayout.HorizontalScrollbar(SETT._dmg, 0.1f, 0f, 200f, GUILayout.ExpandWidth(true));
+                    //    GUILayout.Label(SETT._FL_APM.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
+                    //});
                 });
+                CGUILayout.BeginVertical(GUI.skin.box ,() =>
+                {
+                    scrollBuffBTN = GUILayout.BeginScrollView(scrollBuffBTN, GUILayout.MaxHeight(170));//GUILayout.MaxWidth(250f), GUILayout.Width(250f),GUILayout.Height(50f)
+                    {
+                        CGUILayout.BeginHorizontal(() =>
+                        {
+                            CGUILayout.BeginVertical(() =>
+                            {
 
+
+                                CGUILayout.Button(ref SETT._BL_Blockdmg, "Block DMG");//button toggle bool
+                                CGUILayout.Button(ref SETT._BL_Kill, "Kill DMG");//button toggle bool
+                                CGUILayout.Button(ref SETT._BL_Harvest, "Harvest Dubbler");//button toggle bool
+
+                            });
+                            CGUILayout.BeginVertical(() =>
+                            {
+                                CGUILayout.Button(ref SETT._BL_Run, "Sprint Speed");//button toggle bool
+                                CGUILayout.Button(ref SETT._BL_Jmp, "Jump Strength");//button toggle bool
+                                CGUILayout.Button(ref SETT._BL_APM, "Attacks / minute");//button toggle bool
+
+
+
+                            });
+
+                        });
+                    }
+                    GUILayout.EndScrollView();
+                });
 
 
 
@@ -363,50 +393,76 @@ namespace SevenDTDMono
                                         {
                                             CGUILayout.BeginVertical(() =>
                                             {
-                                                //CGUILayout.Button("cheat", Cheat);  //O.buffClasses = O.GetAvailableBuffClasses();
-                                                //BuffManager.Buffs.Clear(); Removed all buffs from runtime
-                                                CGUILayout.Button("Remove Bad Buffs", Cheat.RemoveBadBuff);//Cheat.RemoveBadBuff();
-                                                CGUILayout.Button("Remove All Buffs", Cheat.RemoveAllBuff);//Cheat.RemoveBadBuff();
-                                                CGUILayout.Button("Add Good Buffs", Cheat.AddGoodBuff);//Cheat.AddGoodBuff();
+                                                //CGUILayout.Button("Set NOBad buff", ref SETT._NoBadBuff);
+                                                //CGUILayout.Button("Set good buff", ref SETT._addgoodbuff);
+                                                CGUILayout.Button("Remove All Active Buffs", Cheat.RemoveAllBuff);//Cheat.RemoveBadBuff()
                                                 CGUILayout.Button("Add CheatBuff to P", Cheat.AddCheatBuff);//Cheat.custombuff();
                                                 CGUILayout.Button("Clear CheatBuff", Cheat.ClearCheatBuff);//Cheat.custombuff();
                                                 CGUILayout.Button("Add Effect Group", Cheat.AddEffectGroup);//Cheat.custombuff();
-                                                //CGUILayout.Button(ref SETT._oneHitBlock, "One hit block", Color.green, Color.red, Color.yellow);//button toggle bool
-                                                //CGUILayout.Button(ref SETT._oneHitKill, "One hit kill", Color.green, Color.red, Color.yellow);//button toggle bool
+                                                if (CGUILayout.Button("Print Buffs To Logfile"))
+                                                {
+                                                    Extras.LogAvailableBuffNames(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "BuffsList.txt"));
+                                                }
+                                                //CGUILayout.Button(ref ToggleStates, "NoBadBuff");
+                                                //if (CGUILayout.Button("RELOAD Buffs"))
+                                                //{
+                                                //    if (SETT.reloadBuffs == false && O.buffClasses.Count <= 10)
+                                                //    {
+                                                //        SETT.reloadBuffs = true;
+                                                //    }
+                                                //}
+                                                
+                                                //CGUILayout.Button("cheat", Cheat);  //O.buffClasses = O.GetAvailableBuffClasses();
+                                                //BuffManager.Buffs.Clear(); Removed all buffs from runtime
+                                                //CGUILayout.Button("Remove Bad Buffs", Cheat.RemoveBadBuff);//Cheat.RemoveBadBuff();
+                                             
+                                                //CGUILayout.Button("Add Good Buffs", Cheat.AddGoodBuff);//Cheat.AddGoodBuff();
+
+                                                CGUILayout.Button(ref SETT._BL_Blockdmg, "One hit block");//button toggle bool
+                                                CGUILayout.Button(ref SETT._BL_Kill, "One hit kill");//button toggle bool
+                                                CGUILayout.Button(ref SETT._BL_Harvest, "Dubbel Harvest");//button toggle bool
                                                 //GUILayout.Label("rigth", centeredLabelStyle);
                                             });
                                             CGUILayout.BeginVertical(() =>
                                             {
-                                                if (CGUILayout.Button("add Passive Huperterm"))
-                                                {
-                                                    Cheat.AddPassive(PassiveEffects.InfiniteAmmo, 1, PassiveEffect.ValueModifierTypes.base_set);
-                                                    Cheat.AddPassive(PassiveEffects.HyperthermalResist, 1, PassiveEffect.ValueModifierTypes.base_set);
-                                                }
-                                                if (CGUILayout.Button("add Passive crafttimer"))
-                                                {
-                                                    Cheat.AddPassive(PassiveEffects.CraftingTier, 3, PassiveEffect.ValueModifierTypes.base_set);
-                                                    Cheat.AddPassive(PassiveEffects.CraftingTime, 999, PassiveEffect.ValueModifierTypes.base_set);
-
-                                                    CGUILayout.Button1("Add Effect Group", new Action[] { Cheat.AddCheatBuff, () => Cheat.AddPassive(PassiveEffects.CraftingTime, 999, PassiveEffect.ValueModifierTypes.base_set) });
-                                                }
-                                                if (CGUILayout.Button("add Passive Jump"))
-                                                {
-                                                    Cheat.AddPassive(PassiveEffects.JumpStrength, 5, PassiveEffect.ValueModifierTypes.base_set);
-                                                    //Cheat.AddPassive(PassiveEffects.CraftingTime, 999, PassiveEffect.ValueModifierTypes.base_set);
+                                                CGUILayout.Button("");
+                                                //CGUILayout.Button("NoBadBuff", ref ToggleStates);
+                                                //if (CGUILayout.Button("Print Buffs To Logfile"))
+                                                //{
+                                                //    Extras.LogAvailableBuffNames(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "BuffsList.txt"));
+                                                //    /*
+                                                //    //CBuffs.ParseAddBuff();
+                                                //    //XDocument xmlDoc = CBuffs.LoadEmbeddedXML("TESTBUFF.XML");
 
 
-                                                }
-                                                if (CGUILayout.Button("RELOAD"))
-                                                {
-                                                    if (SETT.reloadBuffs == false && O.buffClasses.Count <= 10)
-                                                    {
-                                                        SETT.reloadBuffs = true;
-                                                    }
-                                                }
+                                                //    //XElement xmlElmt = CBuffs.LoadEmbeddedXML("TESTBUFF.XML");
+
+                                                //    //BuffsFromXml.CreateBuffs(xmlDoc);
+                                                //    // Now you can work with the XML data (e.g., access nodes, read attributes, etc.).
+                                                //    // For example, let's print the contents of the XML to the Unity console.
+                                                //    //Debug.Log(xmlDoc.ToString());
 
 
-                                                CGUILayout.Button("Set NOBad buff", ref SETT._NoBadBuff);
-                                                CGUILayout.Button("Set good buff", ref SETT._addgoodbuff);
+
+                                                //    //Cheat.AddPassive(PassiveEffects.InfiniteAmmo, 1, PassiveEffect.ValueModifierTypes.base_set);
+                                                //    //Cheat.AddPassive(PassiveEffects.HyperthermalResist, 1, PassiveEffect.ValueModifierTypes.base_set);
+                                                //    */
+                                                //}
+                                                //if (CGUILayout.Button("add Passive crafttimer"))
+                                                //{
+                                                //    Cheat.AddPassive(PassiveEffects.CraftingTier, 3, PassiveEffect.ValueModifierTypes.base_set);
+                                                //    Cheat.AddPassive(PassiveEffects.CraftingTime, 999, PassiveEffect.ValueModifierTypes.base_set);
+
+                                                //    CGUILayout.Button1("Add Effect Group", new Action[] { Cheat.AddCheatBuff, () => Cheat.AddPassive(PassiveEffects.CraftingTime, 999, PassiveEffect.ValueModifierTypes.base_set) });
+                                                //}
+                                                //if (CGUILayout.Button("add Passive Jump"))
+                                                //{
+                                                //    Cheat.AddPassive(PassiveEffects.JumpStrength, 5, PassiveEffect.ValueModifierTypes.base_set);
+                                                //    //Cheat.AddPassive(PassiveEffects.CraftingTime, 999, PassiveEffect.ValueModifierTypes.base_set);
+
+
+                                                //}
+
                                                 //CGUILayout.Button("add Jump buff for test", Cheat.AddEffectGRoup__);
 
                                             });
@@ -415,6 +471,15 @@ namespace SevenDTDMono
                                     }
                                     GUILayout.EndScrollView();
                                 });
+                                CGUILayout.BeginHorizontal(customBoxStyleGreen);
+                                FoldCBuff = CGUILayout.FoldableMenuHorizontal(FoldCBuff, "Custom Buffs", () => {
+                                    scrollCBuff = GUILayout.BeginScrollView(scrollCBuff);//GUILayout.MaxWidth(250f), GUILayout.Width(250f),GUILayout.Height(50f)
+                                    {
+                                        Cheat.GetListCBuffs(O.ELP, CBuffs.CustomBuffs);
+                                    }
+                                    GUILayout.EndScrollView();
+                                }, 300f);
+
                                 CGUILayout.BeginHorizontal(customBoxStyleGreen);
                                 CGUILayout.BeginVertical(GUI.skin.box, () =>
                                 {
@@ -463,14 +528,10 @@ namespace SevenDTDMono
                                             scrollPassive = GUILayout.BeginScrollView(scrollPassive);//GUILayout.MaxWidth(250f), GUILayout.Width(250f),GUILayout.Height(50f)
                                             {
                                                 Cheat.GetListPassiveEffects();
-                                                //Cheat.GetList(lastBuffAdded, O.ELP, O.buffClasses);
                                             }
                                             GUILayout.EndScrollView();
                                         }, 300f);
                                     });
-
-
-
                                 });
 
                                 CGUILayout.BeginHorizontal(customBoxStyleGreen);
@@ -479,9 +540,7 @@ namespace SevenDTDMono
 
                                     scrollBuff = GUILayout.BeginScrollView(scrollBuff);//GUILayout.MaxWidth(250f), GUILayout.Width(250f),GUILayout.Height(50f)
                                     {
-                                        //LISTDROPPDOWNMENU();
                                         Cheat.GetList(lastBuffAdded, O.ELP, O.buffClasses);
-
                                     }
                                     GUILayout.EndScrollView();
                                 }, 300f);
@@ -521,7 +580,6 @@ namespace SevenDTDMono
                                 //Cheat.GetList(lastzombieadded, O.ELP, O.zombieList);
                                 //LISTDROPPDOWNMENU();
                                 Cheat.ListZombie1();
-                                //Cheat.GetList(lastBuffAdded, O.ELP, O.buffClasses);
                             }
                             GUILayout.EndScrollView();
 

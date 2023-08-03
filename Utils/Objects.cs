@@ -19,8 +19,11 @@ namespace SevenDTDMono
 
         public static List<EntityZombie> zombieList;
         public static List<EntityEnemy> enemylist;
+        public static List<ProgressionValue> Proglist;
+        
         public static List<EntityItem> itemList;
 
+        public static EntityTrader Etrader;
         public static EntityPlayerLocal ELP; // my final EntityPlayerLocal, This is the player on this pc
         public static EntityPlayerLocal _entityplayerLocal; // not sure why i have this one
         public static EntityPlayer _entityplayer;
@@ -60,11 +63,13 @@ namespace SevenDTDMono
         private float updateFixedUpdateCountPerSecond;
 
 
+        //progression Value
+
 
         private void Start() //everything in here is things that need to declared at once on startup and not again. IF injecting ingame more ingame dependet vars can be here
         {
 
-
+            GameObject uiRootObj1 = UnityEngine.Object.FindObjectOfType<UIPanel>().gameObject;
             //on tik = 1 sek
             //update freq for cahching diffrent classes/objects
             lastCachePlayer = Time.time + 5f;
@@ -77,6 +82,7 @@ namespace SevenDTDMono
             //init the lists just empty ones. will populate later
             zombieList = new List<EntityZombie>();
             enemylist = new List<EntityEnemy>();
+            Proglist = new List<ProgressionValue>();
             itemList = new List<EntityItem>();
             buffClasses = new List<BuffClass>();
 
@@ -122,6 +128,8 @@ namespace SevenDTDMono
 
         private void initbuff() //default 366 buffs
         {
+            
+
             CheatBuff.Name = "CheatBuff";
             CheatBuff.DamageType = EnumDamageTypes.None; // Set the appropriate damage type if applicable
             CheatBuff.Description = $"This is a {CheatBuff.Name}";
@@ -262,113 +270,126 @@ namespace SevenDTDMono
         void Update()
         {
             updateCount += 1; //
-            try //add CheatBuff To the palyer
+            if (Settings.IsGameStarted == true && Settings.IsVarsLoaded != true)
             {
-                if (Settings.IsGameStarted == true && Settings.IsVarsLoaded != true)
+                try //add CheatBuff To the palyer
                 {
-                    try
+                    if (Settings.IsGameStarted == true && Settings.IsVarsLoaded != true)
                     {
-                        #region Cheatbuff
-                        Debug.LogWarning($"amount of buffs now1 {BuffManager.Buffs.Count}");
-                        //init our stuff now
-                        if (BuffManager.GetBuff("testbuff") != null && BuffManager.GetBuff("ReBuff") !=null)
+                        try
                         {
-                            BuffClass ReBuff = BuffManager.GetBuff("testbuff");
-                            ReBuff.Name = "TESTEDITBUFF";
-                            ReBuff.Effects = _minEffectController;
-                            BuffManager.Buffs.Add(ReBuff.Name, ReBuff);
-                            
-                            Debug.LogWarning($"buff {ReBuff.Name} has been loaded as a copy of  testbuff");
-                        }
-
-                        if (CheatBuff == null)
-                        {
-                            CheatBuff = new BuffClass();
-                            Debug.Log($"{CheatBuff} as been init as a BuffClass() ");
-                        }
-
-
-                        if (CheatBuff != null)
-                        {
-                            int count = BuffManager.Buffs.Count;
-                            Debug.LogWarning($"amount of buffs now2 {count}");
-                            Log.Out($"{CheatBuff.Name} Has been init");
-                            /*
-                            if (BuffManager.GetBuff(CheatBuff.Name) != null)
+                            #region Cheatbuff
+                            Debug.LogWarning($"amount of buffs now1 {BuffManager.Buffs.Count}");
+                            //init our stuff now
+                            if (BuffManager.GetBuff("testbuff") != null && BuffManager.GetBuff("ReBuff") != null)
                             {
                                 BuffClass ReBuff = BuffManager.GetBuff("testbuff");
                                 ReBuff.Name = "TESTEDITBUFF";
-                                Log.Out($"buff {ReBuff.Name} has been loaded as testbuff");
+                                ReBuff.Effects = _minEffectController;
+                                BuffManager.Buffs.Add(ReBuff.Name, ReBuff);
+
+                                Debug.LogWarning($"buff {ReBuff.Name} has been loaded as a copy of  testbuff");
                             }
 
-                            */
-                            initbuff();
-                            int count2 = BuffManager.Buffs.Count;
-                            Debug.LogWarning($"amount of buffs after init {count2}");
+                            if (CheatBuff == null)
+                            {
+                                CheatBuff = new BuffClass();
+                                Debug.Log($"{CheatBuff} as been init as a BuffClass() ");
+                            }
+
+
+                            if (CheatBuff != null)
+                            {
+                                int count = BuffManager.Buffs.Count;
+                                Debug.LogWarning($"amount of buffs now2 {count}");
+                                Log.Out($"{CheatBuff.Name} Has been init");
+                                /*
+                                if (BuffManager.GetBuff(CheatBuff.Name) != null)
+                                {
+                                    BuffClass ReBuff = BuffManager.GetBuff("testbuff");
+                                    ReBuff.Name = "TESTEDITBUFF";
+                                    Log.Out($"buff {ReBuff.Name} has been loaded as testbuff");
+                                }
+
+                                */
+                                initbuff();
+
+                                int count2 = BuffManager.Buffs.Count;
+                                Debug.LogWarning($"amount of buffs after init {count2}");
+                            }
+                            else
+                            {
+                                Log.Out("custombuff Has Not been init");
+                            }
+
+                            #endregion
+                            #region Buffclasses
+                            //buffClasses.Clear();
+                            ////buffClasses.
+                            //if (BuffManager.Buffs != null)
+                            //{
+
+                            //    BuffManager.Buffs.OfType<BuffClass>();
+                            //    foreach (var buffEntry in BuffManager.Buffs)
+                            //    {
+                            //        //buffEntry.Value.Effects.EffectGroups.
+                            //        buffClasses.Add(buffEntry.Value);
+
+                            //        if (buffEntry.Value.Equals(BuffManager.Buffs.Last().Value))
+                            //        {
+                            //            // Do something specific for the last buff class (if needed)
+                            //            // ...
+
+                            //            // Stop the loop after adding the last buff class
+                            //            //break;
+                            //        }
+                            //        LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "Test.txt"));
+
+                            //    }
+                            //}
+
+                            Log.Out("Reloading buffs");
+                            foreach (var buffClass in BuffManager.Buffs)
+                            {
+                                buffClasses.Add(buffClass.Value);
+                            }
+                            buffClasses.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
+                            LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "Test.txt"));
+                            #endregion
+                            Log.Out("CBuff Start to inject...");
+
+                            string resourceName = "SevenDTDMono.Features.Buffs.Cbuffs.XML";
+
+                            //Log.Out(resourceName);
+
+                            CBuffs.LoadCustomXml(resourceName);
+                            Debug.LogWarning($"{resourceName} was hopefully loaded, nothing more to load");
+
+
+                            Settings.IsVarsLoaded = true; // setts the loaded var to true so this part of the code wont execute more
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            Log.Out("custombuff Has Not been init");
+                            Debug.LogError($"An error occured1 = {ex}");
+                            Settings.IsVarsLoaded = true;
                         }
-
-                        #endregion
-                        #region Buffclasses
-                        //buffClasses.Clear();
-                        ////buffClasses.
-                        //if (BuffManager.Buffs != null)
-                        //{
-
-                        //    BuffManager.Buffs.OfType<BuffClass>();
-                        //    foreach (var buffEntry in BuffManager.Buffs)
-                        //    {
-                        //        //buffEntry.Value.Effects.EffectGroups.
-                        //        buffClasses.Add(buffEntry.Value);
-
-                        //        if (buffEntry.Value.Equals(BuffManager.Buffs.Last().Value))
-                        //        {
-                        //            // Do something specific for the last buff class (if needed)
-                        //            // ...
-
-                        //            // Stop the loop after adding the last buff class
-                        //            //break;
-                        //        }
-                        //        LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "Test.txt"));
-
-                        //    }
-                        //}
-
-                        Log.Out("Reloading buffs");
-                        foreach (var buffClass in BuffManager.Buffs)
-                        {
-                            buffClasses.Add(buffClass.Value);
-                        }
-                        buffClasses.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
-                        LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "Test.txt"));
-                        #endregion
-
-                        Settings.IsVarsLoaded = true; // setts the loaded var to true so this part of the code wont execute more
                     }
-                    catch (Exception ex)
+                    else if (Settings.IsGameStarted != true && Settings.IsVarsLoaded == true)
                     {
-                        Debug.LogError($"An error occured1 = {ex}");
-                        Settings.IsVarsLoaded = true;
+
+                        Settings.IsGameStarted = false;
                     }
+                    Debug.LogWarning($"hopefully WAS everything loaded, nothing more to load");
+
                 }
-                else if (Settings.IsGameStarted != true && Settings.IsVarsLoaded == true)
+                catch (Exception ex)
                 {
+                    Debug.LogWarning($"Error loading!! Check the code");
+                    Debug.LogError($"An error occured2 = {ex}");
 
-                    Settings.IsGameStarted = false;
                 }
-
-
-            } 
-            catch (Exception ex)  
-            {
-                Debug.LogError($"An error occured2 = {ex}");
 
             }
-           
-
             /*
             if (!Settings.Istarted)
             {
@@ -418,7 +439,7 @@ namespace SevenDTDMono
             */
 
 
-
+            //add a check to check if gamemanager is init or not to prevent errors
 
             if (ELP != null && Settings.reloadBuffs == true && buffClasses.Count <= 1)
             {
@@ -436,13 +457,15 @@ namespace SevenDTDMono
             if (Time.time >= lastCachePlayer)
             {
                 ELP = FindObjectOfType<EntityPlayerLocal>();
-                
+                Etrader = FindObjectOfType<EntityTrader>();
+
                 lastCachePlayer = Time.time + 5f;
             }
             else if (Time.time >= lastCacheZombies)
             {
                 zombieList = FindObjectsOfType<EntityZombie>().ToList();
                 enemylist = FindObjectsOfType<EntityEnemy>().ToList();
+                
 
                 lastCacheZombies = Time.time + 3f;
             }

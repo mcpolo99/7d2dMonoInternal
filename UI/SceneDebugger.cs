@@ -25,6 +25,7 @@ namespace SevenDTDMono
         Rect ProjectWindow;
         Int32 ProjectWidth = 400;
         Vector2 ProjectScrollPos;
+
         ConcurrentDictionary<object, Boolean> ExpandedObjects = new ConcurrentDictionary<object, Boolean>();
 
         Rect InspectorWindow;
@@ -164,10 +165,13 @@ namespace SevenDTDMono
                 {
                     var assemblies = AppDomain.CurrentDomain.GetAssemblies();
                     foreach (var assembly in assemblies) {
-                        ExpandedObjects[assembly] = GUILayout.Toggle(ExpandedObjects.ContainsKey(assembly) ? ExpandedObjects[assembly] : false, assembly.GetName().Name, new GUILayoutOption[1] { GUILayout.ExpandWidth(false) });
-                        if (ExpandedObjects[assembly]) {
-                            var types = assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && !t.ContainsGenericParameters).ToList();
-                            foreach (var type in types) {
+                        ExpandedObjects[assembly] = GUILayout.Toggle(ExpandedObjects.ContainsKey(assembly) ? ExpandedObjects[assembly] : false, assembly.GetName().Name, new GUILayoutOption[1] { GUILayout.ExpandWidth(false) }); // This line creates a toggle button for each assembly's name. The ExpandedObjects dictionary is used to store the state of whether each assembly is expanded or collapsed.
+
+                        if (ExpandedObjects[assembly])
+                        { //If the assembly is expanded (i.e., the toggle button is set to true), it proceeds to list the types within the assembly.
+                            var types = assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && !t.ContainsGenericParameters).ToList();//This line gets all the types in the assembly that are classes and not abstract or generic.
+                            foreach (var type in types)
+                            {//This loop iterates through all the types in the assembly.
                                 var staticfields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy).Count(f => f.Name != "OffsetOfInstanceIDInCPlusPlusObject");
                                 if (staticfields == 0)
                                     continue;
@@ -175,19 +179,21 @@ namespace SevenDTDMono
                                 {
                                     var color = GUI.color;
                                     GUILayout.Space(20);
-                                    ExpandedObjects[type] = GUILayout.Toggle(ExpandedObjects.ContainsKey(type) ? ExpandedObjects[type] : false, type.Name, new GUILayoutOption[1] { GUILayout.ExpandWidth(false) });
+                                    ExpandedObjects[type] = GUILayout.Toggle(ExpandedObjects.ContainsKey(type) ? ExpandedObjects[type] : false, type.Name, new GUILayoutOption[1] { GUILayout.ExpandWidth(false) });//This line creates a toggle button for each type's name. The ExpandedObjects dictionary is used to store the state of whether each type is expanded or collapsed.
                                     GUI.color = color;
                                 }
                                 GUILayout.EndHorizontal();
-                                if (ExpandedObjects[type]) {
-                                    var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-                                    foreach (var field in fields) {
+                                if (ExpandedObjects[type])
+                                { //If the type is expanded (i.e., the toggle button is set to true), it proceeds to list the static fields within the type.
+                                    var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy); //This line gets all the static fields in the type, including those from base classes.
+                                    foreach (var field in fields)
+                                    {//This loop iterates through all the static fields in the type.
                                         if (field.Name == "OffsetOfInstanceIDInCPlusPlusObject") continue;
                                         //var val = field.GetValue(null);
                                         GUILayout.BeginHorizontal(new GUILayoutOption[0]);
                                         {
                                             GUILayout.Space(40);
-                                            ExpandedObjects[field] = GUILayout.Toggle(ExpandedObjects.ContainsKey(field) ? ExpandedObjects[field] : false, field.Name + " : " + field.FieldType, GUI.skin.label, new GUILayoutOption[1] { GUILayout.ExpandWidth(false) });
+                                            ExpandedObjects[field] = GUILayout.Toggle(ExpandedObjects.ContainsKey(field) ? ExpandedObjects[field] : false, field.Name + " : " + field.FieldType, GUI.skin.label, new GUILayoutOption[1] { GUILayout.ExpandWidth(false) });//This line creates a toggle button for each field's name and type. The ExpandedObjects dictionary is used to store the state of whether each field is expanded or collapsed.
                                         }
                                         GUILayout.EndHorizontal();
                                     }

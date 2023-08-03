@@ -16,25 +16,26 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\build\All\Release\7DTD\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\build\release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>..\..\build\All\Release\7DTD\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\debug\</OutputPath>
+    <OutputPath>..\build\Debug\x64\7DTD\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -42,8 +43,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>..\..\build\x64\Release\7DTD\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -71,6 +72,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.Serialization" />
     <Reference Include="Unity.Postprocessing.Runtime, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\Unity.Postprocessing.Runtime.dll</HintPath>
@@ -341,22 +345,16 @@
       <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\UnityEngine.XRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityExplorer.STANDALONE.Mono">
-      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\Load\UnityExplorer.STANDALONE.Mono.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UniverseLib.Mono">
-      <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\Load\UniverseLib.Mono.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Features\Aimbot\Aimbot.cs" />
+    <Compile Include="Features\Buffs\CBuffs.cs" />
     <Compile Include="Features\Cheat.cs" />
     <Compile Include="Features\Render\ESP.cs" />
     <Compile Include="Features\Render\Visuals.cs" />
     <Compile Include="Features\Render\Render.cs" />
     <None Include="FileName.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\AssemblyHelper.cs" />
     <Compile Include="Utils\ASMCHECK.cs" />
     <Compile Include="UI\GUILayoutExtensions.cs" />
@@ -364,21 +362,23 @@
     <Compile Include="Loader.cs" />
     <Compile Include="UI\Menu.cs" />
     <Compile Include="UI\NewMenu.cs" />
+    <Compile Include="Utils\Extras.cs" />
     <Compile Include="Utils\Interface.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\Objects.cs" />
-    <Compile Include="Utils\SceneDebugger.cs" />
+    <Compile Include="UI\SceneDebugger.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\ToggleColor.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Features\Buffs\Cbuffs.XML" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

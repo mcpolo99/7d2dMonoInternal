@@ -1,0 +1,2 @@
+C:\VS\Sources\build\Debug\x64\7DTD\SevenDTDMono.dll
+C:\VS\Sources\build\Debug\x64\7DTD\SevenDTDMono.pdb

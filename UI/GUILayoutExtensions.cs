@@ -334,6 +334,7 @@ namespace SevenDTDMono.Utils
             return isClicked;
         }
 
+
         public static bool Button(string label, ref int currentIndex, params GUILayoutOption[] buttonOptions)//Cycle enumlist item
         {
             // Display the button with the label and the current enum value as buttonText.
@@ -348,7 +349,31 @@ namespace SevenDTDMono.Utils
             // Return the buttonPressed state.
             return buttonPressed;
         }
+        public static void Button(ref Dictionary<string, bool> buttonStates, string label, System.Action onClickAction = null, params GUILayoutOption[] options)
+        {
+            // Check if the button label exists in the dictionary, and if not, add it with the default value.
+            if (!buttonStates.ContainsKey(label))
+            {
+                buttonStates[label] = false; // Set the default value for the new button.
+            }
 
+            GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+            buttonStyle.normal.textColor = buttonStates[label] ? Color.green : Color.red; // Set different colors for the toggle state
+            buttonStyle.active.textColor = Color.green;
+            buttonStyle.hover.textColor = Color.green;
+
+            bool isClicked = GUILayout.Button(label, buttonStyle,options);
+
+            if (isClicked)
+            {
+                buttonStates[label] = !buttonStates[label]; // Toggle the bool value when the button is clicked
+
+                if (onClickAction != null)
+                {
+                    onClickAction.Invoke();
+                }
+            }
+        }
 
 
 
@@ -372,6 +397,37 @@ namespace SevenDTDMono.Utils
 
             return isClicked;
         }
+
+
+
+        public static float HorizontalScrollbarWithLabel(string label, ref float Modifier, float rightMaxValue)
+        {
+            GUIStyle Labelstyle = new GUIStyle(GUI.skin.label);
+            Labelstyle.alignment = TextAnchor.LowerCenter;
+            Labelstyle.fontSize = 13;
+            Labelstyle.padding = new RectOffset(0, 0, -4, 0);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label, Labelstyle, GUILayout.MaxWidth(100));
+            //GUILayout.Label("Attacks/minute", Labelstyle, GUILayout.MaxWidth(60));
+            Modifier = GUILayout.HorizontalScrollbar(Modifier, 0f, 0f, rightMaxValue);
+            GUILayout.Label(Modifier.ToString("F1"), Labelstyle, GUILayout.MaxWidth(40));
+            GUILayout.EndHorizontal();
+
+            return Modifier;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -498,6 +554,21 @@ namespace SevenDTDMono.Utils
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public static bool CustomDropDown(string label, System.Action content, float width, params GUILayoutOption[] options)
         {
             //for every press toggle on and off for the customdrop down
@@ -612,7 +683,15 @@ namespace SevenDTDMono.Utils
         }
 
 
-
+        public static void BeginScrollView(Vector2 vector2, System.Action content, params GUILayoutOption[] options)
+        {
+            
+            vector2 = GUILayout.BeginScrollView(vector2,options);
+            {
+                content?.Invoke();
+            }
+            GUILayout.EndScrollView();
+        }
 
 
         public static void DrawLine(Rect rect, Color color)

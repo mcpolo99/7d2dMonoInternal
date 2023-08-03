@@ -39,11 +39,39 @@ namespace Filename
             buffvalue.finished = true removes a buff
             buffvalue.buffclass = buffclass.damagetype(enumdamagetype)
 
+Execute buff(string buff)
+            
+        {
 
 
+            EntityPlayer primaryPlayer = GameManager.Instance.World.GetPrimaryPlayer();
+            if (primaryPlayer != null)
+            {
+                EntityBuffs.BuffStatus buffStatus = primaryPlayer.Buffs.AddBuff(_params[0], -1, true, false, false, -1f);
+                if (buffStatus != EntityBuffs.BuffStatus.Added)
+                {
+                    switch (buffStatus)
+                    {
+                        case EntityBuffs.BuffStatus.FailedInvalidName:
+                            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Buff failed: buff \"" + _params[0] + "\" unknown");
+                            ConsoleCmdBuff.PrintAvailableBuffNames();
+                            return;
+                        case EntityBuffs.BuffStatus.FailedImmune:
+                            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Buff failed: entity is immune to \"" + _params[0] + "\"");
+                            return;
+                        case EntityBuffs.BuffStatus.FailedFriendlyFire:
+                            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Buff failed: entity is friendly");
+                            return;
+                        default:
+                            return;
+                    }
+                }
+            }
+        }
+            
 
 
-              private static void LoadAssembly(string assemblyName)
+        private static void LoadAssembly(string assemblyName)
         {
             if (!IsAssemblyLoaded(assemblyName))
             {
