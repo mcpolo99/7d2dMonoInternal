@@ -35,7 +35,7 @@ namespace SevenDTDMono
             gameObject.AddComponent<SceneDebugger>();
             gameObject.AddComponent<CBuffs>();
 
-            //InitializeUnityExplorer();
+            InitializeUnityExplorer();
 
             UnityEngine.Object.DontDestroyOnLoad(gameObject);
         }
@@ -44,7 +44,7 @@ namespace SevenDTDMono
             if (assemblyHelper.AreAllAssembliesLoaded() == true && Settings.ASMloaded == false)
             {
                 Settings.ASMloaded=true;
-                //UnityExplorer.ExplorerStandalone.CreateInstance();
+                UnityExplorer.ExplorerStandalone.CreateInstance();
             }
 
         }

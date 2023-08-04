@@ -113,9 +113,9 @@
     </effect_group>
   </buff>
 
-  <buff name="GODMode" name_key="GODMode" description_key="buffGodModeDesc1" tooltip_key="buffGodModeTooltip1" icon="ui_game_symbol_add" icon_color="132,0,155">
+  <buff name="DamageResistNoBadBuff" name_key="DamageResistNoBadBuff" description_key="DamageResistNoBadBuff" tooltip_key="buffGodModeTooltip1" icon="ui_game_symbol_add" icon_color="132,0,155">
     <stack_type value="ignore"/>
-    <display_value_key value="GODMode"/>
+    <display_value_key value="DamageResistNoBadBuff"/>
     <display_value value="xxx"/>
 
     <effect_group>

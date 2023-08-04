@@ -15,4 +15,4 @@ using System.Windows;
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.1.1.21")]
+[assembly: AssemblyVersion("1.1.1.22")]

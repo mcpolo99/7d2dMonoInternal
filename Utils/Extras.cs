@@ -9,6 +9,8 @@ namespace SevenDTDMono.Utils
 {
     internal class Extras
     {
+        private static Random random = new Random();
+        private const string ExtraChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         public static void LogAvailableBuffNames(string filePath)
         {
             SortedDictionary<string, BuffClass> sortedDictionary1 = new SortedDictionary<string, BuffClass>(BuffManager.Buffs, StringComparer.OrdinalIgnoreCase);
@@ -76,8 +78,40 @@ namespace SevenDTDMono.Utils
             */
 
         }
-    
-    
+
+
+
+
+
+        public static string ScrambleString(string input)
+        {
+            // Convert the input string to a character array
+            char[] charArray = input.ToCharArray();
+
+            // Shuffle the characters randomly
+            for (int i = charArray.Length - 1; i > 0; i--)
+            {
+                int randomIndex = random.Next(0, i + 1);
+                char temp = charArray[i];
+                charArray[i] = charArray[randomIndex];
+                charArray[randomIndex] = temp;
+            }
+
+            // Add a few extra random characters to the scrambled string
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < charArray.Length; i++)
+            {
+                sb.Append(charArray[i]);
+                if (random.Next(0, 4) == 0) // 25% chance of adding an extra character
+                {
+                    char extraChar = ExtraChars[random.Next(0, ExtraChars.Length)];
+                    sb.Append(extraChar);
+                }
+            }
+
+            // Convert the StringBuilder to a string and return it
+            return sb.ToString();
+        }
 
 
 

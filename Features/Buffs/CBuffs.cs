@@ -73,26 +73,9 @@ namespace SevenDTDMono
                 }
             }
         }
-
-
         void ExecuteAddbuffonPlayer(EntityPlayer Player ,string buff)
         { 
         }
-
-        /*
-        public static XDocument LoadEmbeddedXML(string resourceName)
-        {
-            TextAsset xmlAsset = Resources.Load<TextAsset>(resourceName);
-
-            if (xmlAsset == null)
-            {
-                throw new Exception("Embedded XML resource not found or failed to load.");
-            }
-
-            return XDocument.Parse(xmlAsset.text);
-        }
-        */
-      
         public static void LoadCustomXml(string rss)
         {
             CustomBuffs = new List<BuffClass>();
@@ -144,9 +127,6 @@ namespace SevenDTDMono
                 }
             }
         }
-
-
-
         public static void ParseAddBuff(XElement _element)
         {
 
@@ -309,7 +289,6 @@ namespace SevenDTDMono
             }
             throw new Exception("buff must have an name!");
         }
-      
         private static void parseBuffRequirements(BuffClass _buff, XElement _element)
         {
             if (_element.HasAttribute("compare_type") && _element.GetAttribute("compare_type").EqualsCaseInsensitive("or"))
@@ -324,111 +303,6 @@ namespace SevenDTDMono
                     _buff.Requirements.Add(requirement);
                 }
             }
-        }
-
-        //private static void ParseXmlData(XElement rootElement)
-        //{
-        //    // Parse general buff properties
-        //    BuffClass buffClass = new BuffClass("");
-        //    if (rootElement.HasAttribute("name"))
-        //    {
-        //        // Parse and set buffClass properties (similar to the existing code)
-        //        // ...
-
-        //        // Call parseBuffRequirements to parse and set the requirements for the buff
-        //        XElement requirementsElement = rootElement.Element("requirements");
-        //        if (requirementsElement != null)
-        //        {
-        //            parseBuffRequirements(buffClass, requirementsElement);
-        //        }
-
-        //        // Add the fully populated buffClass to BuffManager
-        //        BuffManager.AddBuff(buffClass);
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("Buff must have a name!");
-        //    }
-        //}
-
-
-
-
+        } 
     }
 }
-/*
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- *         void LoadXML()
-        {
-            TextAsset xmlAsset = Resources.Load<TextAsset>("XMLResources"); // Replace "MY_XML_RESOURCE" with the name of your resource.
-
-            if (xmlAsset != null)
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.LoadXml(xmlAsset.text);
-
-                // Now you can work with the XML data (e.g., access nodes, read attributes, etc.).
-                // For example, let's print the contents of the XML to the Unity console.
-                Debug.Log(xmlDoc.OuterXml);
-            }
-            else
-            {
-                Debug.LogError("XML resource not found or failed to load.");
-            }
-
-        }
- *     public static void LoadCustomBuffs()
-        {
-            // Load the embedded XML with your custom resource name (replace "TESTBUFF.XML" with the actual resource name).
-            XDocument xmlDoc = LoadEmbeddedXML("TESTBUFF.XML");
-
-            // Find the BuffsFromXml class using reflection.
-            Assembly assembly = Assembly.GetAssembly(typeof(BuffsFromXml));
-            System.Type buffsFromXmlType = assembly.GetType("YourNamespace.BuffsFromXml"); // Replace "YourNamespace" with the actual namespace where the BuffsFromXml class is defined.
-
-            // Call the private ParseBuff method using reflection.
-            MethodInfo parseBuffMethod = buffsFromXmlType.GetMethod("ParseBuff", BindingFlags.Static | BindingFlags.NonPublic);
-            parseBuffMethod.Invoke(null, new object[] { xmlDoc.Root });
-
-            // Call the private clearBuffValueLinks method using reflection.
-            MethodInfo clearBuffValueLinksMethod = buffsFromXmlType.GetMethod("clearBuffValueLinks", BindingFlags.Static | BindingFlags.NonPublic);
-            clearBuffValueLinksMethod.Invoke(null, null);
-
-            // Now call the Reload method (which is public) to finish the initialization.
-            MethodInfo reloadMethod = buffsFromXmlType.GetMethod("Reload", BindingFlags.Static | BindingFlags.Public);
-            //reloadMethod.Invoke(null, new object[] { new XmlFile(xmlDoc) });
-        }
-
- *   public static XDocument LoadEmbeddedXML(string resourceName)
-        {
-            Assembly assembly = Assembly.GetExecutingAssembly(); // Use the appropriate assembly that contains the embedded resource
-            string resourcePath = "SevenDTDMono.Features.Buffs." + resourceName; // Adjust the resource path based on your actual DLL structure
-
-            using (var stream = assembly.GetManifestResourceStream(resourcePath))
-            {
-                if (stream == null)
-                {
-                    throw new Exception("Embedded XML resource not found or failed to load.");
-                }
-
-                using (var reader = new System.IO.StreamReader(stream))
-                {
-                    return XDocument.Parse(reader.ReadToEnd());
-                }
-            }
-        }
- * 
- * 
- */

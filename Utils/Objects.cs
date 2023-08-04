@@ -92,9 +92,11 @@ namespace SevenDTDMono
             _minEC = new MinEffectController(); // we create our own effect controller for our own buffs and stats appliance
             _minEC.EffectGroups = _minEffectController.EffectGroups;
             _minEC.PassivesIndex = _minEffectController.PassivesIndex;
-            
+
+
+
             //Buffmanager is empty at startscreen, need to init after game start
-            
+
             //BuffClass ReBuff = BuffManager.GetBuff("test");
             //Log.Out($"buff {ReBuff.Name} has been loaded as testbuff");
             ////customBuff;
@@ -380,6 +382,7 @@ namespace SevenDTDMono
                         Settings.IsGameStarted = false;
                     }
                     Debug.LogWarning($"hopefully WAS everything loaded, nothing more to load");
+
 
                 }
                 catch (Exception ex)

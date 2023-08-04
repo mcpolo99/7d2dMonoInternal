@@ -661,16 +661,20 @@ namespace SevenDTDMono
             }
 
         }
-        public static void GetListPassiveEffects() //should make a chache for this one to lower cpu usage
+        public static void GetListPassiveEffects(string searchText) //should make a chache for this one to lower cpu usage
         {
 
             // Get all enum values and sort them alphabetically
             PassiveEffects[] enumValues = System.Enum.GetValues(typeof(PassiveEffects)).Cast<PassiveEffects>().OrderBy(effect => effect.ToString()).ToArray();
+            // Filter the items based on the search text
+            PassiveEffects[] filteredEffects = string.IsNullOrEmpty(searchText)
+                ? enumValues
+                : enumValues.Where(effect => effect.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0).ToArray();
 
             // Calculate the half amount of buttons
             int halfAmount = Mathf.CeilToInt(enumValues.Length / 2f);
-            PassiveEffects[] leftColumnEffects = enumValues.Take(halfAmount).ToArray();
-            PassiveEffects[] rightColumnEffects = enumValues.Skip(halfAmount).ToArray();
+            PassiveEffects[] leftColumnEffects = filteredEffects.Take(halfAmount).ToArray();
+            PassiveEffects[] rightColumnEffects = filteredEffects.Skip(halfAmount).ToArray();
 
             //bool toggleState = passiveToggleStates[effect];
             CGUILayout.BeginHorizontal(() =>
@@ -1218,7 +1222,7 @@ namespace SevenDTDMono
             };
             //O._minEffectController.PassivesIndex = new HashSet<PassiveEffects>();
         }
-        public static void GetList(bool _bool, EntityPlayerLocal entityLocalPlayer, List<BuffClass> ListOFClass)
+        public static void GetList(bool _bool, EntityPlayerLocal entityLocalPlayer, List<BuffClass> ListOFClass, string searchText)
         {
             if (ListOFClass != null)
 
@@ -1229,17 +1233,20 @@ namespace SevenDTDMono
                 {
                     foreach (BuffClass buffClass in ListOFClass)
                     {
-                        // se GUILayout.Button to create a button for each buff name
-                        if (GUILayout.Button(buffClass.Name))
-                        {
-                           entityLocalPlayer.Buffs.AddBuff(buffClass.Name, -1, true, false, false, 500f);
-                                Debug.LogWarning($"{buffClass.Name} Added to player {O.ELP.gameObject.name}");
-                            //Logic when the button is clicked
-                        }
-                        if (_bool)
-                        {
-                            break;
-                        }
+                            if (searchText == "" || buffClass.Name.Contains(searchText)) //case sensitve  . Possible ignore case buffClass.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0
+                            {
+                                // se GUILayout.Button to create a button for each buff name
+                                if (GUILayout.Button(buffClass.Name))
+                                {
+                                    entityLocalPlayer.Buffs.AddBuff(buffClass.Name, -1, true, false, false, 99999f);
+                                    Debug.LogWarning($"{buffClass.Name} Added to player {O.ELP.gameObject.name}");
+                                    //Logic when the button is clicked
+                                }
+                                if (_bool)
+                                {
+                                    break;
+                                }
+                            }
                     }
 
                 }
@@ -1254,7 +1261,7 @@ namespace SevenDTDMono
             {
                     if(ListOFClass == null)
                     {
-                        ListOFClass = O.GetAvailableBuffClasses();
+                        //ListOFClass = O.GetAvailableBuffClasses();
                     }
 
                 

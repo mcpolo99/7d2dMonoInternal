@@ -87,6 +87,8 @@ namespace SevenDTDMono
         public float counter;
         public string Text;
         public Text counterText;
+        private string buffSearch = "";
+        private string passiveSearch = "";
         #endregion
 
 
@@ -257,6 +259,11 @@ namespace SevenDTDMono
                                 CGUILayout.Button("Level Up", Cheat.levelup);
 
                                 CGUILayout.Button("Creative/Debug Mode", ref SETT.CmDm);
+                                if (CGUILayout.Button("NameScramble(local)"))
+                                {
+                                    if (O.ELP) { O.ELP.EntityName = Extras.ScrambleString(O.ELP.EntityName); }
+
+                                }
 
                             });
                             CGUILayout.BeginVertical(() =>
@@ -399,10 +406,7 @@ namespace SevenDTDMono
                                                 CGUILayout.Button("Add CheatBuff to P", Cheat.AddCheatBuff);//Cheat.custombuff();
                                                 CGUILayout.Button("Clear CheatBuff", Cheat.ClearCheatBuff);//Cheat.custombuff();
                                                 CGUILayout.Button("Add Effect Group", Cheat.AddEffectGroup);//Cheat.custombuff();
-                                                if (CGUILayout.Button("Print Buffs To Logfile"))
-                                                {
-                                                    Extras.LogAvailableBuffNames(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "BuffsList.txt"));
-                                                }
+                                   
                                                 //CGUILayout.Button(ref ToggleStates, "NoBadBuff");
                                                 //if (CGUILayout.Button("RELOAD Buffs"))
                                                 //{
@@ -418,13 +422,17 @@ namespace SevenDTDMono
                                              
                                                 //CGUILayout.Button("Add Good Buffs", Cheat.AddGoodBuff);//Cheat.AddGoodBuff();
 
-                                                CGUILayout.Button(ref SETT._BL_Blockdmg, "One hit block");//button toggle bool
-                                                CGUILayout.Button(ref SETT._BL_Kill, "One hit kill");//button toggle bool
-                                                CGUILayout.Button(ref SETT._BL_Harvest, "Dubbel Harvest");//button toggle bool
+                                                //CGUILayout.Button(ref SETT._BL_Blockdmg, "One hit block");//button toggle bool
+                                                //CGUILayout.Button(ref SETT._BL_Kill, "One hit kill");//button toggle bool
+                                                //CGUILayout.Button(ref SETT._BL_Harvest, "Dubbel Harvest");//button toggle bool
                                                 //GUILayout.Label("rigth", centeredLabelStyle);
                                             });
                                             CGUILayout.BeginVertical(() =>
                                             {
+                                                if (CGUILayout.Button("Print Buffs To Logfile"))
+                                                {
+                                                    Extras.LogAvailableBuffNames(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "BuffsList.txt"));
+                                                }
                                                 CGUILayout.Button("");
                                                 //CGUILayout.Button("NoBadBuff", ref ToggleStates);
                                                 //if (CGUILayout.Button("Print Buffs To Logfile"))
@@ -472,6 +480,7 @@ namespace SevenDTDMono
                                     GUILayout.EndScrollView();
                                 });
                                 CGUILayout.BeginHorizontal(customBoxStyleGreen);
+
                                 FoldCBuff = CGUILayout.FoldableMenuHorizontal(FoldCBuff, "Custom Buffs", () => {
                                     scrollCBuff = GUILayout.BeginScrollView(scrollCBuff);//GUILayout.MaxWidth(250f), GUILayout.Width(250f),GUILayout.Height(50f)
                                     {
@@ -481,66 +490,89 @@ namespace SevenDTDMono
                                 }, 300f);
 
                                 CGUILayout.BeginHorizontal(customBoxStyleGreen);
+
+
+
                                 CGUILayout.BeginVertical(GUI.skin.box, () =>
                                 {
-                                    CGUILayout.BeginHorizontal(() => {
-                                        Cheat.inputPassiveEffects = GUILayout.TextField(Cheat.inputPassiveEffects, 50);
-                                        inputPassive = ValueModifierTypesToString(ValueModifierTypesIndex); // Set text field with the button's current value
-                                        inputFloat = GUILayout.TextField(inputFloat, 10, GUILayout.MaxWidth(25));
-                                        if (CGUILayout.Button("", ref ValueModifierTypesIndex, GUILayout.MaxWidth(100)))
-                                        {
-                                            ValueModifierTypes selectedType = (ValueModifierTypes)ValueModifierTypesIndex;
-                                            //Debug.Log("Selected Enum: " + selectedType);
 
-                                        }
-                                        if (CGUILayout.Button("ADD", GUILayout.MaxWidth(40)))
-                                        {
-                                            try
-                                            {
-                                                float floatValue = float.Parse(inputFloat);
-                                                if (System.Enum.TryParse(Cheat.inputPassiveEffects, out PassiveEffects passiveEffect))
-                                                {
-                                                    Cheat.AddPassive(passiveEffect, floatValue, (PassiveEffect.ValueModifierTypes)ValueModifierTypesIndex);
-                                                    Log.Out(inputPassiveEffects);
-                                                    Log.Out($"{passiveEffect} added");
-                                                }
-                                                else
-                                                {
-                                                    Log.Out(inputPassiveEffects);
-                                                    Log.Out($"{passiveEffect} not added");
-                                                    // Handle the case when the inputPassiveEffects cannot be parsed to the enum.
-                                                    // Display an error message, provide a default value, or take appropriate action.
-                                                }
-                                            }
-                                            catch
-                                            { }
-
-
-
-                                            //ValueModifierTypes selectedType = (ValueModifierTypes)System.Enum.ToObject(typeof(ValueModifierTypes), currentIndex);
-                                            //inputPassive = selectedType.ToString();
-                                        }
-                                    });
 
                                     CGUILayout.BeginVertical(() =>
                                     {
+                                       
                                         FoldPassive = CGUILayout.FoldableMenuHorizontal(FoldPassive, "Passive Effects", () => {
+
+
+                                            CGUILayout.BeginHorizontal(() => {
+                                                Cheat.inputPassiveEffects = GUILayout.TextField(Cheat.inputPassiveEffects, 50);
+                                                inputPassive = ValueModifierTypesToString(ValueModifierTypesIndex); // Set text field with the button's current value
+                                                inputFloat = GUILayout.TextField(inputFloat, 10, GUILayout.MaxWidth(25));
+                                                if (CGUILayout.Button("", ref ValueModifierTypesIndex, GUILayout.MaxWidth(100)))
+                                                {
+                                                    ValueModifierTypes selectedType = (ValueModifierTypes)ValueModifierTypesIndex;
+                                                    //Debug.Log("Selected Enum: " + selectedType);
+
+                                                }
+                                                if (CGUILayout.Button("ADD", GUILayout.MaxWidth(40)))
+                                                {
+                                                    try
+                                                    {
+                                                        float floatValue = float.Parse(inputFloat);
+                                                        if (System.Enum.TryParse(Cheat.inputPassiveEffects, out PassiveEffects passiveEffect))
+                                                        {
+                                                            Cheat.AddPassive(passiveEffect, floatValue, (PassiveEffect.ValueModifierTypes)ValueModifierTypesIndex);
+                                                            Log.Out(inputPassiveEffects);
+                                                            Log.Out($"{passiveEffect} added");
+                                                        }
+                                                        else
+                                                        {
+                                                            Log.Out(inputPassiveEffects);
+                                                            Log.Out($"{passiveEffect} not added");
+                                                            // Handle the case when the inputPassiveEffects cannot be parsed to the enum.
+                                                            // Display an error message, provide a default value, or take appropriate action.
+                                                        }
+                                                    }
+                                                    catch
+                                                    { }
+
+
+
+                                                    //ValueModifierTypes selectedType = (ValueModifierTypes)System.Enum.ToObject(typeof(ValueModifierTypes), currentIndex);
+                                                    //inputPassive = selectedType.ToString();
+                                                }
+                                            });
+                                            CGUILayout.BeginHorizontal(() => {
+                                                GUILayout.Label("Passive Search");
+                                                passiveSearch = GUILayout.TextField(passiveSearch, GUILayout.MaxWidth(225f), GUILayout.Height(20f));
+                                            });
                                             scrollPassive = GUILayout.BeginScrollView(scrollPassive);//GUILayout.MaxWidth(250f), GUILayout.Width(250f),GUILayout.Height(50f)
                                             {
-                                                Cheat.GetListPassiveEffects();
+                                                Cheat.GetListPassiveEffects(passiveSearch);
                                             }
                                             GUILayout.EndScrollView();
                                         }, 300f);
                                     });
                                 });
 
+
+
+
+
+
+
+
                                 CGUILayout.BeginHorizontal(customBoxStyleGreen);
                                 FoldBuff = CGUILayout.FoldableMenuHorizontal(FoldBuff, "Scroll All Buffs", () => {
 
-
+  
+                                    CGUILayout.BeginHorizontal(() => {
+                                        GUILayout.Label("Search for buff");
+                                        buffSearch = GUILayout.TextField(buffSearch, GUILayout.MaxWidth(225f), GUILayout.Height(20f));
+                                    });
+                                        
                                     scrollBuff = GUILayout.BeginScrollView(scrollBuff);//GUILayout.MaxWidth(250f), GUILayout.Width(250f),GUILayout.Height(50f)
                                     {
-                                        Cheat.GetList(lastBuffAdded, O.ELP, O.buffClasses);
+                                        Cheat.GetList(lastBuffAdded, O.ELP, O.buffClasses,buffSearch);
                                     }
                                     GUILayout.EndScrollView();
                                 }, 300f);
