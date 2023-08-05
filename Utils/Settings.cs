@@ -48,8 +48,12 @@ namespace SevenDTDMono
 
         //not sure
         public static bool _trystackitems = false;
-        public static bool _QuickScrap = false;
         public static bool _InstantLoot = false;
+        public static bool _instantScrap = false;
+        public static bool _instantCraft = false;
+        public static bool _instantSmelt = false;
+        public static bool _infDurability = false;
+        //public static bool _InstantLoot = false;
 
 
         //MISC

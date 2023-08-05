@@ -22,7 +22,7 @@ namespace SevenDTDMono
 
             Vector2 target = Vector2.zero;
 
-            foreach (EntityZombie zombie in O.zombieList)
+            foreach (EntityZombie zombie in O._listZombies)
                 if (zombie && zombie.IsAlive()) {
                     Vector3 lookAt = zombie.emodel.GetBellyPosition();
                     Vector3 w2s = ESP.mainCam.WorldToScreenPoint(lookAt);
@@ -77,7 +77,7 @@ namespace SevenDTDMono
             EntityZombie ztarget = null;
             EntityPlayer pTarget = null;
 
-            foreach (EntityZombie zombie in O.zombieList)
+            foreach (EntityZombie zombie in O._listZombies)
                 if (zombie && zombie.IsAlive()) {
                     Vector3 head = zombie.emodel.GetHeadTransform().position;
                     Vector3 w2s = ESP.mainCam.WorldToScreenPoint(head);
@@ -129,7 +129,7 @@ namespace SevenDTDMono
                 _MagicBullet();
             }
 
-            if (Input.GetKey(KeyCode.LeftAlt) && O.zombieList.Count > 0 && SETT.aimbot) {
+            if (Input.GetKey(KeyCode.LeftAlt) && O._listZombies.Count > 0 && SETT.aimbot) {
                 _Aimbot();
             }
         }

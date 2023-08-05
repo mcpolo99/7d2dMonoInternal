@@ -86,8 +86,8 @@ namespace SevenDTDMono{
                 ESPUtils.DrawLine(lineVerticalStart, lineVerticalEnd, crosshairCol, lineThickness);
             }//if crosshair toggle draw crosshair
 
-            if (O.zombieList.Count > 0 && (SETT.zombieName || SETT.zombieBox || SETT.zombieHealth)) {
-                foreach (EntityZombie zombie in O.zombieList) {
+            if (O._listZombies.Count > 0 && (SETT.zombieName || SETT.zombieBox || SETT.zombieHealth)) {
+                foreach (EntityZombie zombie in O._listZombies) {
                     if (!zombie || !zombie.IsAlive()) {
                         continue;
                     }

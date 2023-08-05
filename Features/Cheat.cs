@@ -402,8 +402,13 @@ namespace SevenDTDMono
 
             if (O.ELP.Buffs.HasBuff("CheatBuff") == false)
             {
-                Log.Out("Cheatbuff was not active, adding");
-                O.ELP.Buffs.AddBuff("CheatBuff");
+                try 
+                {
+                    Log.Out($"{O.CheatBuff.Name} was not active, try adding");
+                    O.ELP.Buffs.AddBuff("CheatBuff");
+                } catch
+                { 
+                }
             }
 
             List<PassiveEffect> pE1 = new List<PassiveEffect>();
@@ -440,12 +445,6 @@ namespace SevenDTDMono
             O._minEffectController.PassivesIndex.Add(passiveEffects); // adds to MinEffectController.PassivesIndex MUST DO OTHERWISE NULL REFERENCE ERROR
             //effectGroup.PassiveEffects.Add(newPassiveEffect);           // MinEffectController.MinEffectGroup.PassivesIndex __ This location just adds buffs on top if added multiple times
             O._minEffectController.EffectGroups[0].PassiveEffects.Add(newPassiveEffect);           // MinEffectController.MinEffectGroup.PassivesIndex __ This location just adds buffs on top if added multiple times
-                                                                                                   // O._minEffectController.PassivesIndex = new HashSet<PassiveEffects>
-                                                                                                   //{
-                                                                                                   //        passiveEffects,
-                                                                                                   //};
-
-
         }
 
 
@@ -478,19 +477,19 @@ namespace SevenDTDMono
         #region Lists
         public static void ListZombie1() ///////////////////////////////
         {
-            if (O.enemylist.Count > 1)
+            if (O._listEntityEnemy.Count > 1)
             {
-                foreach (EntityEnemy zombie in O.enemylist)
+                foreach (EntityEnemy enemy in O._listEntityEnemy)
                 {
-                    if (!zombie || zombie == O.ELP || !zombie.IsAlive())
+                    if (!enemy || enemy == O.ELP || !enemy.IsAlive())
                     {
                         continue;
                     }
 
                     //string xm1 = zombie.entityFlags.ToString();
                     //string ZM1= zombie.EntityName.ToString();
-                    string zombieIID = zombie.entityId.ToString();
-                    string zm = zombie.EntityName;
+                    string zombieIID = enemy.entityId.ToString();
+                    string zm = enemy.EntityName;
                     string zmIID = zm + zombieIID;
                     // Get or set the zombie's toggle state in the dictionary.
                     if (!zombieToggleStates.ContainsKey(zmIID))
@@ -506,13 +505,13 @@ namespace SevenDTDMono
                             if (GUILayout.Button("Teleport"))
                             {
                                 // Perform teleport action for the zombie.
-                                O.ELP.TeleportToPosition(zombie.GetPosition());
+                                O.ELP.TeleportToPosition(enemy.GetPosition());
                             }
                             if (GUILayout.Button("Kill"))
                             {
 
                                 // Perform kill action for the zombie.
-                                zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                                enemy.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
 
                             }
                         });
@@ -547,7 +546,7 @@ namespace SevenDTDMono
         }
         public static void ListPlayer1() ///////////////////////////////
         {
-            if (O.enemylist.Count > 1)
+            if (O.PlayerList.Count > 1)
             {
                 foreach (EntityPlayer player in O.PlayerList)
                 {
@@ -557,34 +556,41 @@ namespace SevenDTDMono
                     }
 
 
-                    string playerName = player.name.ToString();
-                    string zm = player.name;
+                    string PID = player.entityId.ToString();
+                    string PName = player.EntityName;
+                    string PIdentity = PName + PID;
+
+                    string playerName = player.EntityName.ToString()+player.entityId.ToString();
+                    string zm = player.EntityName.ToString();
 
                     // Get or set the zombie's toggle state in the dictionary.
-                    if (!playerToggleStates.ContainsKey(playerName))
+                    if (!playerToggleStates.ContainsKey(PIdentity))
                     {
-                        playerToggleStates[playerName] = false; // Set the initial state to false for new zombies.
+                        playerToggleStates[PIdentity] = false; // Set the initial state to false for new zombies.
                     }
 
-                    bool toggleState = playerToggleStates[playerName];
-                    CGUILayout.DropDownForMethods(playerName, () =>
+                    bool toggleState = playerToggleStates[PIdentity];
+                    CGUILayout.DropDownForMethods(PIdentity, () =>
                     {
-                        //CGUILayout.Button("whatever", Color.yellow, Color.blue);
-                        if (GUILayout.Button("Teleport"))
+                        CGUILayout.BeginHorizontal(() => 
                         {
-                            // Perform teleport action for the zombie.
-                            O.ELP.TeleportToPosition(player.GetPosition());
-                        }
-                        if (GUILayout.Button("Kill"))
-                        {
-                            // Perform kill action for the zombie.
-                            player.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-                        }//zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
-
+                            //CGUILayout.Button("whatever", Color.yellow, Color.blue);
+                            if (GUILayout.Button("Teleport"))
+                            {
+                                // Perform teleport action for the zombie.
+                                O.ELP.TeleportToPosition(player.GetPosition());
+                            }
+                            if (GUILayout.Button("Kill"))
+                            {
+                                // Perform kill action for the zombie.
+                                player.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                            }//zombie.DamageEntity(new DamageSource(EnumDamageSource.Internal, EnumDamageTypes.Suicide), 99999, false, 1f);
+                        });
+      
                     }, ref toggleState);
 
                     // Update the toggle state in the dictionary.
-                    playerToggleStates[playerName] = toggleState;
+                    playerToggleStates[PIdentity] = toggleState;
                 }
             }
             else
@@ -735,12 +741,16 @@ namespace SevenDTDMono
 
             if (SETT.IsGameStarted == true)
             {
-                CheatPassiveEffect(SETT._BL_Blockdmg, PassiveEffects.BlockDamage, SETT._FL_blokdmg, ValueModifierTypes.base_set);
-                CheatPassiveEffect(SETT._BL_Kill, PassiveEffects.EntityDamage, SETT._FL_killdmg, ValueModifierTypes.base_set);
-                CheatPassiveEffect(SETT._BL_Harvest, PassiveEffects.HarvestCount, SETT._FL_harvest, ValueModifierTypes.base_set);
+                CheatPassiveEffect(SETT._BL_Blockdmg, PassiveEffects.BlockDamage, SETT._FL_blokdmg, ValueModifierTypes.perc_add);
+                CheatPassiveEffect(SETT._BL_Kill, PassiveEffects.EntityDamage, SETT._FL_killdmg, ValueModifierTypes.perc_add);
+                CheatPassiveEffect(SETT._BL_Harvest, PassiveEffects.HarvestCount, SETT._FL_harvest, ValueModifierTypes.perc_add);
                 CheatPassiveEffect(SETT._BL_Jmp, PassiveEffects.JumpStrength, SETT._FL_jmp, ValueModifierTypes.base_set);
                 CheatPassiveEffect(SETT._BL_APM, PassiveEffects.AttacksPerMinute, SETT._FL_APM, ValueModifierTypes.base_set);
                 CheatPassiveEffect(SETT._BL_Run, PassiveEffects.RunSpeed, SETT._FL_run, ValueModifierTypes.base_set);
+                CheatPassiveEffect(SETT._instantScrap, PassiveEffects.ScrappingTime, 0f, ValueModifierTypes.base_set);
+                CheatPassiveEffect(SETT._instantCraft, PassiveEffects.CraftingTime, 0f, ValueModifierTypes.base_set);
+                CheatPassiveEffect(SETT._instantSmelt, PassiveEffects.CraftingSmeltTime, 0f, ValueModifierTypes.base_set);
+                CheatPassiveEffect(SETT._infDurability, PassiveEffects.DegradationPerUse, 0f, ValueModifierTypes.base_set);
 
                 if (SETT._LOQuestRewards==true) { LoopLASTQuestRewards(); };
                 if (SETT._QuestComplete==true) { InstantQuestFinish(); };
@@ -954,6 +964,11 @@ namespace SevenDTDMono
                     }
                 }
             }
+        }
+
+        public static void FullSkill()
+        {
+            //O.ELP.Progression.
         }
         public static void LoopLASTQuestRewards()
         {
@@ -1377,6 +1392,8 @@ namespace SevenDTDMono
                     if (ListOFClass.Count > 1)
                     {
                         foreach (EntityPlayer Class in ListOFClass)
+
+
                         {
                             if (!Class || Class == O.ELP || !Class.IsAlive())
                             {
@@ -1459,8 +1476,8 @@ namespace SevenDTDMono
             {
                 using (StreamWriter writer = new StreamWriter(filePath))
                 {
-                    //foreach (BuffClass buffClass in O.buffClasses.Where(bc => bc.DamageType == EnumDamageTypes.None && !ListPerksAlwaysremove.Contains(bc.Name) && !perkstarts.Any(prefix => bc.Name.StartsWith(prefix)|| bc.Name.Contains(prefix))))
-                    foreach (BuffClass buffClass in O.buffClasses.Where(bc => ListPerksAlwaysAdd.Contains(bc.Name)))
+                    //foreach (BuffClass buffClass in O._listBuffClass.Where(bc => bc.DamageType == EnumDamageTypes.None && !ListPerksAlwaysremove.Contains(bc.Name) && !perkstarts.Any(prefix => bc.Name.StartsWith(prefix)|| bc.Name.Contains(prefix))))
+                    foreach (BuffClass buffClass in O._listBuffClass.Where(bc => ListPerksAlwaysAdd.Contains(bc.Name)))
                     {
                         O.ELP.Buffs.AddBuff(buffClass.Name, -1, true, false, true, 20f);
                         buffClass.DurationMax = 999f; // how lonmg the perk will last
@@ -1684,7 +1701,7 @@ BuffClass DMGBUFF = new BuffClass()
 
 
 BuffManager.Buffs.Add(DMGBUFF.Name, DMGBUFF);  // need to add to buffmanager before init Everything before adding to buffmanager is what will define the buff
-O.buffClasses.Add(DMGBUFF);
+O._listBuffClass.Add(DMGBUFF);
 
 
 
@@ -1699,7 +1716,7 @@ O.buffClasses.Add(DMGBUFF);
 //customBuff2.Effects = effectController;
 
 
-//O.buffClasses.Add(customBuff2);
+//O._listBuffClass.Add(customBuff2);
 
 
 //O.ELP.Buffs.AddBuff("customBuff2");

@@ -11,87 +11,28 @@ using System.Reflection;
 using System.Globalization;
 using System.IO;
 using System.Collections;
+using System.Security.Cryptography;
 
 namespace SevenDTDMono
 {
     public class CBuffs : MonoBehaviour
     {
-        //public static List<string> ListCustomBuffs = new List<string>();
-        public static List<BuffClass> CustomBuffs;
-        void ExecuteAddbuff(string buff)
-        {
-
-            EntityPlayer primaryPlayer = GameManager.Instance.World.GetPrimaryPlayer();
-            if (primaryPlayer != null)
-            {
-                EntityBuffs.BuffStatus buffStatus = primaryPlayer.Buffs.AddBuff(buff, -1, true, false, false, -1f);
-                if (buffStatus != EntityBuffs.BuffStatus.Added)
-                {
-                    switch (buffStatus)
-                    {
-                        case EntityBuffs.BuffStatus.FailedInvalidName:
-                            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Buff failed: buff \"" + buff + "\" unknown");
-                            ConsoleCmdBuff.PrintAvailableBuffNames();
-                            return;
-                        case EntityBuffs.BuffStatus.FailedImmune:
-                            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Buff failed: entity is immune to \"" + buff + "\"");
-                            return;
-                        case EntityBuffs.BuffStatus.FailedFriendlyFire:
-                            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Buff failed: entity is friendly");
-                            return;
-                        default:
-                            return;
-                    }
-                }
-            }
-        }
-        void ExecuteAddbuff(List<string> _buffs)
-        {
-            //add a loop to loop throuh the list of buffs provided and add each buff in that list?
-
-            EntityPlayer primaryPlayer = GameManager.Instance.World.GetPrimaryPlayer();
-            if (primaryPlayer != null)
-            {
-                EntityBuffs.BuffStatus buffStatus = primaryPlayer.Buffs.AddBuff(_buffs[0], -1, true, false, false, -1f);
-                if (buffStatus != EntityBuffs.BuffStatus.Added)
-                {
-                    switch (buffStatus)
-                    {
-                        case EntityBuffs.BuffStatus.FailedInvalidName:
-                            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Buff failed: buff \"" + _buffs[0] + "\" unknown");
-                            ConsoleCmdBuff.PrintAvailableBuffNames();
-                            return;
-                        case EntityBuffs.BuffStatus.FailedImmune:
-                            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Buff failed: entity is immune to \"" + _buffs[0] + "\"");
-                            return;
-                        case EntityBuffs.BuffStatus.FailedFriendlyFire:
-                            SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Buff failed: entity is friendly");
-                            return;
-                        default:
-                            return;
-                    }
-                }
-            }
-        }
-        void ExecuteAddbuffonPlayer(EntityPlayer Player ,string buff)
-        { 
-        }
         public static void LoadCustomXml(string rss)
         {
-            CustomBuffs = new List<BuffClass>();
-
             // Replace "YourNamespace.YourXmlFileName.xml" with the correct namespace and file name of your embedded XML file.
             //string resourceName = "SevenDTDMono.Features.Buffs.Cbuffs.XML";
-            Debug.LogWarning($"Loading  {rss}");
+            
             // Get the assembly where your embedded resource is located (assuming it's the current assembly).
             Assembly assembly = Assembly.GetExecutingAssembly();
-            Debug.LogWarning($"Getting assembly {assembly}");
+            Debug.LogWarning($"Searching in {assembly}");
 
             // Open the embedded resource as a stream.
             using (Stream resourceStream = assembly.GetManifestResourceStream(rss))
             {
+                Debug.LogWarning($"Looking for {rss}...");
                 if (resourceStream != null)
                 {
+                    Debug.LogWarning($"{rss} was found, loading..");
                     // Create an XmlReader to read the XML content from the stream.
                     using (XmlReader xmlReader = XmlReader.Create(resourceStream))
                     {
@@ -101,21 +42,8 @@ namespace SevenDTDMono
                         Debug.LogWarning($"Adding Buffs from {rss}");
                         foreach (XElement xelement in rootElement.Elements())
                         {
-                            //Debug.LogWarning($" inside for each= {xelement}");
-
                             ParseAddBuff(xelement);
-                            //Debug.LogWarning($"print {xelement}");
-                            //if (msw.ElapsedMilliseconds > 50L)
-                            //{
-                            //    yield return null;
-                            //    msw.ResetAndRestart();
-                            //}
                         }
-
-
-
-                        // Process the XML as needed.
-                       // ParseAddBuff(rootElement);
                     }
                 }
                 else
@@ -283,7 +211,9 @@ namespace SevenDTDMono
                         buffClass.Effects = MinEffectController.ParseXml(_element, null, MinEffectController.SourceParentType.BuffClass, buffClass.Name);
                     }
                 }
-                CustomBuffs.Add(buffClass);
+                Debug.LogWarning($"adding {buffClass.Name} to O._listCbuffs");
+                Objects._listCbuffs.Add(buffClass);
+                Debug.LogWarning($"adding {buffClass.Name} to BuffManager");
                 BuffManager.AddBuff(buffClass);
                 return;
             }

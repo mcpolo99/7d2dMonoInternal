@@ -10,57 +10,109 @@ using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using SevenDTDMono;
 using System.Runtime.InteropServices;
 using System.Collections;
+using static WaterSimulationApplyChanges.ChangesForChunk;
 //using HarmonyLib;
 
 namespace SevenDTDMono
 {
+
     public class Objects : MonoBehaviour
     {
+       
 
-        public static List<EntityZombie> zombieList;
-        public static List<EntityEnemy> enemylist;
-        public static List<ProgressionValue> Proglist;
-        
-        public static List<EntityItem> itemList;
+        public static List<EntityZombie> _listZombies = new List<EntityZombie>();
+        public static List<EntityEnemy> _listEntityEnemy = new List<EntityEnemy>();
+        public static List<EntityItem> _listEntityItem = new List<EntityItem>();
+        public static List<BuffClass> _listBuffClass = new List<BuffClass>();
+        public static List<BuffClass> _listCbuffs = new List<BuffClass>();
+        public static List<EntityPlayer> _listEntityPlayer = new List<EntityPlayer>();
+
+
+        public static List<string> _BuffNames;
+
+
+
+        public static Dictionary<string, BuffClass>.KeyCollection buffsDict;
+
+
+        public static List<ProgressionValue> _listProgressionValue = new List<ProgressionValue>();
+        public static List<Progression> _listProgression = new List<Progression>();
+        public static List<ProgressionClass> _listProgressionClass = new List<ProgressionClass>();
+        public static Progression _Progression;
+
+
+
+
+        public static MinEffectController _minEffectController = new MinEffectController();
+        public static MinEffectController _minEC = new MinEffectController();
+
+        public static BuffClass CheatBuff;
+        //public static BuffClass _buffClass;
+        //public static BuffManager buffManager;
+
+        public static GameManager _gameManager = FindObjectOfType<GameManager>();
+
 
         public static EntityTrader Etrader;
-        public static EntityPlayerLocal ELP; // my final EntityPlayerLocal, This is the player on this pc
-        public static EntityPlayerLocal _entityplayerLocal; // not sure why i have this one
-        public static EntityPlayer _entityplayer;
-        
-        
-        public static MinEffectController _minEffectController;
-        public static MinEffectController _minEC;
-        public static BuffClass CheatBuff;
-        public static PassiveEffects passiveEffects;
+        public static EntityPlayerLocal ELP;
 
 
-        public static Entity entity;
-        public static EntityEnemy entity1;
-        public static GameObject Gobj;
-        public static BuffManager buffManager;
-        public static GameManager _gameManager;
-        public static XUiM_PlayerInventory _playerinv;
 
+
+        public static XUiM_PlayerInventory _playerinv; //null ???
+
+
+
+
+        #region private Vars
         private float lastCachePlayer;
         private float lastCacheZombies;
         private float lastCacheItems;
         private float Cachestart;
 
-        public static List<BuffClass> buffClasses;
-        public static Dictionary<string, BuffClass>.KeyCollection buffsDict;
-        public static BuffClass _buffClass;
-        public static List<string> _BuffNames;
-        private bool checkCompleted = false;
-
-
-
-
-
         private float updateCount = 0;
         private float fixedUpdateCount = 0;
         private float updateUpdateCountPerSecond;
         private float updateFixedUpdateCountPerSecond;
+
+
+        #endregion
+
+        //private static List<ProgressionValue> ProgressionValueQuickList = new List<ProgressionValue>();
+        //private static DictionaryNameId<ProgressionValue> ProgressionValues = new DictionaryNameId<ProgressionValue>(ProgressionNameIds);
+        //public static Dictionary<string, ProgressionClass> ProgressionClasses1;
+        //private static DictionaryNameIdMapping ProgressionNameIds = new DictionaryNameIdMapping();
+        //private static List<ProgressionClass> eventList = new List<ProgressionClass>();
+
+
+
+
+
+
+        // my final EntityPlayerLocal, This is the player on this pc
+        //public static EntityPlayerLocal _entityplayerLocal; // not sure why i have this one
+        //public static EntityPlayer _entityplayer;
+
+
+        //public static PassiveEffects passiveEffects;
+
+
+        //public static Entity entity;
+        //public static EntityEnemy entity1;
+        //public static GameObject Gobj;
+
+
+
+
+
+
+
+
+        //private bool checkCompleted = false;
+
+
+
+
 
 
         //progression Value
@@ -78,53 +130,11 @@ namespace SevenDTDMono
             lastCacheItems = Time.time + 1000f;
             Cachestart = Time.time + 10f; //time now + 10 sec
 
-
-            //init the lists just empty ones. will populate later
-            zombieList = new List<EntityZombie>();
-            enemylist = new List<EntityEnemy>();
-            Proglist = new List<ProgressionValue>();
-            itemList = new List<EntityItem>();
-            buffClasses = new List<BuffClass>();
-
-
-             _gameManager = FindObjectOfType<GameManager>(); //gamemanager is present at alltimes, get it
-            _minEffectController = new MinEffectController(); // we create our own effect controller for our own buffs and stats appliance
-            _minEC = new MinEffectController(); // we create our own effect controller for our own buffs and stats appliance
             _minEC.EffectGroups = _minEffectController.EffectGroups;
             _minEC.PassivesIndex = _minEffectController.PassivesIndex;
 
-
-
-            //Buffmanager is empty at startscreen, need to init after game start
-
-            //BuffClass ReBuff = BuffManager.GetBuff("test");
-            //Log.Out($"buff {ReBuff.Name} has been loaded as testbuff");
-            ////customBuff;
-
-            //if (customBuff != null) 
-            //{
-            //    int count = BuffManager.Buffs.Count;
-            //    Log.Out($"amount of buffs now {count}");
-            //    Log.Out("custombuff Has been init");
-
-            //    initbuff();
-            //    Log.Out($"amount of buffs after init {count}");
-            //}
-            //else
-            //{
-
-            //    Log.Out("custombuff Has Not been init");
-
-            //}
-
-
-
+            
             Log.Out("End of start objects");
-            Log.Out("End of start objects and _gameManger= " + _gameManager);
-
-
-           
-;
             Debug.LogWarning("THIS IS Start!!!!");
         }
 
@@ -146,8 +156,8 @@ namespace SevenDTDMono
                 "Also to avoid not being able to edit future values easier. \n i have not yet figured out how i can make the slider modifers realtime modifers or how to avoid passiveffects stacking  ";
             CheatBuff.Effects = _minEffectController;
             BuffManager.Buffs.Add(CheatBuff.Name, CheatBuff);  // need to add to buffmanager before init Everything before adding to buffmanager is what will define the buff
-            buffClasses.Add(CheatBuff);// add the buffs to our own list,  Want to make a list with the descriptive name , buff
-            Debug.LogWarning($"Buff {CheatBuff.Name} has ben added to {buffClasses} ");
+            _listBuffClass.Add(CheatBuff);// add the buffs to our own list,  Want to make a list with the descriptive name , buff
+            Debug.LogWarning($"Buff {CheatBuff.Name} has ben added to {_listBuffClass} ");
             Log.Out($"{CheatBuff.Name} Has been initieted");
 
            
@@ -281,7 +291,7 @@ namespace SevenDTDMono
                         try
                         {
                             #region Cheatbuff
-                            Debug.LogWarning($"amount of buffs now1 {BuffManager.Buffs.Count}");
+                            Debug.LogWarning($"amount of buffs before load {BuffManager.Buffs.Count}");
                             //init our stuff now
                             if (BuffManager.GetBuff("testbuff") != null && BuffManager.GetBuff("ReBuff") != null)
                             {
@@ -302,9 +312,9 @@ namespace SevenDTDMono
 
                             if (CheatBuff != null)
                             {
-                                int count = BuffManager.Buffs.Count;
-                                Debug.LogWarning($"amount of buffs now2 {count}");
-                                Log.Out($"{CheatBuff.Name} Has been init");
+                                //int count = BuffManager.Buffs.Count;
+                                //Debug.LogWarning($"amount of buffs now2 {count}");
+                                Debug.LogWarning($"{CheatBuff.Name} begin init");
                                 /*
                                 if (BuffManager.GetBuff(CheatBuff.Name) != null)
                                 {
@@ -315,13 +325,13 @@ namespace SevenDTDMono
 
                                 */
                                 initbuff();
-
+                                Debug.LogWarning($"{CheatBuff.Name} finished init");
                                 int count2 = BuffManager.Buffs.Count;
                                 Debug.LogWarning($"amount of buffs after init {count2}");
                             }
                             else
                             {
-                                Log.Out("custombuff Has Not been init");
+                                Log.Out($"{CheatBuff.Name} Has Not been init");
                             }
 
                             #endregion
@@ -353,19 +363,35 @@ namespace SevenDTDMono
                             Log.Out("Reloading buffs");
                             foreach (var buffClass in BuffManager.Buffs)
                             {
-                                buffClasses.Add(buffClass.Value);
+                                _listBuffClass.Add(buffClass.Value);
                             }
-                            buffClasses.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
+                            _listBuffClass.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
                             LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "Test.txt"));
                             #endregion
-                            Log.Out("CBuff Start to inject...");
 
-                            string resourceName = "SevenDTDMono.Features.Buffs.Cbuffs.XML";
+                            #region Custom XML  Buffs
+                            
 
-                            //Log.Out(resourceName);
+                            string CbuffRssName = "SevenDTDMono.Features.Buffs.Cbuffs.XML";
+                            Log.Out($"{CbuffRssName} begin Load....");
+                            CBuffs.LoadCustomXml(CbuffRssName);
+                            Debug.LogWarning($"{CbuffRssName} finished load!");
+                            #endregion
 
-                            CBuffs.LoadCustomXml(resourceName);
-                            Debug.LogWarning($"{resourceName} was hopefully loaded, nothing more to load");
+
+
+
+
+
+                            #region Progression list
+                            GetPerkList();
+
+                            //foreach (KeyValuePair<string, ProgressionClass> progressionClassEntry in Progression.ProgressionClasses)
+                            //{
+                       
+                            //}
+                            #endregion
+
 
 
                             Settings.IsVarsLoaded = true; // setts the loaded var to true so this part of the code wont execute more
@@ -444,15 +470,15 @@ namespace SevenDTDMono
 
             //add a check to check if gamemanager is init or not to prevent errors
 
-            if (ELP != null && Settings.reloadBuffs == true && buffClasses.Count <= 1)
+            if (ELP != null && Settings.reloadBuffs == true && _listBuffClass.Count <= 1)
             {
 
                 Log.Out("Reloading buffs");
                 foreach (var buffClass in BuffManager.Buffs)
                 {
-                    buffClasses.Add(buffClass.Value);
+                    _listBuffClass.Add(buffClass.Value);
                 } 
-                //buffClasses = GetAvailableBuffClasses();
+                //_listBuffClass = GetAvailableBuffClasses();
                 Settings.reloadBuffs = false;
             }
 
@@ -466,16 +492,14 @@ namespace SevenDTDMono
             }
             else if (Time.time >= lastCacheZombies)
             {
-                zombieList = FindObjectsOfType<EntityZombie>().ToList();
-                enemylist = FindObjectsOfType<EntityEnemy>().ToList();
-                
+                _listZombies = FindObjectsOfType<EntityZombie>().ToList();
+                _listEntityEnemy = FindObjectsOfType<EntityEnemy>().ToList();
 
                 lastCacheZombies = Time.time + 3f;
             }
             else if (Time.time >= lastCacheItems)
             {
-                itemList = FindObjectsOfType<EntityItem>().ToList();
-
+                _listEntityItem = FindObjectsOfType<EntityItem>().ToList();
                 lastCacheItems = Time.time + 4f;
             }
         }
@@ -559,9 +583,21 @@ namespace SevenDTDMono
                         return GameManager.Instance.World.GetPlayers();
                 return new List<EntityPlayer>();
             }
-
-
         }
+
+
+        public static List<EntityPlayer> ppl
+        {
+            get
+            {
+                if (GameManager.Instance != null)
+                    if (GameManager.Instance.World != null)
+                        return GameManager.Instance.World.GetPlayers();
+                return new List<EntityPlayer>();
+            }
+        }
+
+
 
         public static List<string> GetAvailableBuffNames()
         {
@@ -595,10 +631,85 @@ namespace SevenDTDMono
             }
 
         }
+
+        public static void GetPerkList()
+        {
+
+
+            //var prg = ELP.Progression.GetProgressionValue("attperception");
+            //prg.Level = 1;
+
+            //foreach (ProgressionValue progressionValue in progressionValues)
+            //{
+            //    ProgressionClass matchingClass = progressionClasses.Find(pc => pc.Name == progressionValue.Name);
+            //    if (matchingClass != null)
+            //    {
+            //        progressionValue.Level = matchingClass.MaxLevel;
+            //    }
+            //}
+            //Type progressionType = typeof(Progression);
+
+            //// Get the ProgressionValues field using reflection
+            //FieldInfo progressionValuesField = progressionType.GetField("ProgressionValues", BindingFlags.NonPublic | BindingFlags.Static);
+
+
+            //if (progressionValuesField.GetValue(null) is Dictionary<string, ProgressionValue> progressionValuesDict)
+            //{
+            //    // Loop through the dictionary and set the Level of each ProgressionValue to MaxLevel
+            //    foreach (ProgressionValue progressionValue in progressionValuesDict.Values)
+            //    {
+            //        ProgressionClass progressionClass = progressionValue.ProgressionClass;
+            //        if (progressionClass != null)
+            //        {
+            //            progressionValue.Level = progressionClass.MaxLevel;
+            //        }
+            //    }
+            //}
+
+            //foreach (KeyValuePair<int, ProgressionValue> keyValuePair2 in ProgressionValues.Dict)
+            //{
+            //    ProgressionValueQuickList.Add(keyValuePair2.Value);
+            //}
+            //foreach (KeyValuePair<string, ProgressionClass> keyValuePair in Progression.ProgressionClasses)
+            //{
+            //    string name = keyValuePair.Value.Name;
+            //    if (!ProgressionValues.Contains(name))
+            //    {
+            //        ProgressionValue progressionValue = new ProgressionValue(name)
+            //        {
+            //            Level = keyValuePair.Value.MinLevel,
+            //            CostForNextLevel = keyValuePair.Value.CalculatedCostForLevel(1 + 1)
+            //        };
+            //        ProgressionValues.Add(name, progressionValue);
+            //    }
+            //}
+            //_Progression = ELP.Progression;
+
+
+            _listProgressionValue.Clear();
+            foreach (ProgressionValue progv in _listProgressionValue.Where(bc => _listProgressionClass.Contains(bc.ProgressionClass)))
+            {
+                _listProgressionValue.Add(progv);
+                //progv.Level = progv.CalculatedMaxLevel(ELP);
+            }
+
+
+            _listProgressionClass.Clear();
+            foreach (ProgressionClass class1 in Progression.ProgressionClasses.Values) 
+            {
+                int lvl = class1.MaxLevel;
+
+                _listProgressionClass.Add(class1);
+            }
+            //SetupData();
+        }
+
+
+     
         public static List<BuffClass> GetAvailableBuffClasses() // gets the buffclasses??
         { 
             // Clear the list to ensure it's up-to-date.
-            buffClasses.Clear();
+            _listBuffClass.Clear();
             //buffClasses.
             if (BuffManager.Buffs != null)
             {
@@ -607,7 +718,7 @@ namespace SevenDTDMono
                 foreach (var buffEntry in BuffManager.Buffs)
                 {
                     //buffEntry.Value.Effects.EffectGroups.
-                    buffClasses.Add(buffEntry.Value);
+                    _listBuffClass.Add(buffEntry.Value);
 
                     if (buffEntry.Value.Equals(BuffManager.Buffs.Last().Value))
                     {
@@ -621,9 +732,9 @@ namespace SevenDTDMono
 
                 }
             }
-            buffClasses.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
+            _listBuffClass.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
 
-            return buffClasses;
+            return _listBuffClass;
         }
         private static void LogBuffClassesToFile(string filePath)
         {
@@ -633,7 +744,7 @@ namespace SevenDTDMono
                 {
                     writer.WriteLine("Buff Name,Damage Type,Description");
 
-                    foreach (var buffClass in buffClasses)
+                    foreach (var buffClass in _listBuffClass)
                     {
 
                         string str1 = buffClass.DamageSource.ToString();
@@ -708,3 +819,52 @@ namespace SevenDTDMono
     }
 
 }
+
+
+
+
+
+/*
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ *    private static void SetupData()
+        {
+            foreach (KeyValuePair<string, ProgressionClass> keyValuePair in Progression.ProgressionClasses)
+            {
+                string name = keyValuePair.Value.Name;
+                if (!ProgressionValues.Contains(name))
+                {
+                    ProgressionValue progressionValue = new ProgressionValue(name)
+                    {
+                        Level = keyValuePair.Value.MinLevel,
+                        CostForNextLevel = keyValuePair.Value.CalculatedCostForLevel(1 + 1)
+                    };
+                    ProgressionValues.Add(name, progressionValue);
+                }
+            }
+            ProgressionValueQuickList.Clear();
+            foreach (KeyValuePair<int, ProgressionValue> keyValuePair2 in ProgressionValues.Dict)
+            {
+                ProgressionValueQuickList.Add(keyValuePair2.Value);
+            }
+            eventList.Clear();
+            for (int i = 0; i < ProgressionValueQuickList.Count; i++)
+            {
+                ProgressionClass progressionClass = ProgressionValueQuickList[i].ProgressionClass;
+                if (progressionClass.HasEvents())
+                {
+                    eventList.Add(progressionClass);
+                }
+            }
+        }
+ */

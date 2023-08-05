@@ -347,7 +347,7 @@
     </Reference>
     <Reference Include="UnityExplorer.STANDALONE.Mono, Version=4.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\Load\UnityExplorer.STANDALONE.Mono.dll</HintPath>
+      <HintPath>F:\Source\TEMP\UnityExplorer.STANDALONE.Mono.dll</HintPath>
     </Reference>
     <Reference Include="UniverseLib.Mono, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

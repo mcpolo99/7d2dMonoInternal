@@ -89,6 +89,7 @@ namespace SevenDTDMono
         public Text counterText;
         private string buffSearch = "";
         private string passiveSearch = "";
+        private static string _itemcount = "2000";
         #endregion
 
 
@@ -109,6 +110,10 @@ namespace SevenDTDMono
             windowID = new System.Random(Environment.TickCount).Next(1000, 65535);
             windowRect = new Rect(10f, 400f, 400f, 500f);
             GUI.color = Color.white;
+
+
+
+
         }
 
         // Update is called once per frame
@@ -120,14 +125,14 @@ namespace SevenDTDMono
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.F3))
+            if (Input.GetKeyDown(KeyCode.F2))
             {
                 drawMenu = !drawMenu;
             }
-            if (Input.GetKeyDown(KeyCode.F2))
-            {
-                SETT.drawDebug = !SETT.drawDebug;
-            }
+            //if (Input.GetKeyDown(KeyCode.F2))
+            //{
+            //    SETT.drawDebug = !SETT.drawDebug;
+            //}
             if (SETT.selfDestruct)
             {
                 SETT.selfDestruct = false; //set bool to false so we can inject again
@@ -135,6 +140,7 @@ namespace SevenDTDMono
             }
             if (SETT.aimbot==true)
             {
+
 
             }
 
@@ -145,13 +151,23 @@ namespace SevenDTDMono
 
         private void OnGUI()
         {
+            GUIStyle customStyle = new GUIStyle(GUI.skin.window);
+            if (SETT.IsGameStarted)
+            {
+
+                customStyle.normal.textColor = Color.green;
+            }
+            else
+            {
+                customStyle.normal.textColor = Color.red;
+            }
+
             if (drawMenu)
             {
-                windowRect = GUILayout.Window(windowID, windowRect, Window, "7Days To Die Cheat Menu"); //draws main menu
+                windowRect = GUILayout.Window(windowID, windowRect, Window, "7Days To Die Cheat Menu",customStyle); //draws main menu
             }
             // Create a new GUIStyle based on the default GUI.skin.box
             // Set the desired background color for the box
-
 
 
             #region Styles BE OnGUI
@@ -279,8 +295,55 @@ namespace SevenDTDMono
                                     O.ELP.TeleportToPosition(new Vector3(O.ELP.markerPosition.ToVector3().x, O.ELP.markerPosition.ToVector3().y+2, O.ELP.markerPosition.ToVector3().z));
                                 }
                                 CGUILayout.Button("Instant Quest", ref SETT._QuestComplete);
+                                CGUILayout.Button("Instant Craft", ref SETT._instantCraft);
+                                CGUILayout.Button("Instant scrap", ref SETT._instantScrap);
+                                CGUILayout.Button("Instant smelt", ref SETT._instantSmelt);
                                 CGUILayout.Button("Loop LAST Quest Rewards", ref SETT._LOQuestRewards);
                                 CGUILayout.Button("Trader Open 24/7", ref SETT._EtraderOpen);
+
+
+                                CGUILayout.BeginHorizontal(() => {
+                                    _itemcount = GUILayout.TextField(_itemcount, 10, GUILayout.MaxWidth(50));
+
+                                    if (CGUILayout.Button(" holding item"))
+                                    {
+                                        try
+                                        {
+                                            int intvalue = int.Parse(_itemcount);
+                                            if (O.ELP.inventory.holdingItemStack.count >= 1)
+                                            {
+
+                                                //O.ELP.inventory.holdingCount;
+                                                O.ELP.inventory.holdingItemStack.count = intvalue;
+                                                //O.ELP.inventory.TryStackItem();
+                                                Debug.LogWarning($"{O.ELP.inventory.holdingItem.Name} set to {intvalue}");
+                                            }
+                                            else
+                                            {
+                                                Debug.LogWarning($"{O.ELP.inventory.holdingItem.Name} Could not be set to {intvalue}");
+                                               
+                                            }
+                                        }
+                                        catch
+                                        {
+                                        }
+                                    }
+
+
+                                });
+                                //if (CGUILayout.Button($"2k holding item"))
+                                //{
+                                //    if (O.ELP)
+                                //    {
+                                //        if (O.ELP.inventory.holdingItemStack.count >= 1)
+                                //        {
+                                //            //O.ELP.inventory.holdingCount;
+                                //            O.ELP.inventory.holdingItemStack.count = (int)2000;
+                                //            //O.ELP.inventory.TryStackItem();
+
+                                //        }
+                                //    }  
+                                //}
 
 
                                 //CGUILayout.Button("Test get player", Cheat.Getplayer);
@@ -334,6 +397,7 @@ namespace SevenDTDMono
                     CGUILayout.HorizontalScrollbarWithLabel("Sprint Speed", ref SETT._FL_run, 25f);
                     CGUILayout.HorizontalScrollbarWithLabel("Kill DMG xM", ref SETT._FL_killdmg, 1000f);
                     CGUILayout.HorizontalScrollbarWithLabel("Block DMG", ref SETT._FL_blokdmg, 1000f);
+
                     //CGUILayout.BeginHorizontal(() =>
                     //{
                     //    GUILayout.Label("Attacks/minute", Labelstyle, GUILayout.MaxWidth(60));
@@ -484,7 +548,7 @@ namespace SevenDTDMono
                                 FoldCBuff = CGUILayout.FoldableMenuHorizontal(FoldCBuff, "Custom Buffs", () => {
                                     scrollCBuff = GUILayout.BeginScrollView(scrollCBuff);//GUILayout.MaxWidth(250f), GUILayout.Width(250f),GUILayout.Height(50f)
                                     {
-                                        Cheat.GetListCBuffs(O.ELP, CBuffs.CustomBuffs);
+                                        Cheat.GetListCBuffs(O.ELP, O._listCbuffs);
                                     }
                                     GUILayout.EndScrollView();
                                 }, 300f);
@@ -572,7 +636,7 @@ namespace SevenDTDMono
                                         
                                     scrollBuff = GUILayout.BeginScrollView(scrollBuff);//GUILayout.MaxWidth(250f), GUILayout.Width(250f),GUILayout.Height(50f)
                                     {
-                                        Cheat.GetList(lastBuffAdded, O.ELP, O.buffClasses,buffSearch);
+                                        Cheat.GetList(lastBuffAdded, O.ELP, O._listBuffClass,buffSearch);
                                     }
                                     GUILayout.EndScrollView();
                                 }, 300f);
