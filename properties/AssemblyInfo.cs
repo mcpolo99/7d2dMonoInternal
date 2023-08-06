@@ -15,21 +15,86 @@ using System.Windows;
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.1.1.101")]
+[assembly: AssemblyVersion("1.1.1.163")]
 
 #if DEBUG
-[assembly: AssemblyTitle("MyProjectDebug")]
+[assembly: AssemblyTitle("Debug")]
 [assembly: AssemblyConfiguration("Debug")]
 #endif
 #if RELEASE
-[assembly: AssemblyConfiguration("Release")]
+[assembly: AssemblyTitle("NOUE")]
+[assembly: AssemblyConfiguration("NOUE")]
 #endif
 #if RELEASE_NOUE
+[assembly: AssemblyTitle("NOUE")]
 [assembly: AssemblyConfiguration("NOUE")]
 #endif
 #if RELEASE_UE
+[assembly: AssemblyTitle("UE")]
 [assembly: AssemblyConfiguration("UE")]
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

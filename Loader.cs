@@ -20,7 +20,7 @@ namespace SevenDTDMono
         public static void Load()
         {
             gameObject = new UnityEngine.GameObject();
-#if RELEASE_UE
+#if RELEASE_UE || DEBUG
             assemblyHelper = new AssemblyHelper();
             assemblyHelper.TryLoad();
 #endif
@@ -36,7 +36,7 @@ namespace SevenDTDMono
             gameObject.AddComponent<SceneDebugger>();
             gameObject.AddComponent<CBuffs>();
             //gameObject.AddComponent<EasterEggManager>();          
-#if RELEASE_UE
+#if RELEASE_UE || DEBUG
             InitializeUnityExplorer();
 #endif
             UnityEngine.Object.DontDestroyOnLoad(gameObject);
@@ -47,7 +47,7 @@ namespace SevenDTDMono
             {
                 Settings.ASMloaded=true;
 
-#if RELEASE_UE
+#if RELEASE_UE || DEBUG
                 UnityExplorer.ExplorerStandalone.CreateInstance();
 #endif
             }
