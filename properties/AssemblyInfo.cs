@@ -15,7 +15,7 @@ using System.Windows;
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.1.1.98")]
+[assembly: AssemblyVersion("1.1.1.101")]
 
 #if DEBUG
 [assembly: AssemblyTitle("MyProjectDebug")]
@@ -30,6 +30,9 @@ using System.Windows;
 #if RELEASE_UE
 [assembly: AssemblyConfiguration("UE")]
 #endif
+
+
+
 
 
 
