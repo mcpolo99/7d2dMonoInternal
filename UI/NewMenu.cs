@@ -44,7 +44,10 @@ namespace SevenDTDMono
         private bool FoldBuff = false;
         private bool FoldCBuff = false;
         private bool FoldPassive = false;
+        private bool FoldPGV = false;
+
         private bool lastBuffAdded = false;
+
         private bool lastzombieadded = false;
         private string inputFloat = "2";
         private string inputPassive = string.Empty;
@@ -68,9 +71,11 @@ namespace SevenDTDMono
         private Vector2 scrollCBuff;
         private Vector2 scrollZombie;
         private Vector2 scrollPassive;
+        private Vector2 scrollPGV;
 
         private Vector2 ScrollMenu3 = Vector2.zero;
         private Vector2 scrollBuffBTN = Vector2.zero;
+
         private Vector2 ScrollMenu2 = Vector2.zero;
         private Vector2 ScrollMenu1 = Vector2.zero;
         private Vector2 ScrollMenu0 = Vector2.zero;
@@ -119,6 +124,7 @@ namespace SevenDTDMono
         // Update is called once per frame
         void Update()
         {
+
 
             if (!Input.anyKey || !Input.anyKeyDown)
             {
@@ -267,9 +273,11 @@ namespace SevenDTDMono
                             {
                                 CGUILayout.Button("Add skillpoints", Cheat.skillpoints);
                                 CGUILayout.Button("Kill Self", Cheat.KillSelf);
+                             
                                 //CGUILayout.Button("Ignored By AI with ref", ref SETT._ignoreByAI);
 
                                 CGUILayout.Button("Ignored By AI",ref SETT._ignoreByAI);
+                                CGUILayout.Button("Edit Mode",ref SETT._isEditmode);
                               
                                 //CGUILayout.Button("Ignored By AI", Cheat.IgnoredbyAI);
                                 CGUILayout.Button("Level Up", Cheat.levelup);
@@ -286,12 +294,14 @@ namespace SevenDTDMono
                             {
                                 //SETT._Buffs = CGUILayout.Toggle(SETT._Buffs, "Buffs");
 
-                                CGUILayout.Button("BTN", Cheat.levelup);
-                                //CGUILayout.Button("Skillpoints", Cheat.skillpoints);
-                                //CGUILayout.Button("Health and Stamina", Cheat.HealthNStamina, ref SETT._healthNstamina);//USE BUFF INSTEAD
-                                //CGUILayout.Button("Food And Water", Cheat.FoodNWater,ref SETT._foodNwater);//USE BUFF INSTEAD
+                                if (CGUILayout.Button($"Log Classes To file"))
+                                {
+                                    O.LogprogclassClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "_listProgressionClass.txt"));
+                                }
+
                                 if (CGUILayout.Button($"Teleport To Marker "))
                                 {
+
                                     O.ELP.TeleportToPosition(new Vector3(O.ELP.markerPosition.ToVector3().x, O.ELP.markerPosition.ToVector3().y+2, O.ELP.markerPosition.ToVector3().z));
                                 }
                                 CGUILayout.Button("Instant Quest", ref SETT._QuestComplete);
@@ -697,6 +707,9 @@ namespace SevenDTDMono
                         GUILayout.EndScrollView();
                     }, 300f);
                     CGUILayout.BeginHorizontal(customBoxStyleGreen);
+                  
+                    
+                    
                     foldout5 = CGUILayout.FoldableMenuHorizontal(foldout5, "Foldable Menu 5", () =>
                     {
                         CGUILayout.BeginVertical(GUI.skin.box, () =>
@@ -723,6 +736,24 @@ namespace SevenDTDMono
                             });
                         });
                     }, 300f);
+                    CGUILayout.BeginHorizontal(customBoxStyleGreen);
+                    FoldPGV = CGUILayout.FoldableMenuHorizontal(FoldPGV, "Scroll Perks", () =>
+                    {
+                        CGUILayout.BeginHorizontal(customBoxStyleGreen);
+                        scrollPGV = GUILayout.BeginScrollView(scrollPGV, GUILayout.MinHeight(100f), GUILayout.MaxHeight(400f));//GUILayout.MaxWidth(250f), GUILayout.Width(250f),, GUILayout.Height(200f)
+                        {
+                            //Cheat.ListButtonPlayer();
+                            Cheat.ListPGV();
+                            //LISTDROPPDOWNMENU();
+                            //Cheat.GetList(lastBuffAdded, O.ELP, O.buffClasses);
+                        }
+                        GUILayout.EndScrollView();
+                    }, 300f);
+
+
+
+
+
                 }
                 GUILayout.EndScrollView();
             });

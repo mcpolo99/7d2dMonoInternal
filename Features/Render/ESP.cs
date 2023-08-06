@@ -37,7 +37,8 @@ namespace SevenDTDMono{
         }
 
         private void Update() {
-            if (SETT.zombieCornerBox) {
+            if (SETT.zombieCornerBox) 
+            {
                 SETT.zombieBox = false;
             } else if (SETT.zombieBox && SETT.zombieCornerBox) {
                 SETT.zombieCornerBox = false;

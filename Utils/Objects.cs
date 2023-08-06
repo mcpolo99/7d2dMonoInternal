@@ -5,12 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using static ImageEffectManager;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using SevenDTDMono;
 using System.Runtime.InteropServices;
 using System.Collections;
-using static WaterSimulationApplyChanges.ChangesForChunk;
+using HarmonyLib;
+using S = SevenDTDMono.Settings;
+
 //using HarmonyLib;
 
 namespace SevenDTDMono
@@ -26,42 +26,16 @@ namespace SevenDTDMono
         public static List<BuffClass> _listBuffClass = new List<BuffClass>();
         public static List<BuffClass> _listCbuffs = new List<BuffClass>();
         public static List<EntityPlayer> _listEntityPlayer = new List<EntityPlayer>();
-
-
-        public static List<string> _BuffNames;
-
-
-
         public static Dictionary<string, BuffClass>.KeyCollection buffsDict;
-
-
         public static List<ProgressionValue> _listProgressionValue = new List<ProgressionValue>();
-        public static List<Progression> _listProgression = new List<Progression>();
         public static List<ProgressionClass> _listProgressionClass = new List<ProgressionClass>();
-        public static Progression _Progression;
-
-
-
-
         public static MinEffectController _minEffectController = new MinEffectController();
         public static MinEffectController _minEC = new MinEffectController();
-
         public static BuffClass CheatBuff;
-        //public static BuffClass _buffClass;
-        //public static BuffManager buffManager;
-
         public static GameManager _gameManager = FindObjectOfType<GameManager>();
-
-
         public static EntityTrader Etrader;
-        public static EntityPlayerLocal ELP;
-
-
-
-
+        public static EntityPlayerLocal ELP; // this is the class we know player is inside. But now we need to assign ELP in this case to the actuall player
         public static XUiM_PlayerInventory _playerinv; //null ???
-
-
 
 
         #region private Vars
@@ -69,78 +43,27 @@ namespace SevenDTDMono
         private float lastCacheZombies;
         private float lastCacheItems;
         private float Cachestart;
-
         private float updateCount = 0;
         private float fixedUpdateCount = 0;
         private float updateUpdateCountPerSecond;
         private float updateFixedUpdateCountPerSecond;
 
-
         #endregion
 
-        //private static List<ProgressionValue> ProgressionValueQuickList = new List<ProgressionValue>();
-        //private static DictionaryNameId<ProgressionValue> ProgressionValues = new DictionaryNameId<ProgressionValue>(ProgressionNameIds);
-        //public static Dictionary<string, ProgressionClass> ProgressionClasses1;
-        //private static DictionaryNameIdMapping ProgressionNameIds = new DictionaryNameIdMapping();
-        //private static List<ProgressionClass> eventList = new List<ProgressionClass>();
+
+        //EntityPlayerLocal.xmitInventory
 
 
-
-
-
-
-        // my final EntityPlayerLocal, This is the player on this pc
-        //public static EntityPlayerLocal _entityplayerLocal; // not sure why i have this one
-        //public static EntityPlayer _entityplayer;
-
-
-        //public static PassiveEffects passiveEffects;
-
-
-        //public static Entity entity;
-        //public static EntityEnemy entity1;
-        //public static GameObject Gobj;
-
-
-
-
-
-
-
-
-        //private bool checkCompleted = false;
-
-
-
-
-
-
-        //progression Value
-
-
-        private void Start() //everything in here is things that need to declared at once on startup and not again. IF injecting ingame more ingame dependet vars can be here
+        private void Init() 
         {
-
-            GameObject uiRootObj1 = UnityEngine.Object.FindObjectOfType<UIPanel>().gameObject;
-            //on tik = 1 sek
-            //update freq for cahching diffrent classes/objects
-            lastCachePlayer = Time.time + 5f;
-            lastCacheZombies = Time.time + 3f;
-            lastCacheItems = Time.time + 4f;
-            lastCacheItems = Time.time + 1000f;
-            Cachestart = Time.time + 10f; //time now + 10 sec
-
-            _minEC.EffectGroups = _minEffectController.EffectGroups;
-            _minEC.PassivesIndex = _minEffectController.PassivesIndex;
-
-            
-            Log.Out("End of start objects");
-            Debug.LogWarning("THIS IS Start!!!!");
+            S.BD.Add("Cheatbuff", false);
+            S.BD.Add("BuffClasses", false);
+            S.BD.Add("Cbuff", false);
+            S.BD.Add("PGV", false);
         }
-
-        private void initbuff() //default 366 buffs
+        private void initCheatBuff() //default 366 buffs
         {
-            
+
 
             CheatBuff.Name = "CheatBuff";
             CheatBuff.DamageType = EnumDamageTypes.None; // Set the appropriate damage type if applicable
@@ -160,13 +83,13 @@ namespace SevenDTDMono
             Debug.LogWarning($"Buff {CheatBuff.Name} has ben added to {_listBuffClass} ");
             Log.Out($"{CheatBuff.Name} Has been initieted");
 
-           
-           _minEffectController.EffectGroups = new List<MinEffectGroup>
+
+            _minEffectController.EffectGroups = new List<MinEffectGroup>
            {
                new MinEffectGroup
                {
                    OwnerTiered = true,
-                   PassiveEffects = new List<PassiveEffect> 
+                   PassiveEffects = new List<PassiveEffect>
                    {
                          new PassiveEffect
                             {
@@ -184,292 +107,128 @@ namespace SevenDTDMono
                }
 
            };
-           _minEffectController.PassivesIndex = new HashSet<PassiveEffects> 
+            _minEffectController.PassivesIndex = new HashSet<PassiveEffects>
            {
                    PassiveEffects.None,
            };
-           buffsDict = BuffManager.Buffs.Keys;
-           Logtxt();
-
-           /*
-           // Set the properties of the custom buff
-
-
-
-           /*
-
-
-           MinEffectController effectController = new MinEffectController 
-           { 
-               EffectGroups = new List<MinEffectGroup>
-               {
-                   new MinEffectGroup
-                   {
-                       OwnerTiered = true,
-                       PassiveEffects = new List<PassiveEffect>
-                       {
-                            new PassiveEffect
-                            {
-                                MatchAnyTags = true,
-                                Type = PassiveEffects.WalkSpeed,
-                                Modifier = PassiveEffect.ValueModifierTypes.base_add,
-                                Values = new float[] { RunSlider }
-                                //Set other properties of PassiveEffect if needed
-                            },
-                           new PassiveEffect
-                           {
-                               // Set the properties of the PassiveEffect instance accordingly
-                                MatchAnyTags = true,
-                                Modifier = PassiveEffect.ValueModifierTypes.base_add,
-                                Type = PassiveEffects.RunSpeed,
-                                Values = new float[] { WalkSlider },
-
-                                //Set other properties if needed
-                           },
-                           new PassiveEffect
-                           {
-                               // Set the properties of the PassiveEffect instance accordingly
-                                MatchAnyTags = true,
-                                Modifier = PassiveEffect.ValueModifierTypes.base_add,
-                                Type = PassiveEffects.BlockDamage,
-                                Values = new float[] { BlockDMGSlider },
-                                //Set other properties if needed
-                           },
-                           new PassiveEffect
-                           {
-                               // Set the properties of the PassiveEffect instance accordingly
-                                MatchAnyTags = true,
-                                Modifier = PassiveEffect.ValueModifierTypes.base_add,
-                                Type = PassiveEffects.CraftingTime,
-                                Values = new float[] { 0 },
-                                //Set other properties if needed
-                           },
-                           new PassiveEffect
-                           {
-                               // Set the properties of the PassiveEffect instance accordingly
-                                MatchAnyTags = true,
-                                Modifier = PassiveEffect.ValueModifierTypes.base_add,
-                                Type = PassiveEffects.FoodGain,
-                                Values = new float[] { 9999 },
-                                //Set other properties if needed
-                           }
-                       },
-
-                       PassivesIndex = new List<PassiveEffects>
-                       {
-                            PassiveEffects.WalkSpeed,
-                            PassiveEffects.BlockDamage,
-                            PassiveEffects.CraftingTime,
-                            PassiveEffects.FoodGain,
-                       }
-
-                   }
-               },
-               PassivesIndex = new HashSet<PassiveEffects>
-               {
-                   PassiveEffects.WalkSpeed,
-                   PassiveEffects.RunSpeed,
-                   PassiveEffects.BlockDamage,
-                   PassiveEffects.CraftingTime,
-                   PassiveEffects.FoodGain,
-               }
-           };
-
-           */
-
+            buffsDict = BuffManager.Buffs.Keys;
         }
+        private void Start() //everything in here is things that need to declared at once on startup and not again. IF injecting ingame more ingame dependet vars can be here
+        {
+
+            GameObject uiRootObj1 = UnityEngine.Object.FindObjectOfType<UIPanel>().gameObject;
+            //on tik = 1 sek
+            //update freq for cahching diffrent classes/objects
+            lastCachePlayer = Time.time + 5f;
+            lastCacheZombies = Time.time + 3f;
+            lastCacheItems = Time.time + 4f;
+            lastCacheItems = Time.time + 1000f;
+            Cachestart = Time.time + 10f; //time now + 10 sec
+
+            _minEC.EffectGroups = _minEffectController.EffectGroups;
+            _minEC.PassivesIndex = _minEffectController.PassivesIndex;
+            Init();
+
+            Debug.LogWarning("THIS IS Start!!!!");
+        }
+
+
 
         void Update()
         {
             updateCount += 1; //
-            if (Settings.IsGameStarted == true && Settings.IsVarsLoaded != true)
+            S.IsVarsLoaded = S.BD.Values.All(b => b);
+            if (Settings.IsGameStarted == true && S.IsVarsLoaded!=true)
             {
-                try //add CheatBuff To the palyer
+                try 
                 {
-                    if (Settings.IsGameStarted == true && Settings.IsVarsLoaded != true)
+                    if (S.BD["Cheatbuff"] != true)
                     {
-                        try
+                        Debug.LogWarning($"amount of buffs before load {BuffManager.Buffs.Count}");
+                        if (CheatBuff == null)
                         {
-                            #region Cheatbuff
-                            Debug.LogWarning($"amount of buffs before load {BuffManager.Buffs.Count}");
-                            //init our stuff now
-                            if (BuffManager.GetBuff("testbuff") != null && BuffManager.GetBuff("ReBuff") != null)
-                            {
-                                BuffClass ReBuff = BuffManager.GetBuff("testbuff");
-                                ReBuff.Name = "TESTEDITBUFF";
-                                ReBuff.Effects = _minEffectController;
-                                BuffManager.Buffs.Add(ReBuff.Name, ReBuff);
-
-                                Debug.LogWarning($"buff {ReBuff.Name} has been loaded as a copy of  testbuff");
-                            }
-
-                            if (CheatBuff == null)
-                            {
-                                CheatBuff = new BuffClass();
-                                Debug.Log($"{CheatBuff} as been init as a BuffClass() ");
-                            }
-
-
-                            if (CheatBuff != null)
-                            {
-                                //int count = BuffManager.Buffs.Count;
-                                //Debug.LogWarning($"amount of buffs now2 {count}");
-                                Debug.LogWarning($"{CheatBuff.Name} begin init");
-                                /*
-                                if (BuffManager.GetBuff(CheatBuff.Name) != null)
-                                {
-                                    BuffClass ReBuff = BuffManager.GetBuff("testbuff");
-                                    ReBuff.Name = "TESTEDITBUFF";
-                                    Log.Out($"buff {ReBuff.Name} has been loaded as testbuff");
-                                }
-
-                                */
-                                initbuff();
-                                Debug.LogWarning($"{CheatBuff.Name} finished init");
-                                int count2 = BuffManager.Buffs.Count;
-                                Debug.LogWarning($"amount of buffs after init {count2}");
-                            }
-                            else
-                            {
-                                Log.Out($"{CheatBuff.Name} Has Not been init");
-                            }
-
-                            #endregion
-                            #region Buffclasses
-                            //buffClasses.Clear();
-                            ////buffClasses.
-                            //if (BuffManager.Buffs != null)
-                            //{
-
-                            //    BuffManager.Buffs.OfType<BuffClass>();
-                            //    foreach (var buffEntry in BuffManager.Buffs)
-                            //    {
-                            //        //buffEntry.Value.Effects.EffectGroups.
-                            //        buffClasses.Add(buffEntry.Value);
-
-                            //        if (buffEntry.Value.Equals(BuffManager.Buffs.Last().Value))
-                            //        {
-                            //            // Do something specific for the last buff class (if needed)
-                            //            // ...
-
-                            //            // Stop the loop after adding the last buff class
-                            //            //break;
-                            //        }
-                            //        LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "Test.txt"));
-
-                            //    }
-                            //}
-
-                            Log.Out("Reloading buffs");
-                            foreach (var buffClass in BuffManager.Buffs)
-                            {
-                                _listBuffClass.Add(buffClass.Value);
-                            }
-                            _listBuffClass.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
-                            LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "Test.txt"));
-                            #endregion
-
-                            #region Custom XML  Buffs
-                            
-
-                            string CbuffRssName = "SevenDTDMono.Features.Buffs.Cbuffs.XML";
-                            Log.Out($"{CbuffRssName} begin Load....");
-                            CBuffs.LoadCustomXml(CbuffRssName);
-                            Debug.LogWarning($"{CbuffRssName} finished load!");
-                            #endregion
-
-
-
-
-
-
-                            #region Progression list
-                            GetPerkList();
-
-                            //foreach (KeyValuePair<string, ProgressionClass> progressionClassEntry in Progression.ProgressionClasses)
-                            //{
-                       
-                            //}
-                            #endregion
-
-
-
-                            Settings.IsVarsLoaded = true; // setts the loaded var to true so this part of the code wont execute more
+                            CheatBuff = new BuffClass();
+                            Debug.Log($"{CheatBuff} as been init as a BuffClass() ");
                         }
-                        catch (Exception ex)
+                        else if (CheatBuff != null)
                         {
-                            Debug.LogError($"An error occured1 = {ex}");
-                            Settings.IsVarsLoaded = true;
-                        }
-                    }
-                    else if (Settings.IsGameStarted != true && Settings.IsVarsLoaded == true)
-                    {
-
-                        Settings.IsGameStarted = false;
-                    }
-                    Debug.LogWarning($"hopefully WAS everything loaded, nothing more to load");
-
-
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogWarning($"Error loading!! Check the code");
-                    Debug.LogError($"An error occured2 = {ex}");
-
-                }
-
-            }
-            /*
-            if (!Settings.Istarted)
-            {
-                //Log.Out($"{Time.time}");
-                if (Time.time >= Cachestart)
-                {
-                    Log.Out($"Setting = {Settings.Istarted} chache= {Cachestart}  Time = {Time.time}");
-
-                    //Log.Out("inside while");
-                    if (_gameManager == null) //  if We dont have a gammanger lets init it
-                    {
-                        //Log.Out("_gamemanager was null");
-                        _gameManager = FindObjectOfType<GameManager>();
-                        //Log.Out($"Gamemanager {_gameManager} is now present");
-                    }
-
-                    else
-                    {
-                        Log.Out("After else now _gameManger= " + _gameManager);
-                        // Only perform the check if it hasn't been done already
-                        if (_gameManager.gameStateManager.IsGameStarted() != false)
-                        {
-                            Log.Out($"Debug World Isstarted? =  : " + Settings.Istarted);
-                            Settings.Istarted = true; //sets our bool to true
-
+                            Debug.LogWarning($"{CheatBuff.Name} begin init");
+                            initCheatBuff();
+                            Debug.LogWarning($"{CheatBuff.Name} finished init");
+                            int count2 = BuffManager.Buffs.Count;
+                            Debug.LogWarning($"amount of buffs after init {count2}");
+                            S.BD["Cheatbuff"] = true;
+                            Debug.LogWarning($"1 = {S.BD["Cheatbuff"]}");
                         }
                         else
                         {
-                            // Conditions are not met, log the current status and wait for one minute before checking again
-                            Log.Out($"Debug World Isstarted? =  : " + _gameManager.gameStateManager.IsGameStarted());
-                            Log.Out($"Debug Settings.Istarted: {Settings.Istarted}");
-
-                            // Wait for one minute before checking again
-                            //yield return new WaitForSeconds(60f);
+                            Log.Out($"{CheatBuff.Name} Has Not been init");
                         }
                     }
+                    else if (S.BD["BuffClasses"] != true)
+                    {
+                        Log.Out("Reloading buffs");
+                        _listBuffClass.Clear();
+                        foreach (var buffClass in BuffManager.Buffs)
+                        {
+                            _listBuffClass.Add(buffClass.Value);
+                        }
+                        _listBuffClass.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
+                        Log_listBuffClass(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "_listBuffClass.txt"));
+                        S.BD["BuffClasses"] = true;
+                        Debug.LogWarning($"2 = {S.BD["BuffClasses"]}");
 
-                    Log.Out($"Setting = {Settings.Istarted} Ticknow = {Time.time} oldchache= {Cachestart}");
-                    Cachestart = Time.time + 10f;
-                    Log.Out($"Setting = {Settings.Istarted} Ticknow = {Time.time} Newchache= {Cachestart}");
-                    if (Settings.Istarted==true) 
-                    { 
-                        Cachestart= Time.time+120; // 2 minutes
                     }
+                    else if (S.BD["Cbuff"] != true)
+                    {
+                        string CbuffRssName = "SevenDTDMono.Features.Buffs.Cbuffs.XML";
+                        Log.Out($"{CbuffRssName} begin Load....");
+                        _listCbuffs.Clear();
+                        CBuffs.LoadCustomXml(CbuffRssName);
+                        _listCbuffs.Sort((a, b) => string.Compare(a.Name, b.Name));
+                        Debug.LogWarning($"{CbuffRssName} finished load!");
+                        S.BD["Cbuff"] = true;
+                        Debug.LogWarning($"3 = {S.BD["Cbuff"]}");
+                    }
+                    else if (S.BD["PGV"] != true && ELP.Progression != null)
+                    {
+                        if (_listProgressionValue.Count <= 0)
+                        {
+                            Debug.LogWarning("List empty");
+
+                        }
+                        _listProgressionValue.Clear();
+                        foreach (KeyValuePair<int, ProgressionValue> keyValuePair in ELP.Progression.GetDict())
+                        {
+                            ProgressionValue value = keyValuePair.Value;
+                            bool flag;
+                            if (value == null)
+                            {
+                                flag = null != null;
+                            }
+                            else
+                            {
+                                ProgressionClass progressionClass = value.ProgressionClass;
+                                flag = ((progressionClass != null) ? progressionClass.Name : null) != null;
+                            }
+                            if (flag)
+                            {
+
+                                _listProgressionValue.Add(keyValuePair.Value);
+                            }
+
+                        }
+                        _listProgressionValue.Sort((a, b) => string.Compare(a.Name, b.Name));
+                        S.BD["PGV"] = true;
+                        Debug.LogWarning($"4 = {S.BD["PGV"]}");
+                    }
+                    S.IsVarsLoaded = S.BD.Values.All(b => b);
+                    Debug.LogWarning($"AllLoaded =  {S.IsVarsLoaded}");
+                } catch 
+                { 
                 }
             }
-            */
-
-
-            //add a check to check if gamemanager is init or not to prevent errors
-
+          
             if (ELP != null && Settings.reloadBuffs == true && _listBuffClass.Count <= 1)
             {
 
@@ -483,12 +242,11 @@ namespace SevenDTDMono
             }
 
 
-            if (Time.time >= lastCachePlayer)
+            if (Time.time >= lastCachePlayer) // i dont remember why we need to use a loop to chach the player but it was from argons source code!
             {
-                ELP = FindObjectOfType<EntityPlayerLocal>();
+                ELP = FindObjectOfType<EntityPlayerLocal>(); // FindObjectOfType is a unity function to find the gameobject of desired Class so we assing our variable ELP(of class EntityPlayerLocal) to the games EntityPlayerLocal. Now we can use ELP as EntityPlayerLocal to whatever we want
                 Etrader = FindObjectOfType<EntityTrader>();
-
-                lastCachePlayer = Time.time + 5f;
+                lastCachePlayer = Time.time + 5f; // cahing player each timn now + 5 sec. so 5 secound ahead
             }
             else if (Time.time >= lastCacheZombies)
             {
@@ -507,60 +265,24 @@ namespace SevenDTDMono
         void FixedUpdate()
         {
             fixedUpdateCount += 1;
-            //we need for some classes the game to be startet so we get it from gamemanager
-            if (_gameManager.gameStateManager.IsGameStarted() == true && Settings.IsGameStarted != true) // needs to be true && need sto be false
+            if (GameManager.Instance.World != null)
             {
-                Log.Out($"Debug World Isstarted=  : " + Settings.IsGameStarted, LogType.Error);
                 Settings.IsGameStarted = true;
             }
+            else if(GameManager.Instance.World == null) 
+            {
+                Settings.IsGameStarted = false;
+                Settings.IsVarsLoaded = false;
+                foreach (string key in S.BD.Keys.ToList()) // ToList creates a copy of the keys so that you can modify the dictionary while iterating.
+                {
+                    S.BD[key] = false;
+                }
 
+            }
             //Log.Out("THIS IS  FixedUpdate!!!!", LogType.Error);
         }
 
-        IEnumerator CheckOncePerMinute()//old updateloop
-        {
-            //when game is not started 
-            while (!Settings.IsGameStarted) //if not true
-            {
-                yield return new WaitForSeconds(60f);
-                if (Time.time >= Cachestart)
-                {
 
-                    //Log.Out("inside while");
-                    if (_gameManager == null)
-                    {
-                        //Log.Out("_gamemanager was null");
-                        _gameManager = FindObjectOfType<GameManager>();
-                        //Log.Out($"Gamemanager {_gameManager} is now present");
-                    }
-
-                    else
-                    {
-                        Log.Out("After else now _gameManger= " + _gameManager);
-                        // Only perform the check if it hasn't been done already
-                        if (_gameManager.gameStateManager.IsGameStarted() != false)
-                        {
-                            Log.Out($"Debug World Isstarted? =  : " + Settings.IsGameStarted);
-                            Settings.IsGameStarted = true;
-
-                        }
-                        else
-                        {
-                            // Conditions are not met, log the current status and wait for one minute before checking again
-                            Log.Out($"Debug World Isstarted? =  : " + _gameManager.gameStateManager.IsGameStarted());
-                            Log.Out($"Debug Settings.Istarted: {Settings.IsGameStarted}");
-
-                            // Wait for one minute before checking again
-                            
-                        }
-                    }
-
-                    Cachestart = Time.time + 2000f;
-                    Log.Out(Cachestart.ToString());
-                }
-          
-            }
-        }
         IEnumerator Loop()
         {
             while (true)
@@ -584,159 +306,8 @@ namespace SevenDTDMono
                 return new List<EntityPlayer>();
             }
         }
-
-
-        public static List<EntityPlayer> ppl
-        {
-            get
-            {
-                if (GameManager.Instance != null)
-                    if (GameManager.Instance.World != null)
-                        return GameManager.Instance.World.GetPlayers();
-                return new List<EntityPlayer>();
-            }
-        }
-
-
-
-        public static List<string> GetAvailableBuffNames()
-        {
-            SortedDictionary<string, BuffClass> sortedDictionary = new SortedDictionary<string, BuffClass>(BuffManager.Buffs, StringComparer.OrdinalIgnoreCase);
-            List<string> buffNames = new List<string>();
-
-            foreach (KeyValuePair<string, BuffClass> keyValuePair in sortedDictionary)
-            {
-                if (keyValuePair.Key.Equals(keyValuePair.Value.LocalizedName))
-                {
-                    buffNames.Add(keyValuePair.Key);
-                }
-                else
-                {
-                    buffNames.Add(keyValuePair.Key);
-                }
-
-            }
-
-            return buffNames;
-        }
-
-        private void Logtxt()
-        {
-            
-            foreach (var str in buffsDict )
-            {
-
-                LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "buffsDict.txt"));
-
-            }
-
-        }
-
-        public static void GetPerkList()
-        {
-
-
-            //var prg = ELP.Progression.GetProgressionValue("attperception");
-            //prg.Level = 1;
-
-            //foreach (ProgressionValue progressionValue in progressionValues)
-            //{
-            //    ProgressionClass matchingClass = progressionClasses.Find(pc => pc.Name == progressionValue.Name);
-            //    if (matchingClass != null)
-            //    {
-            //        progressionValue.Level = matchingClass.MaxLevel;
-            //    }
-            //}
-            //Type progressionType = typeof(Progression);
-
-            //// Get the ProgressionValues field using reflection
-            //FieldInfo progressionValuesField = progressionType.GetField("ProgressionValues", BindingFlags.NonPublic | BindingFlags.Static);
-
-
-            //if (progressionValuesField.GetValue(null) is Dictionary<string, ProgressionValue> progressionValuesDict)
-            //{
-            //    // Loop through the dictionary and set the Level of each ProgressionValue to MaxLevel
-            //    foreach (ProgressionValue progressionValue in progressionValuesDict.Values)
-            //    {
-            //        ProgressionClass progressionClass = progressionValue.ProgressionClass;
-            //        if (progressionClass != null)
-            //        {
-            //            progressionValue.Level = progressionClass.MaxLevel;
-            //        }
-            //    }
-            //}
-
-            //foreach (KeyValuePair<int, ProgressionValue> keyValuePair2 in ProgressionValues.Dict)
-            //{
-            //    ProgressionValueQuickList.Add(keyValuePair2.Value);
-            //}
-            //foreach (KeyValuePair<string, ProgressionClass> keyValuePair in Progression.ProgressionClasses)
-            //{
-            //    string name = keyValuePair.Value.Name;
-            //    if (!ProgressionValues.Contains(name))
-            //    {
-            //        ProgressionValue progressionValue = new ProgressionValue(name)
-            //        {
-            //            Level = keyValuePair.Value.MinLevel,
-            //            CostForNextLevel = keyValuePair.Value.CalculatedCostForLevel(1 + 1)
-            //        };
-            //        ProgressionValues.Add(name, progressionValue);
-            //    }
-            //}
-            //_Progression = ELP.Progression;
-
-
-            _listProgressionValue.Clear();
-            foreach (ProgressionValue progv in _listProgressionValue.Where(bc => _listProgressionClass.Contains(bc.ProgressionClass)))
-            {
-                _listProgressionValue.Add(progv);
-                //progv.Level = progv.CalculatedMaxLevel(ELP);
-            }
-
-
-            _listProgressionClass.Clear();
-            foreach (ProgressionClass class1 in Progression.ProgressionClasses.Values) 
-            {
-                int lvl = class1.MaxLevel;
-
-                _listProgressionClass.Add(class1);
-            }
-            //SetupData();
-        }
-
-
      
-        public static List<BuffClass> GetAvailableBuffClasses() // gets the buffclasses??
-        { 
-            // Clear the list to ensure it's up-to-date.
-            _listBuffClass.Clear();
-            //buffClasses.
-            if (BuffManager.Buffs != null)
-            {
-
-                BuffManager.Buffs.OfType<BuffClass>();
-                foreach (var buffEntry in BuffManager.Buffs)
-                {
-                    //buffEntry.Value.Effects.EffectGroups.
-                    _listBuffClass.Add(buffEntry.Value);
-
-                    if (buffEntry.Value.Equals(BuffManager.Buffs.Last().Value))
-                    {
-                        // Do something specific for the last buff class (if needed)
-                        // ...
-
-                        // Stop the loop after adding the last buff class
-                        //break;
-                    }
-                    LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "Test.txt"));
-
-                }
-            }
-            _listBuffClass.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
-
-            return _listBuffClass;
-        }
-        private static void LogBuffClassesToFile(string filePath)
+        private static void Log_listBuffClass(string filePath)
         {
             try
             {
@@ -763,7 +334,35 @@ namespace SevenDTDMono
                 Console.WriteLine($"Error occurred while logging buff classes: {ex.Message}");
             }
         }
+        public static void LogprogclassClassesToFile(string filePath)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.WriteLine("name,type,sortorder");
 
+                    foreach (var prog in _listProgressionClass)
+                    {
+
+                        string str1 = prog.Name;
+                        string str2 = prog.Type.ToString();
+                        string str3 = prog.ListSortOrder.ToString();
+
+
+                        //writer.WriteLine($"{EscapeForCsv(buffClass.Name)},{buffClass.DamageType},{EscapeForCsv(buffClass.NameTag.ToString())}");
+                        writer.WriteLine($"{EscapeForCsv(str1)},{EscapeForCsv(str2)},{EscapeForCsv(str3)}");
+                    }
+                }
+
+                Console.WriteLine("progressionclasses as been logged");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred while logging buff classes: {ex.Message}");
+            }
+        }
+       
         private static string EscapeForCsv(string value)
         {
             if (string.IsNullOrEmpty(value))
@@ -833,10 +432,175 @@ namespace SevenDTDMono
  * 
  * 
  * 
- * 
- * 
- * 
- * 
+            if (!Settings.Istarted)
+            {
+                //Log.Out($"{Time.time}");
+                if (Time.time >= Cachestart)
+                {
+                    Log.Out($"Setting = {Settings.Istarted} chache= {Cachestart}  Time = {Time.time}");
+
+                    //Log.Out("inside while");
+                    if (_gameManager == null) //  if We dont have a gammanger lets init it
+                    {
+                        //Log.Out("_gamemanager was null");
+                        _gameManager = FindObjectOfType<GameManager>();
+                        //Log.Out($"Gamemanager {_gameManager} is now present");
+                    }
+
+                    else
+                    {
+                        Log.Out("After else now _gameManger= " + _gameManager);
+                        // Only perform the check if it hasn't been done already
+                        if (_gameManager.gameStateManager.IsGameStarted() != false)
+                        {
+                            Log.Out($"Debug World Isstarted? =  : " + Settings.Istarted);
+                            Settings.Istarted = true; //sets our bool to true
+
+                        }
+                        else
+                        {
+                            // Conditions are not met, log the current status and wait for one minute before checking again
+                            Log.Out($"Debug World Isstarted? =  : " + _gameManager.gameStateManager.IsGameStarted());
+                            Log.Out($"Debug Settings.Istarted: {Settings.Istarted}");
+
+                            // Wait for one minute before checking again
+                            //yield return new WaitForSeconds(60f);
+                        }
+                    }
+
+                    Log.Out($"Setting = {Settings.Istarted} Ticknow = {Time.time} oldchache= {Cachestart}");
+                    Cachestart = Time.time + 10f;
+                    Log.Out($"Setting = {Settings.Istarted} Ticknow = {Time.time} Newchache= {Cachestart}");
+                    if (Settings.Istarted==true) 
+                    { 
+                        Cachestart= Time.time+120; // 2 minutes
+                    }
+                }
+            }
+            
+
+*IEnumerator CheckOncePerMinute()//old updateloop
+        {
+            //when game is not started 
+            while (!Settings.IsGameStarted) //if not true
+            {
+                yield return new WaitForSeconds(60f);
+                if (Time.time >= Cachestart)
+                {
+
+                    //Log.Out("inside while");
+                    if (_gameManager == null)
+                    {
+                        //Log.Out("_gamemanager was null");
+                        _gameManager = FindObjectOfType<GameManager>();
+                        //Log.Out($"Gamemanager {_gameManager} is now present");
+                    }
+
+                    else
+                    {
+                        Log.Out("After else now _gameManger= " + _gameManager);
+                        // Only perform the check if it hasn't been done already
+                        if (_gameManager.gameStateManager.IsGameStarted() != false)
+                        {
+                            Log.Out($"Debug World Isstarted? =  : " + Settings.IsGameStarted);
+                            Settings.IsGameStarted = true;
+
+                        }
+                        else
+                        {
+                            // Conditions are not met, log the current status and wait for one minute before checking again
+                            Log.Out($"Debug World Isstarted? =  : " + _gameManager.gameStateManager.IsGameStarted());
+                            Log.Out($"Debug Settings.Istarted: {Settings.IsGameStarted}");
+
+                            // Wait for one minute before checking again
+                            
+                        }
+                    }
+
+                    Cachestart = Time.time + 2000f;
+                    Log.Out(Cachestart.ToString());
+                }
+          
+            }
+        }
+ *   public static List<string> GetAvailableBuffNames()
+        {
+            SortedDictionary<string, BuffClass> sortedDictionary = new SortedDictionary<string, BuffClass>(BuffManager.Buffs, StringComparer.OrdinalIgnoreCase);
+            List<string> buffNames = new List<string>();
+
+            foreach (KeyValuePair<string, BuffClass> keyValuePair in sortedDictionary)
+            {
+                if (keyValuePair.Key.Equals(keyValuePair.Value.LocalizedName))
+                {
+                    buffNames.Add(keyValuePair.Key);
+                }
+                else
+                {
+                    buffNames.Add(keyValuePair.Key);
+                }
+
+            }
+
+            return buffNames;
+        }
+ *    public static List<BuffClass> GetAvailableBuffClasses() // gets the buffclasses??
+        { 
+            // Clear the list to ensure it's up-to-date.
+            _listBuffClass.Clear();
+            //buffClasses.
+            if (BuffManager.Buffs != null)
+            {
+
+                BuffManager.Buffs.OfType<BuffClass>();
+                foreach (var buffEntry in BuffManager.Buffs)
+                {
+                    //buffEntry.Value.Effects.EffectGroups.
+                    _listBuffClass.Add(buffEntry.Value);
+
+                    if (buffEntry.Value.Equals(BuffManager.Buffs.Last().Value))
+                    {
+                        // Do something specific for the last buff class (if needed)
+                        // ...
+
+                        // Stop the loop after adding the last buff class
+                        //break;
+                    }
+                    LogBuffClassesToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "load", "Test.txt"));
+
+                }
+            }
+            _listBuffClass.Sort((buff1, buff2) => string.Compare(buff1.Name, buff2.Name));
+
+            return _listBuffClass;
+        }
+ *  public static void LogPRogressondict(string filePath, Dictionary<string,ProgressionClass> list )
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.WriteLine("name,key,type");
+
+                    foreach (var prog in list)
+                    {
+
+                        string str1 = prog.Value.Name;
+                        string str2 = prog.Key;
+                        string str3 = prog.Value.Type.ToString();
+
+
+                        //writer.WriteLine($"{EscapeForCsv(buffClass.Name)},{buffClass.DamageType},{EscapeForCsv(buffClass.NameTag.ToString())}");
+                        writer.WriteLine($"{EscapeForCsv(str1)},{EscapeForCsv(str2)},{EscapeForCsv(str3)}");
+                    }
+                }
+
+                Console.WriteLine("progressionclasses as been logged");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred while logging buff classes: {ex.Message}");
+            }
+        }
  *    private static void SetupData()
         {
             foreach (KeyValuePair<string, ProgressionClass> keyValuePair in Progression.ProgressionClasses)

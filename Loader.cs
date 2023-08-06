@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
+
 namespace SevenDTDMono
 {
     public class Loader
@@ -19,10 +20,10 @@ namespace SevenDTDMono
         public static void Load()
         {
             gameObject = new UnityEngine.GameObject();
-
+#if RELEASE_UE
             assemblyHelper = new AssemblyHelper();
             assemblyHelper.TryLoad();
-
+#endif
 
             gameObject.AddComponent<NewMenu>();
             gameObject.AddComponent<Cheat>();
@@ -34,9 +35,10 @@ namespace SevenDTDMono
             gameObject.AddComponent<Render>();
             gameObject.AddComponent<SceneDebugger>();
             gameObject.AddComponent<CBuffs>();
-
+            //gameObject.AddComponent<EasterEggManager>();          
+#if RELEASE_UE
             InitializeUnityExplorer();
-
+#endif
             UnityEngine.Object.DontDestroyOnLoad(gameObject);
         }
         public static void InitializeUnityExplorer()
@@ -44,7 +46,10 @@ namespace SevenDTDMono
             if (assemblyHelper.AreAllAssembliesLoaded() == true && Settings.ASMloaded == false)
             {
                 Settings.ASMloaded=true;
+
+#if RELEASE_UE
                 UnityExplorer.ExplorerStandalone.CreateInstance();
+#endif
             }
 
         }

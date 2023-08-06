@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using SETT = SevenDTDMono.Settings;
 using Eutl = SevenDTDMono.ESPUtils;
-using O = SevenDTDMono.Objects;
+using O = SevenDTDMono.Objects; // here we declare O as it was SevenDTDMono.Objects
 using System.Collections.Generic;
 using Platform;
 using System.Linq;
@@ -19,6 +19,7 @@ using SevenDTDMono.Utils;
 using System.Web;
 using static PassiveEffect;
 using static NetPackageMeasure;
+using System.Security.Principal;
 
 //using SevenDTDMono.Objects;
 
@@ -82,9 +83,7 @@ namespace SevenDTDMono
          */
         #endregion
         //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
+
         #region Notes
         /*
 
@@ -102,14 +101,10 @@ namespace SevenDTDMono
 
         */
         //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
+
         #endregion
         //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
+
         #region variables
         public static Color _col = Color.blue;
         public static Stat.StatTypes StatType;
@@ -120,57 +115,23 @@ namespace SevenDTDMono
         //public static PassiveEffect passiveEffect;
         public  static string inputPassiveEffects = "none";
         public  static string inputFloat = "1";
+
         private static Dictionary<string, bool> zombieToggleStates = new Dictionary<string, bool>();
+        private static Dictionary<string, bool> TogBL = new Dictionary<string, bool>();
 
 
         private static Dictionary<string, bool> playerToggleStates = new Dictionary<string, bool>();
         private static Dictionary<PassiveEffects, bool> passiveToggleStates = new Dictionary<PassiveEffects, bool>();
-        public static Dictionary<string, bool> _CbuffsToggleStates = new Dictionary<string, bool>();
+        public  static Dictionary<string, bool> _CbuffsToggleStates = new Dictionary<string, bool>();
+        //private static List<EasterEgg> _easterEggs = new List<EasterEgg>();
+        //private static EasterEggManager _easterEggManager = new EasterEggManager();
 
-
-        private static List<string> ListPerksAlwaysAdd = new List<string>
-        { "buffringoffire",
-            "buffdontbreakmyleg",
-            "buffheadshotsonly",
-            "buffcrouching",
-            "buffhealwatermax",
-            "buffhealfood",
-            "buffhealhealt"
-
-        };
-        private static List<string> ListPerks = new List<string> { "god", "megadamage", "nerfme", "messmeup" };
-        private static List<string> ListPerksNotToAdd = new List<string> { "god", "megadamage", "nerfme", "messmeup", "buffbrokenlimbstatus", "buffneardeathtrauma" };
-        private static List<string> ListPerksAlwaysremove = new List<string>
-        {
-
-            "buffdontmove",
-            "buffelementwet",
-            "electricity",
-            "messmeup" ,
-            "buffbrokenlimbstatus" ,
-            "bufflegsprained",
-            "buffinjuryabrasion" ,
-            "bufflaceration",
-            "buffinfectionmain",
-            "nerfme",
-            "megadamage",
-            "god",
-            "buffelementcold",
-
-
-
-
-
-
-        };
-        private static List<string> perkstarts = new List<string> { "twitch", "test_", "trigger", "infection", "injury", "getsworse" };
+        
 
 
         #endregion
         //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
+
 
 
         #region finished cheats
@@ -180,6 +141,31 @@ namespace SevenDTDMono
             GameStats.Set(EnumGameStats.ShowSpawnWindow, SETT.CmDm); // sets the GameStat to the value of CmDm
             GameStats.Set(EnumGameStats.IsCreativeMenuEnabled, SETT.CmDm);
             GamePrefs.Set(EnumGamePrefs.DebugMenuEnabled, SETT.CmDm);
+
+        }
+        public static Transform parentTransform;
+        public static void editMode() //Creative and DEbug - Toggle
+        {
+            GameStats.Set(EnumGameStats.ShowAllPlayersOnMap, SETT._isEditmode); // sets the GameStat to the value of CmDm
+            GameStats.Set(EnumGameStats.ShowSpawnWindow, SETT._isEditmode);
+
+            //GameStats.Set(EnumGameStats.IsCreativeMenuEnabled, SETT._isEditmode);
+            //GameObject switchStaticMap2 = GameObject.FindWithTag("SwitchStaticMapTag");
+            //Transform switchStaticMap1 = parentTransform.Find("switchStaticMap");                                           
+            //GamePrefs.Set(EnumGamePrefs.DebugMenuEnabled, SETT._isEditmode);
+            //GameObject switchStaticMap = GameObject.Find("switchStaticMap");
+            //if (SETT._isEditmode == true) 
+            //{
+            //    Log.Out(switchStaticMap.name);
+            //    //Log.Out(switchStaticMap1.name);
+            //    //Log.Out(switchStaticMap2.name);
+            //}
+
+            //if (switchStaticMap != null)
+            //{
+            //    switchStaticMap.SetActive(true);
+            //}
+
         }
         public static void _BL_Blockdmg()   //one hit break - Toggle
         {
@@ -289,10 +275,15 @@ namespace SevenDTDMono
         }
         public static void levelup()//up one level-Trigger once
         {
-            if (O.ELP)
+            if (O.ELP) //this cheat first checks if Local player is existing
             {
+                //yeeh  ther esure will be
+
+
+
                 Progression prog = O.ELP.Progression;
                 prog.AddLevelExp(prog.ExpToNextLevel);
+               
 
             }
         }
@@ -346,10 +337,7 @@ namespace SevenDTDMono
             Log.Out("BYYYYYYYYYYY");
 
         }
-
-
         //voids
-
         public static void CheatPassiveEffect(bool toggle, PassiveEffects passive, float modifier, ValueModifierTypes VMT)
         {
             if (O.ELP && SETT.IsGameStarted)
@@ -446,12 +434,6 @@ namespace SevenDTDMono
             //effectGroup.PassiveEffects.Add(newPassiveEffect);           // MinEffectController.MinEffectGroup.PassivesIndex __ This location just adds buffs on top if added multiple times
             O._minEffectController.EffectGroups[0].PassiveEffects.Add(newPassiveEffect);           // MinEffectController.MinEffectGroup.PassivesIndex __ This location just adds buffs on top if added multiple times
         }
-
-
-
-
-
-
         //other 
         private static void DisplayToggleButton(PassiveEffects effect)
         {
@@ -472,8 +454,6 @@ namespace SevenDTDMono
                 inputPassiveEffects = effect.ToString();
             }
         }
-
-
         #region Lists
         public static void ListZombie1() ///////////////////////////////
         {
@@ -598,6 +578,88 @@ namespace SevenDTDMono
                 GUILayout.Label("No Players found.");
             }
         }
+        public static void MaxSkill() ///////////////////////////////
+        {
+            if (O._listProgressionValue.Count > 0)
+            {
+                foreach (ProgressionValue PGV in O._listProgressionValue)
+                {
+                    int lvl = PGV.Level;
+                    int max = PGV.ProgressionClass.MaxLevel;
+
+                    if (lvl < max)
+                    {
+                        PGV.Level = max;
+                    }
+                }
+            }
+        }
+        public static void ListPGV() ///////////////////////////////
+        {
+            if (O._listProgressionValue.Count > 0) 
+            {
+
+                var groupedValues = O._listProgressionValue.GroupBy(pgv => pgv.ProgressionClass.Type);
+                Dictionary<ProgressionType, List<ProgressionValue>> groupedValuesDict = groupedValues.ToDictionary(g => g.Key, g => g.ToList());
+
+                foreach (var kvp in groupedValuesDict)
+                {
+                    ProgressionType type = kvp.Key;
+                    List<ProgressionValue> values = kvp.Value;
+
+                    string stype = type.ToString();
+
+                    if (!TogBL.ContainsKey(stype))
+                    {
+                        TogBL[stype] = false; // Set the initial state to false for the bool toggle
+                    }
+
+                    bool state = TogBL[stype];
+                    CGUILayout.DropDownForMethods("Progression Type: " +stype, () =>
+                    {
+                        foreach (ProgressionValue PGV in values)
+                        {
+                            string id = PGV.Name;
+                            //if (!TogBL.ContainsKey(id))
+                            //{
+                            //    TogBL[id] = false; // Set the initial state to false for the bool toggle
+                            //}
+
+                            //bool state = TogBL[id];
+                            //CGUILayout.DropDownForMethods(id, () =>
+                            //{
+                                CGUILayout.BeginHorizontal(() =>
+                                {
+                                    GUILayout.Label(id);
+                                    if (GUILayout.Button("+1", GUILayout.MaxWidth(50)))
+                                    {
+                                        int lvl = PGV.Level;
+                                        int max = PGV.ProgressionClass.MaxLevel;
+                                        if (lvl < max)
+                                        {
+                                            PGV.Level++;
+                                        }
+                                    }
+                                    if (GUILayout.Button("MAX",GUILayout.MaxWidth(50)))
+                                    {
+                                        int max = PGV.ProgressionClass.MaxLevel;
+                                        PGV.Level = max;
+                                    }
+                                });
+                            //}, ref state);
+
+                            
+                        }
+                    }, ref state);
+                    TogBL[stype] = state;
+                }
+                if (CGUILayout.Button($"Max Skill"))
+                {
+                    MaxSkill();
+                }
+
+            }
+        }
         public static void GetListCBuffs(EntityPlayerLocal entityLocalPlayer, List<BuffClass> ListOFClass)
         {
             if (ListOFClass != null)
@@ -705,11 +767,6 @@ namespace SevenDTDMono
                 });
             });
         }
-
-
-
-
-
         #endregion
 
 
@@ -723,22 +780,12 @@ namespace SevenDTDMono
 
         }
         //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
         private void Start()
         {
-
         }
         //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------ss
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        #region onUpdate
         private void Update()
         {
-
-
             if (SETT.IsGameStarted == true)
             {
                 CheatPassiveEffect(SETT._BL_Blockdmg, PassiveEffects.BlockDamage, SETT._FL_blokdmg, ValueModifierTypes.perc_add);
@@ -755,15 +802,17 @@ namespace SevenDTDMono
                 if (SETT._LOQuestRewards==true) { LoopLASTQuestRewards(); };
                 if (SETT._QuestComplete==true) { InstantQuestFinish(); };
                 if (SETT._EtraderOpen==true) { Trader(); };
+                if (SETT._isEditmode) 
+                {
 
+                    GameManager.Instance.IsEditMode();
+                }
 
 
 
                 if ((SETT._ignoreByAI || !SETT._ignoreByAI)&&O.ELP)
                 {
                     O.ELP.SetIgnoredByAI(SETT._ignoreByAI);
-
-                    //Log.Out(O.ELP.name.ToString() + " is ignored by AI " + O.ELP.IsIgnoredByAI());
                 };
 
                 if (SETT.noWeaponBob && O.ELP) // When noWeaponBob is active enable 
@@ -799,8 +848,10 @@ namespace SevenDTDMono
                     }
                 }//infinity ammo
 
-                if (Input.GetKeyDown(KeyCode.Keypad5)) //checks if the key is being pressed. if it does execute
+                if (Input.GetKeyDown(KeyCode.F9)) //checks if the key is being pressed. if it does execute F9 is empty in game
                 {
+                    // we can put cheat here
+         
                 }
 
 
@@ -810,6 +861,10 @@ namespace SevenDTDMono
                 {
                     CmDm();
                 }
+                if (SETT._isEditmode || !SETT._isEditmode) //Toggle for ingame Creative and Debug Working like a sharm
+                {
+                    editMode();
+                }
             }
 
 
@@ -818,85 +873,12 @@ namespace SevenDTDMono
 
         }
 
-
-        #endregion
         //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        #region OnGUI
         void OnGUI()
         {
-
-
-
-
         }
-
-        #endregion
-        //--------------------------------------------------------------------------------------------------------dd
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------------
 
-        #region Triggers
-
-   
-
-
-
-        public static void IFBool(bool toggle)
-        {
-            if (toggle || !toggle) //Toggle for ingame Creative and Debug Working like a sharm
-            {
-                //string methodName = "MyActionMethod";
-
-                // Get the MethodInfo for the method using reflection
-                MethodInfo methodInfo = typeof(Cheat).GetMethod(toggle.ToString(), BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
-
-                // Check if the method exists
-                if (methodInfo != null)
-                {
-                    // Create a delegate of type Action and bind it to the method
-                    Action action = (Action)Delegate.CreateDelegate(typeof(Action), methodInfo);
-
-                    // Now you can invoke the action to execute the method
-                    action(); // Output: "MyActionMethod has been executed."
-                }
-                else
-                {
-                   Debug.LogWarning($"{methodInfo} not found. Not Executed");
-                }
-            }
-        }
-        //public static void BoolToggle()   //one hit break - Toggle
-        //{
-        //    if (O.ELP && SETT.IsGameStarted)
-        //    {
-        //        //PassiveEffects.BlockDamage
-        //        if (SETT._BL_Blockdmg == true)
-        //        {
-        //            AddPassive(PassiveEffects.BlockDamage, SETT._FM_blokdmg, ValueModifierTypes.base_set);
-        //        }
-        //        else if (SETT._BL_Blockdmg == false)
-        //        {
-        //            RemovePassive(PassiveEffects.BlockDamage);
-        //        }
-        //    }
-        //}
-
-
-
-
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        #endregion
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
-        //--------------------------------------------------------------------------------------------------------
         #region Toggles
         //public static EntityAlive Entity;
 
@@ -915,18 +897,6 @@ namespace SevenDTDMono
 
         //////effectController.EffectGroups[0].PassiveEffects[1].Values[2] = 50f; 
         #endregion
-        //public static BuffValue buff;
-
-
-        public static void progression()
-        {
-            //var prg = O.ELP.Progression;
-            //prg.
-
-
-
-        }
-
         public static void Trader()
         {
             if (O.Etrader != null && O.ELP)
@@ -947,7 +917,6 @@ namespace SevenDTDMono
                 SETT._EtraderOpen = false;
             }
         }
-
         public static void InstantQuestFinish()
         {
             if (SETT._QuestComplete == true && O.ELP)
@@ -964,11 +933,6 @@ namespace SevenDTDMono
                     }
                 }
             }
-        }
-
-        public static void FullSkill()
-        {
-            //O.ELP.Progression.
         }
         public static void LoopLASTQuestRewards()
         {
@@ -995,8 +959,6 @@ namespace SevenDTDMono
                 }
             }
         }
-
-
 
         #endregion
 
@@ -1284,24 +1246,6 @@ namespace SevenDTDMono
             }
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public static void GetList(bool _bool, EntityPlayerLocal entityLocalPlayer, List<EntityZombie> ListOFClass)
         {
             if (ListOFClass != null)
@@ -1435,7 +1379,60 @@ namespace SevenDTDMono
                 }
 
         }
-        public static void RemoveBadBuff()
+
+        #endregion
+    }
+}
+
+
+
+/*
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+        private static List<string> ListPerksAlwaysAdd = new List<string>
+        { "buffringoffire",
+            "buffdontbreakmyleg",
+            "buffheadshotsonly",
+            "buffcrouching",
+            "buffhealwatermax",
+            "buffhealfood",
+            "buffhealhealt"
+
+        };
+        private static List<string> ListPerks = new List<string> { "god", "megadamage", "nerfme", "messmeup" };
+        private static List<string> ListPerksNotToAdd = new List<string> { "god", "megadamage", "nerfme", "messmeup", "buffbrokenlimbstatus", "buffneardeathtrauma" };
+        private static List<string> ListPerksAlwaysremove = new List<string>
+        {
+
+            "buffdontmove",
+            "buffelementwet",
+            "electricity",
+            "messmeup" ,
+            "buffbrokenlimbstatus" ,
+            "bufflegsprained",
+            "buffinjuryabrasion" ,
+            "bufflaceration",
+            "buffinfectionmain",
+            "nerfme",
+            "megadamage",
+            "god",
+            "buffelementcold",
+
+
+
+
+
+
+        };
+        private static List<string> perkstarts = new List<string> { "twitch", "test_", "trigger", "infection", "injury", "getsworse" };
+ *         public static void RemoveBadBuff()
         {
             if(SETT._NoBadBuff == true)
             {
@@ -1531,28 +1528,45 @@ namespace SevenDTDMono
             }
 
         }
+ *      public static void IFBool(bool toggle)
+        {
+            if (toggle || !toggle) //Toggle for ingame Creative and Debug Working like a sharm
+            {
+                //string methodName = "MyActionMethod";
 
+                // Get the MethodInfo for the method using reflection
+                MethodInfo methodInfo = typeof(Cheat).GetMethod(toggle.ToString(), BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
 
+                // Check if the method exists
+                if (methodInfo != null)
+                {
+                    // Create a delegate of type Action and bind it to the method
+                    Action action = (Action)Delegate.CreateDelegate(typeof(Action), methodInfo);
 
-
-        #endregion
-    }
-}
-
-
-
-/*
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
+                    // Now you can invoke the action to execute the method
+                    action(); // Output: "MyActionMethod has been executed."
+                }
+                else
+                {
+                   Debug.LogWarning($"{methodInfo} not found. Not Executed");
+                }
+            }
+        }
+        //public static void BoolToggle()   //one hit break - Toggle
+        //{
+        //    if (O.ELP && SETT.IsGameStarted)
+        //    {
+        //        //PassiveEffects.BlockDamage
+        //        if (SETT._BL_Blockdmg == true)
+        //        {
+        //            AddPassive(PassiveEffects.BlockDamage, SETT._FM_blokdmg, ValueModifierTypes.base_set);
+        //        }
+        //        else if (SETT._BL_Blockdmg == false)
+        //        {
+        //            RemovePassive(PassiveEffects.BlockDamage);
+        //        }
+        //    }
+        //}
  *             if (SETT.speed)
             //{
             //    SETT.speed = !SETT.speed;

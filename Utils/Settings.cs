@@ -5,11 +5,12 @@ using UnityEngine.UI;
 
 
 
-
 namespace SevenDTDMono
-{ 
+{
+     
     public class Settings : MonoBehaviour
     {
+         public static Dictionary<string, bool> BD = new Dictionary<string, bool>();
 
         #region BOOLS undefined
         // Add more settings/options to your cheat!
@@ -61,7 +62,7 @@ namespace SevenDTDMono
         internal static bool drawDebug = false;
         internal static bool selfDestruct = false;
         public static bool IsGameStarted; //when we are loaded into the gameworld
-        public static bool IsVarsLoaded; //
+        public static bool IsVarsLoaded; //buffs and stuff to be loaded and stuff
         public static bool IsGameStartMenu; //
 
 
@@ -77,6 +78,7 @@ namespace SevenDTDMono
 
         //cheats toggle
 
+        public static bool _isEditmode = false;
         public static bool _QuestComplete = false;
         public static bool _EtraderOpen = false;
         public static bool _LOQuestRewards = false;
@@ -90,6 +92,7 @@ namespace SevenDTDMono
         public static bool _BL_Run = false;
         public static bool _BL_Jmp = false;
         public static bool _BL_APM = false;
+        
 
         #endregion
 
