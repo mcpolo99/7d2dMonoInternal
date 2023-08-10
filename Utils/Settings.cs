@@ -8,9 +8,9 @@ using UnityEngine.UI;
 namespace SevenDTDMono
 {
      
-    public class Settings : MonoBehaviour
+    public class Settings: MonoBehaviour
     {
-         public static Dictionary<string, bool> BD = new Dictionary<string, bool>();
+        public static Dictionary<string, bool> BD = new Dictionary<string, bool>();
 
         #region BOOLS undefined
         // Add more settings/options to your cheat!
@@ -49,6 +49,7 @@ namespace SevenDTDMono
 
         //not sure
         public static bool _trystackitems = false;
+        public static bool _nameScramble = false;
         public static bool _InstantLoot = false;
         public static bool _instantScrap = false;
         public static bool _instantCraft = false;
@@ -78,20 +79,20 @@ namespace SevenDTDMono
 
         //cheats toggle
 
-        public static bool _isEditmode = false;
-        public static bool _QuestComplete = false;
-        public static bool _EtraderOpen = false;
-        public static bool _LOQuestRewards = false;
-        public static bool _healthNstamina = false;
-        public static bool _foodNwater = false;
-        public static bool _ignoreByAI = false;
-        public static bool _NoBadBuff = false;
-        public static bool _BL_Harvest = false;
-        public static bool _BL_Blockdmg = false;
-        public static bool _BL_Kill = false;
-        public static bool _BL_Run = false;
-        public static bool _BL_Jmp = false;
-        public static bool _BL_APM = false;
+        //public static bool _isEditmode = false;
+        //public static bool _QuestComplete = false;
+        //public static bool _EtraderOpen = false;
+        //public static bool _LOQuestRewards = false;
+        //public static bool _healthNstamina = false;
+        //public static bool _foodNwater = false;
+        //public static bool _ignoreByAI = false;
+        //public static bool _NoBadBuff = false;
+        //public static bool _BL_Harvest = false;
+        //public static bool _BL_Blockdmg = false;
+        //public static bool _BL_Kill = false;
+        //public static bool _BL_Run = false;
+        //public static bool _BL_Jmp = false;
+        //public static bool _BL_APM = false;
         
 
         #endregion

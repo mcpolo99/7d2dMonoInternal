@@ -454,6 +454,7 @@
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\Objects.cs" />
     <Compile Include="UI\SceneDebugger.cs" />
+    <Compile Include="Utils\Setting.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\ToggleColor.cs" />
   </ItemGroup>
@@ -481,6 +482,9 @@ powershell -ExecutionPolicy Bypass -File $(ProjectDir)incBuild.ps1 -path1 $(Proj
 ) 
 IF "$(Configuration)" == "Release_UE" (
     copy "$(TargetPath)" "..\Release\$(TargetFileName)"
+) 
+IF "$(Configuration)" == "Debug" (
+    copy "$(TargetPath)" "..\..\AnyCPU\Debug\$(TargetFileName)"
 ) 
 IF NOT "$(Configuration)" == "Debug" (
     rd /s /q "$(ProjectDir)obj" 

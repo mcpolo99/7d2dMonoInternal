@@ -43,16 +43,21 @@ namespace SevenDTDMono
             chamsMaterial.SetInt("_ZWrite", 0);
             chamsMaterial.SetColor(_Color, Color.magenta);
         }
-        private void Update() {
+        private void Update() 
+        {
             /*if (!Input.anyKey || !Input.anyKeyDown) {
                 return;
             }*/
-            if (Time.time >= lastChamTime && SETT.chams) {
-                foreach (Entity entity in FindObjectsOfType<Entity>()) {
-                    if (!entity) {
+            if (Time.time >= lastChamTime && SETT.chams)
+            {
+                foreach (Entity entity in FindObjectsOfType<Entity>())
+                {
+                    if (!entity)
+                    {
                         continue;
                     }
-                    switch (entity.entityType) {
+                    switch (entity.entityType)
+                    {
                         case EntityType.Zombie:
                             ApplyChams(entity, Color.red);
                             break;
@@ -69,7 +74,7 @@ namespace SevenDTDMono
                 }
                 lastChamTime = Time.time + 10f;
             }//Enable disable chams
-             }
+        }
         private void ApplyChams(Entity entity, Color color)  //applying chams
         {
             foreach (Renderer renderer in entity.GetComponentsInChildren<Renderer>()) {

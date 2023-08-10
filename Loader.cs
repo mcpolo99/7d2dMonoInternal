@@ -24,11 +24,10 @@ namespace SevenDTDMono
             assemblyHelper = new AssemblyHelper();
             assemblyHelper.TryLoad();
 #endif
-
+            gameObject.AddComponent<Objects>();
             gameObject.AddComponent<NewMenu>();
             gameObject.AddComponent<Cheat>();
             gameObject.AddComponent<Settings>();
-            gameObject.AddComponent<Objects>();
             gameObject.AddComponent<ESP>();
             gameObject.AddComponent<Visuals>();
             gameObject.AddComponent<Aimbot>();

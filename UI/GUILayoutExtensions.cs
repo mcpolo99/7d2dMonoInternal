@@ -9,9 +9,12 @@ using InControl;
 using XInputDotNetPure;
 using InControl.UnityDeviceProfiles;
 using static PassiveEffect;
+using JetBrains.Annotations;
+using static Setting;
 
 namespace SevenDTDMono.Utils
 {
+   
     public static class CGUILayout
     {
         private static Color Active = Color.green;
@@ -87,7 +90,8 @@ namespace SevenDTDMono.Utils
         }
         #endregion
 
-
+        public static Dictionary<string, bool> SBu = new Dictionary<string, bool>();
+        public static Dictionary<string, bool> RBu = new Dictionary<string, bool>();
 
 
         //public static void BeginHorizontal(System.Action content, params GUILayoutOption[] options)
@@ -333,7 +337,74 @@ namespace SevenDTDMono.Utils
 
             return isClicked;
         }
+        public static bool Button(string label, bool toggle, Action onClickAction = null, params GUILayoutOption[] options)
+        {
+            GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+            buttonStyle.normal.textColor = toggle ? Active : Inactive;
+            buttonStyle.active.textColor = Active;
+            buttonStyle.hover.textColor = Hover;
 
+            bool isClicked = GUILayout.Button(label, buttonStyle, options);
+
+            if (isClicked)
+            {
+                toggle = !toggle; // Toggle the bool value when the button is clicked
+
+                if (onClickAction != null)
+                {
+                    onClickAction.Invoke();
+                }
+            }
+
+            return isClicked;
+        }
+
+        public static bool SButton(string label, string boolKey, Action onClickAction = null, params GUILayoutOption[] options)
+        {
+            if (!SB.ContainsKey(boolKey))
+            {
+                SB[boolKey] = false;
+            }
+            bool toggle = SB.ContainsKey(boolKey) ? SB[boolKey] : false;
+            bool isClicked = CGUILayout.Button(label, SB[boolKey], onClickAction, options);
+            if (isClicked)
+            {
+                SB[boolKey] = !toggle; // Toggle the bool value when the button is clicked
+            }
+            return SB[boolKey];
+        }
+        public static bool RButton(string label, string boolKey, Action onClickAction = null, params GUILayoutOption[] options)
+        {
+            bool toggle = RB.ContainsKey(boolKey) ? RB[boolKey] : false;
+            bool isClicked = CGUILayout.Button(label, RB[boolKey], onClickAction, options);
+            if (isClicked)
+            {
+                RB[boolKey] = !toggle; // Toggle the bool value when the button is clicked
+            }
+            return RB[boolKey];
+        }
+
+        public static bool Button(string label, Dictionary<string, bool> boolDictionary, string key, Action onClickAction = null, params GUILayoutOption[] options)
+        {
+            GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+            buttonStyle.normal.textColor = boolDictionary[key] ? Active : Inactive;
+            buttonStyle.active.textColor = Active;
+            buttonStyle.hover.textColor = Hover;
+
+            bool isClicked = GUILayout.Button(label, buttonStyle, options);
+
+            if (isClicked)
+            {
+                boolDictionary[key] = !boolDictionary[key]; // Toggle the bool value when the button is clicked
+
+                if (onClickAction != null)
+                {
+                    onClickAction.Invoke();
+                }
+            }
+
+            return isClicked;
+        }
 
         public static bool Button(string label, ref int currentIndex, params GUILayoutOption[] buttonOptions)//Cycle enumlist item
         {

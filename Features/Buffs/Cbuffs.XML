@@ -12,33 +12,7 @@
   </buff>
   
 
-  <buff name="NoBadBuffPARTIALWORK" icon="drugHealthBarDesc" icon_color="0,250,0" icon_blink="true">
-      <display_value_key value="NoBadBuffPARTIALWORK"/>
-      <display_value value="xxx"/>
-      <stack_type value="ignore"/>
-
-      <effect_group>
-        <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$dysenteryCounter" operation="set" value="0"/>
-        <triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar="$dysenteryCureCounter" operation="set" value="0"/>
-        <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffInfectionCatch,buffInfection01Main,buffInjuryBleeding,buffArmorShredding,buffInjuryAbrasion,buffInjuryAbrasionTreated,buffLegSprained,buffLegBroken,buffLegSplinted,buffLegCast,buffArmSprained"/>
-        <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffArmBroken,buffInjuryStunned01,buffInjuryStunned02,buffInjuryStunned03,buffInjuryCrippled01,buffInjuryKnockdown01,buffInjuryKnockdown01,buffInjuryUnconscious,buffLaceration,buffFatigued"/>
-        <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffInjuryConcussion,buffShocked,buffBurningElement,buffBurningEnvironment,buffBurningFlamingArrow,buffBurningMolotov,buffBurning"/>
-        <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffLegSplinted,buffLegCast,buffArmSprained,buffArmBroken,buffArmSplinted,buffArmCast"/>
-
-        <triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="infectionCounter" operation="set" value="0" />
-
-        <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffInjuryBleeding" />
-        
-        <triggered_effect trigger="onSelfBuffFinish" action="RemoveBuff" buff="buffInfectionMain" />
-        <triggered_effect trigger="onSelfBuffFinish" action="RemoveBuff" buff="buffInfectionCureDisplay"/>
-        <triggered_effect trigger="onSelfBuffFinish" action="RemoveBuff" buff="buffInfection01Untreated"/>
-        <triggered_effect trigger="onSelfBuffFinish" action="RemoveBuff" buff="buffInfection01GetBetter"/>
-        <triggered_effect trigger="onSelfBuffFinish" action="RemoveBuff" buff="buffInfection02Untreated"/>
-        <triggered_effect trigger="onSelfBuffFinish" action="RemoveBuff" buff="buffInfection02GetBetter"/>
-        <triggered_effect trigger="onSelfBuffFinish" action="RemoveBuff" buff="buffInfection03Untreated"/>
-        <triggered_effect trigger="onSelfBuffFinish" action="RemoveBuff" buff="buffInfection03GetBetter"/>
-      </effect_group>
-    </buff>
+  
   
   <!-- *** buffDrugEyeKandy -->
 	<!-- TRIGGERED_BY: Items = drugEyeKandy -->
@@ -70,26 +44,6 @@
 		</effect_group>
 	</buff>
   
-  <buff name="DamageResistDOESNOTWORK" icon="server_favorite" icon_color="132,0,155" icon_blink="true">
-    <display_value_key value="DamageResistDOESNOTWORK"/>
-    <display_value value="xxx"/>
-    <!--<duration value="9999"/>-->
-    <stack_type value="ignore"/>
-
-    <effect_group>
-      <passive_effect name="GeneralDamageResist" operation="base_add" value="0"/>
-      <passive_effect name="ElementalDamageResist" operation="base_add" value="0" tags="cold,heat,electrical"/>
-      <passive_effect name="PhysicalDamageResist" operation="base_add" value="0"/>
-      <passive_effect name="PhysicalDamageResist" operation="base_add" value="0" tags="coredamageresist"/>
-      <passive_effect name="ElementalDamageResist" operation="base_add" value="0" tags="heat,electrical"/>
-      				<triggered_effect trigger="onSelfBuffStart" action="AddBuff" fireOneBuff="true" buff="NoBadBuff,bufftest02,bufftest03,bufftest04,bufftest05" weights="5,4,3,2,1"/>
-      
-    </effect_group>
-  </buff>
-
- 
-
-
   <buff name="HPSTARegen" icon="ui_game_symbol_twitch_regen" icon_color="0,250,0" >
     <!--icon_blink="true"-->
     <display_value_key value="healthnstaminaRegen"/>
