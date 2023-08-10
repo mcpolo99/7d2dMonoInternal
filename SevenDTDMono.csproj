@@ -129,10 +129,6 @@
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Lib.Harmony.2.2.1\lib\net45\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>E:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -459,12 +455,6 @@
     <Compile Include="Utils\ToggleColor.cs" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Features\Buffs\Cbuffs.XML" />
   </ItemGroup>

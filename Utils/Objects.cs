@@ -8,7 +8,7 @@ using UnityEngine;
 using SevenDTDMono;
 using System.Runtime.InteropServices;
 using System.Collections;
-using HarmonyLib;
+//using HarmonyLib;
 using S = SevenDTDMono.Settings;
 using static Setting;
 
